@@ -1,0 +1,54 @@
+DST=git/yax
+C=c
+DOCS=docs
+ETC=etc
+BASELINE=data/baseline
+TESTINPUT=data/testinput
+
+# File sets
+ETCSRC=xml.y dap4.y rng.y
+DOCSRC=yax-c.html
+CASES=books comments d expr lextest dap4
+BASELINESRC=${CASES:%=%.dom} ${CASES:%=%.yax}
+TESTINPUTSRC=${CASES:%=%.xml}
+
+# Pieces of the c source code
+GITSRC=Makefile Makefile.dist COPYRIGHT README.md
+YAXSRC=yax.h yax.c yxlist.h yxlist.c
+XMLSRC=xml.h xml_actions.h xml_actions.c xml_lexer.c xml.y.hdr
+TESTSRC=domtest.c lextest.c options.h options.c
+UTILSRC=Makefile domtest.sh lextest.sh
+CSRC=${YAXSRC} ${XMLSRC} ${TESTSRC} ${UTILSRC}
+
+.PHONEY: git clean c docs etc baseline testinput
+
+all::
+	@echo "explicitly invoke make git"
+
+# Create the git repository
+# Copy over the top level misc. files
+git:: clean c docs etc baseline testinput
+	cp ${GITSRC} ${DST}
+
+clean::
+	rm -fr git
+
+c::
+	mkdir -p ${DST}/${C}
+	cp ${CSRC:%=${C}/%} ${DST}/${C}
+
+docs::
+	mkdir -p ${DST}/${DOCS}
+	cp ${DOCSRC:%=${DOCS}/%} ${DST}/${DOCS}
+
+etc::
+	mkdir -p ${DST}/${ETC}
+	cp ${ETCSRC:%=${ETC}/%} ${DST}/${ETC}
+
+baseline::
+	mkdir -p ${DST}/${BASELINE}
+	cp ${BASELINESRC:%=${BASELINE}/%} ${DST}/${BASELINE}
+
+testinput::
+	mkdir -p ${DST}/${TESTINPUT}
+	cp ${TESTINPUTSRC:%=${TESTINPUT}/%} ${DST}/${TESTINPUT}

@@ -1,0 +1,1058 @@
+!- Copyright 2012, UCAR/Unidata -->
+<!- See the COPYRIGHT file for more information. -->
+<html>
+<style>
+.break { page-break-before: always; }
+body { counter-reset: H2; font-size: 12pt; }
+h2:before {
+  content: counter(H2) " ";
+  counter-increment: H2;
+}
+h2 { counter-reset: H3; }
+h3:before {
+  content: counter(H2) "." counter(H3) " ";
+  counter-increment:H3;
+}
+h4 {font-size: 12pt; } /* For API procedures*/
+h5 {font-size: 14pt; } /* For Appendices */
+h6 {font-size: 16pt; } /* For Subtitles */
+</style>
+<body>
+
+<center>
+<h1>The yax Bison/YACC Based XML Parsing System</h1>
+<table>
+<tr><td>Created:<td>07/01/2012
+<tr><td>Last Revised:<td>07/14/2012<br>
+<tr><td>Version:<td>1.0
+<tr><td>Status:<td>Draft
+<tr><td>Author:<td>Dennis Heimbigner
+<tr><td>Affiliation:<td>Unidata/UCAR
+<tr><td>email:<td>dmh&#064;unida.ucar.edu
+</table>
+</center>
+
+<h6 class="break"><u>Table of Contents</u></h6>
+<ol>
+<li><a href="#Introduction">Introduction</a>
+<li><a href="#Overview">Overview</a>
+<li><a href="#.y">Heuristic Construction of the Bison .y Grammar File</a>
+<li><a href="#yacctokens">Bison Grammar File Tokens</a>
+<li><a href="#c">C-Language Version</a>
+<ol>
+<li><a href="#xml">Example: Construct a DOM Tree</a>
+<li><a href="#parserstate">Parser state</a>
+<li><a href="#yylex">Bison yylex Procedure</a>
+<li><a href="#dap4">Example: DAP4 DDX</a>
+</ol>
+<li><a href="#yax">Appendix: The yax C-Language library API</a>
+<li><a href="#perfecthash">Appendix: Perfect Hashing</a>
+<li><a href="#references">References</a>
+<li><a href="#changelog">Change Log</a>
+</ol>
+
+<h2 class="break"><a name="Introduction"><u>Introduction</u></a></h2>
+The goal of the <b>yax</b> project is to allow
+the use of <i>Gnu Bison</i> to parse/process XML documents.
+<p>
+Bison/YACC is an extremely powerful compiler generator
+system.  However, little work has been applied to the
+parsing and processing of XML documents using
+Bison/YACC. The term "YACC" technically refers to a much
+older parser generator system. GNU Bison is its modern
+replacment, although its grammar file format is very
+similar. The term "Bison" will be used in this document.
+<p>
+The key piece of software for achieving the above goal is
+a library that can produce an XML lexical token
+stream from an XML document.
+<p>
+This stream can be wrapped to create an instance of the
+Bison <i>yylex()</i> procedure to feed tokens to a Bison
+grammar to parse and process the XML document.
+<p>
+Using the stream plus a Bison grammar, it is possible
+to carry at least the following kinds of activities.
+<ol>
+<li> Validate XML documents,
+<li> Directly parse XML documents to
+     create internal data structures,
+<li> Construct DOM trees.
+</ol>
+Activity #1, Document validation, can be achieved by parsing the xml token
+stream against a validation grammar. It is relatively simple
+to manually convert a RELAX-NG grammar to a Bison grammar.
+Parsing a document using the Bison grammar then becomes equivalent
+to validating the document against the RELAX-NG grammar.
+<p>
+Activity #2 is the most general case. It simultaneously
+validates the XML token stream against the Bison grammar
+and, using Bison grammar actions, can create internal
+data structures containing information extracted from
+the XML document.
+<p>
+Activity #3, DOM trees, is actually an example of #2
+where the grammar is a general grammar for xml (see the file
+xml.y) and the created data structure is a DOM tree.
+<p>
+The <i>yax</i> system provides a general approach and support
+library for producing Bison-based XML document parsers.
+While it has a number of limitations, it is relatively
+simple to use.
+<p>
+<b>WARNING: this document assumes the reader has significant
+experience with both Bison and XML.</b>
+
+<h2 class="break"><a name="Overview"><u>Overview</u></a></h2>
+In order to use yax, it is necessary to manually produce the following
+pieces of code.
+<ol>
+<li> A Bison <i>.y</i> grammar file. This file can be produced in a
+straightforward way starting with a RELAXNG [1]
+grammar for the XML document.
+<p>
+<li> A Bison yylex() procedure that can provide lexical
+tokens to a Bison parser.  The yylex() program in turn wraps
+the <i>yax</i> xml lexer to provide a stream of
+xml-level tokens for the Bison generated parser.
+</ol>
+
+<h2 class="break"><a name=".y"><u>Heuristic Construction of the .y Grammar</u></a></h2>
+
+Converting a RELAXNG grammar to a Bison grammar is
+relatively straightforward when using the obvious RELAXNG
+constructs.  Some heuristic examples are provided in the
+following sections.
+
+<h3>Start Symbol</h3>
+<dl>
+<dt> RELAXNG
+<dd>
+<pre>
+&lt;start&gt;
+  &lt;ref name="xxx"/&gt;
+&lt;/start&gt;
+</pre>
+<dt> Bison
+<dd>
+<pre>
+%start xxx
+</pre>
+</dl>
+
+<h3>Simple Element</h3>
+<dl>
+<dt> RELAXNG
+<dd>
+<pre>
+&lt;define name="xxx"&gt;
+  &lt;element name="XXX"&gt;
+  ...
+  &lt;/element&gt;
+</pre>
+<dt> Bison
+<dd>
+<pre>
+xxx: XXXOPEN ... XXXCLOSE
+</pre>
+</dl>
+
+<h3>Element With Required Attributes</h3>
+The one place where a Bison grammar has
+trouble dealing with XML is with attributes.
+For XML, attribute order is arbitrary.
+If we have, for example, an element
+with N required attributes, this must
+translate into N! different rules.
+This is shown in version 1 below where
+representing three required attributes
+forces the use of 3! = 6 rules.
+Obviously this is impractical
+for any significant value of N
+(pretty much anything larger than N = 2).
+<p>
+Version 2 shows the other, better solution.
+This set of rules allows, syntactically,
+more possibilities than the XML, but
+requires only 2*N rules. Enforcement
+of the true XML rules (namely each
+attribute occuring only once) must be
+enforced programmatically.
+<dl>
+<dt> RELAXNG
+<dd>
+<pre>
+&lt;element name="XXX"&gt;
+  &lt;attribute name="a1"/&gt;
+  &lt;attribute name="a2"/&gt;
+  &lt;attribute name="a3"/&gt;
+&lt;/element&gt;
+</pre>
+<dt> Bison Version 1:
+<dd>
+<pre>
+xxx_attr_list:   A1 A2 A3 | A1 A3 A2 | A2 A1 A3
+               | A2 A3 A1 | A3 A1 A2 | A3 A2 A1 ;
+</pre>
+<dt> Bison Version 2:
+<dd>
+<pre>
+xxx_attr_list:
+          /*empty*/
+        | xxx_attr_list A1
+        | xxx_attr_list A2
+        | xxx_attr_list A3
+        ;
+</pre>
+</dl>
+
+<h3>Element With Optional Attributes</h3>
+Translating optional attributes suffers
+from the same rule explosion problem
+as does required attributes;
+actually it is worse because it requires
+1+2^N rules versus N! rules.
+<p>
+Again, for N > 2, version 2 makes more sense.
+<dl>
+<dt> RELAXNG
+<dd>
+<pre>
+&lt;element name="XXX"&gt;
+  &lt;optional&gt;
+    &lt;attribute name="a1"/&gt;
+  &lt;/optional&gt;
+  &lt;optional&gt;
+    &lt;attribute name="a2"/&gt;
+  &lt;/optional&gt;
+&lt;/element&gt;
+</pre>
+<dt> Bison Version 1:
+<dd>
+<pre>
+xxx_attr_list: /*empty*/ | A1 | A2 | A1 A2 | A2 A1 ;
+</pre>
+<dt> Bison Version 2:
+<dd>
+<pre>
+xxx_attr_list:
+          /*empty*/
+        | xxx_attr_list A1
+        | xxx_attr_list A2
+        ;
+</pre>
+</dl>
+
+<h3>Element Containing Required Elements</h3>
+<dl>
+<dt> RELAXNG
+<dd>
+<pre>
+&lt;element name="X1"&gt;
+  &lt;element name="X2"/&gt;
+&lt;/element&gt;
+</pre>
+<dt> Bison
+<dd>
+<pre>
+x1: X1OPEN x2 X1CLOSE ;
+01: X1OPEN x2 X1CLOSE ;
+x2: X2OPEN X2CLOSE ;
+</pre>
+</dl>
+
+<h3>Element Containing Alternative Elements</h3>
+<dl>
+<dt> RELAXNG
+<dd>
+<pre>
+&lt;element name="X1"&gt;
+  &lt;choice&gt;
+    &lt;element name="X2"/&gt;
+    &lt;element name="X3"/&gt;
+  &lt;/choice&gt;
+&lt;/element&gt;
+</pre>
+<dt> Bison
+<dd>
+<pre>
+x1: X1OPEN x2 X1CLOSE | X1OPEN x3 X1OPEN ;
+01: X1OPEN x2 X1CLOSE | X1OPEN x3 X1OPEN ;
+x2: X2OPEN X2CLOSE ;
+02: X2OPEN X2CLOSE ;
+x3: X3OPEN X3CLOSE ;
+</pre>
+</dl>
+
+<h3>Element Containing Sequence of Alternative Elements</h3>
+<dl>
+<dt> RELAXNG
+<dd>
+<pre>
+&lt;element name="X1"&gt;
+  &lt;zeroOrMore&gt;
+    &lt;choice&gt;
+      &lt;element name="X2"/&gt;
+      &lt;element name="X3"/&gt;
+    &lt;/choice&gt;
+  &lt;/zeroOrMore&gt;
+&lt;/element&gt;
+</pre>
+<dt> Bison
+<dd>
+<pre>
+x1: X1OPEN x1_body X1CLOSE ;
+01: X1OPEN x1_body X1CLOSE ;
+x1_body:
+          /*empty*/
+        | x1_body x2
+        | x1_body x3
+        ;
+
+x2: X2OPEN X2CLOSE ;
+02: X2OPEN X2CLOSE ;
+x3: X3OPEN X3CLOSE ;
+</pre>
+</dl>
+
+<h3>Translation</h3>
+A number of obvious other heuristics, e.g. using &lt;oneOrMore&gt;,
+can be constructed by simple modifications to the above heuristics.
+<p>
+By combining the above heuristics it is usually
+possible to convert any reasonable RELAXNG grammar to a
+corresponding Bison grammar.
+
+<h2 class="break"><a name="yacctokens"><u>Bison Grammar File Tokens</u></a></h2>
+The set of defined tokens in the Bison .y file typically consists of
+open and close tokens for the element types and a token for
+each possible attribute.
+<pre>
+%token <token> XXXOPEN XXXCLOSE
+%token <token> YYYOPEN YYYCLOSE
+...
+%token <token> ATTR1
+%token <token> ATTR2
+...
+</pre>
+<p>
+In addition it is convenient to define several special Bison tokens.
+<ol>
+<li>ERROR &ndash; a token that can be returned by yylex.
+Since it is not used in any grammar rule, will cause
+the parser to initiate error recovery.
+<li>UNKNOWN_ATTR &ndash; represents the occurrence of
+an unexpected XML attribute.
+The parser action code is free to do with this as it pleases.
+<li>UNKNOWN_ELEMENT_OPEN &ndash; represents the occurrence of
+an unexpected XML element.
+The parser action code is free to do with this as it pleases.
+<li>UNKNOWN_ELEMENT_CLOSE &ndash; represents the occurrence of
+an unexpected XML element as a close.
+The parser action code is free to do with this as it pleases.
+</ol>
+<pre>
+%token <token> ERROR
+</pre>
+
+<h2 class="break"><a name="c"><u>C-Language Version</u></a></h2>
+
+<h3><a name="xml">Example: Construct a DOM Tree</a></h3>
+
+We will illustrate the use of yax by defining a grammar &ndash; xml.y &ndash;
+that processes an arbitrary xml document and produces a tree data structure
+that is essentially a DOM tree.
+
+The following sections discuss the details of the xml.y file.
+
+<h4>Prefix Declarations</h4>
+<pre>/*xml.y*/
+01 %{
+02 #include "xml_actions.h"
+03 %}
+04 
+05 %union {
+06     YXlist* list;
+07     XMLnode* dom;
+08     yax_token token;
+09 }
+10 
+11 %lex-param {XMLparser* parser}
+12 %parse-param {XMLparser* parser}
+13 %error-verbose
+14 %pure-parser
+</pre>
+The file xml_actions.h contains most of the needed declarations
+for the generated xml.tab.[ch] files (line 2).
+As a rule, parsers should be declared as pure (reentrant) parsers (line 14).
+As a consequence, a structure is needed to hold state information
+with respect to parsing a specific document. Lines 11-12 define
+that structure (of type XMLparser).
+<p>
+The most important declaration is the "%union{...}".
+It defines the possible value associated with a non-terminal or terminal.
+As a rule, terminals will be tagged as of type token (i.e. yax-token)
+so that the information returned by the yax lexer is accessible to
+the parser actions.
+<p>
+As will be described in a later <a href="#lists">section</a>,
+many non-terminals will have a list of values as their value.
+The "list" arm of the union will tag such non-terminals.
+<p>
+Finally, since our goal is to construct a DOM tree, many non-terminals
+will have a DOM tree node (here typed as "XMLnode") as their value.
+
+<h4>Token and Non-Terminal Declarations</h4>
+<pre>
+01 %token <token> PROLOG DOCTYPE
+02 %token <token> OPEN CLOSE EMPTYCLOSE
+03 %token <token> ATTRIBUTE
+04 %token <token> TEXT CDATA COMMENT
+05 
+06 /* Error support tokens */
+07 %token <token> ERROR
+08 
+09 %type <dom> document
+10 %type <dom> prolog optional_prolog
+11 %type <dom> doctype optional_doctype
+12 %type <dom> element attribute
+13 %type <list> elementlist
+14 %type <list> attributelist
+</pre>
+The set of Bison tokens that will be returned by <i>yylex()</i>
+are defined in lines 1-4. Note that they all are marked
+as having a yax-token value (via the &lt;token&gt; tag).
+<p>
+A special token, ERROR, is defined (line 7) that is not used
+in any production. It may be returned by yylex
+to cause the parser to initiate error recovery.
+<p>
+Lines 9-14 mark the types of the non-terminals in the grammar.
+Some (lines 9-12) will return an pointer to an instance of XMLnode,
+while others (lines 13-14) will return a list object (of type YXlist,
+see later in this document).
+
+<h4>Start Symbol</h4>
+<pre>
+01
+02 %start document
+03 
+</pre>
+The start symbol for this grammar is the "document" production.
+
+<h4>XMLnode-Valued Productions</h4>
+<pre>
+01 %%
+02 
+03 document:
+04 	optional_prolog
+05 	optional_doctype
+06 	elementlist
+07 	    {$$=xmldocument(parser,$1,$2,$3);}
+08 	;
+09 
+10 optional_prolog: /*empty*/ {$$=NULL;} |	prolog {$$=$1;} ;
+11 
+12 optional_doctype: /*empty*/ {$$=NULL;} | doctype {$$=$1;} ;
+13 
+14 prolog:
+15 	PROLOG {$$=xmlprolog(parser,$1); CHECK($$);}
+16 	;
+17 
+18 doctype:
+19 	DOCTYPE {$$=xmldoctype(parser,$1); CHECK($$);}
+20 	;
+21 
+22 element:
+23 	  OPEN attributelist EMPTYCLOSE
+24 	    {$$=xmlelement(parser,$1,$3,$2,null); CHECK($$);}
+25 	| OPEN attributelist elementlist CLOSE
+26 	    {$$=xmlelement(parser,$1,$4,$2,$3); CHECK($$);}
+27 	| TEXT {$$=xmlelementtext(parser,$1);}
+28 	| CDATA {$$=xmlelementtext(parser,$1);}
+29 	;
+30 attribute:
+31 	ATTRIBUTE {$$=xmlattribute(parser,$1);}
+32 	;
+</pre>
+An xml document consists of an optional prolog (of the form &lt;?xml...&gt;),
+followed by an optional doctype (of the form &lt;!DOCTYPE...&gt;), followed
+by a list of xml elements.
+An action procedure ("xmldocument()") will process these items to produce
+the root node of the document DOM tree.
+<p>
+The yylex() procedure returns a PROLOG terminal whose value contains 
+the information in the prolog declaration.
+The procedure "xmlprolog()" takes the PROLOG value (of type yax-token)
+and constructs an instance of an XMLnode and returns it as its value.
+DOCTYPE is handled in a similar fashion.
+<p>
+An element non-terminal has four possible forms.
+<ol>
+<li> It can be a TEXT terminal, or
+<li> It can be a CDATA terminal, or
+<li> It can be of the form &lt;elementname attributelist /&gt;, or
+<li> It can contain, recursively, a list of nested elements.
+</ol>
+Note that the &lt; ... /&gt; case is terminated by the terminal EMPTYCLOSE,
+while the recursive case is terminated by the terminal CLOSE.
+<p>
+In all cases, all of the right side components are passed to a procedure
+to create an instance of XMLnode.
+One of the side effects of this procedure is to verify that, for example,
+the &lt;e&gt; element is closed by &lt;/e&gt;.
+<p>
+The "attribute" production takes an ATTRIBUTE terminal and, using "xmlattribute()",
+converts it to an XMLnode instance.
+
+<h4><a name="lists">List Handling</a></h4>
+<pre>
+01 elementlist:
+02 	  /*empty*/ {$$=yxlistnew();}
+03 	| elementlist element {$$=yxlistpush($1,(void*)$2);}
+04 	;
+05 
+06 
+07 attributelist:
+08 	  /*empty*/ {$$=yxlistnew();}
+09 	| attributelist attribute {$$=yxlistpush($1,(void*)$2);}
+10 
+</pre>
+The productions "elementlist" and "attributelist" represent a common
+cliche in LALR grammars for handling repeated lists of items.
+Such productions can be handled relatively uniformly using the yxlist library
+provided as part of yax. It is not the only way, but it is convenient.
+An alternate solution, for example, would involve linked lists.
+<p>
+The API defined in <i>yxlist.h</i> 
+can be used to construct a list on the fly and pass
+it along as rules are reduced by the parser.
+<p>
+In the first rule of elementlist, the action is to create an empty list
+using "yxlistnew()" and return it as the value of the production (via "$$=...").
+In the second rule, and by construction, the first component of the right hand side
+will be of type YXlist, so we can just append the second component, an element of type
+"XMLnode*" using the "yxlistpush()" procedure; casting of the second argument is needed
+because YXlists are lists of "void*".
+<p>
+The "attributelist" production operates in an exactly analogous fashion.
+
+<h3><a name="parserstate">Parser state</a></h3>
+Because our parser is declared as reentrant, it requires
+the construction of a parser state structure to hold
+information about the state of the parse.
+In xml.y, this parser state is an instance of the struct XMLparser.
+Of course, you can use
+any name you want in place of XMLparser as long as you change the
+"%lex-param" and "%parse-param" declarations in the .y file
+<p>
+The XMLparser type is defined like this (see "xml_actions.h").
+<pre>
+typedef struct XMLparser {
+   XMLnode* document;
+   int flags;
+   yax_lexer* yax;
+   struct {
+	int charno;
+	int inopen;
+   } lexer; /* extra lexer specific state */
+} XMLparser;
+</pre>
+The fields have the following meaning.
+<ol>
+<li> document &ndash; holds the root XMLnode of the created DOM tree.
+<li> flags &ndash; holds a combination of parse flags and yax flags.
+<li> yax - this field holds the state of the yax lexer created
+using the yax_create() procedure.
+<li> lexer.charno &ndash; holds the character position of the last token.
+<li> lexer.inopen &ndash; flag to control handling of instances of YAX_TEXT.
+</ol>
+
+<h3><a name="yylex">Bison yylex Procedure</a></h3>
+The lexer is by default called "yylex",
+and for our xml processor is stored in the file "xml_lexer.c".
+If you review the Bison command line options,
+you can change this using the "-p" flag; for xml_lexer.c,
+for example, it is called xmllex by using the flag "-pxml".
+<p>
+The operation of the Bison-level lexer is discussed in the following
+sections.
+
+<h4>The xmllex() Arguments and local variables</h4>
+<pre>/*xml_lexer.c*/
+01 #define UNKNOWN -1 /* helper token */
+02 
+03 int
+04 xmllex(YYSTYPE* lvalp, XMLparser* parser)
+05 {
+06     yax_err err = YAX_OK;
+07     yax_token* yaxtoken = &lvalp->token;
+08     int yytoken = UNKNOWN;
+09 
+</pre>
+The "lvalp" argument is an instance of the %union
+type defined in the .y file.
+Since we want to access the token field of that union,
+line ? extracts a pointer to that field.
+<p>
+The "yytoken" variable will hold the Bison token type
+(e.g. OPEN, EMPTYCLOSE, etc at defined in xml.y).
+<p>
+The "err" variable is used to capture error indicators from
+invoking "yax_nexttoken()".
+
+<h4>The Main xmllex Loop</h4>
+The main xmllex loop keeps trying to obtain a useful lexeme
+from the underlying yax lexer. When yytoken has an acceptable
+value (other than the pseudo-token UNKNOWN), it will exit and return
+yytoken as the result of invoking xmllex.
+<pre>
+01     while(yytoken == UNKNOWN) {
+02         err = yax_nexttoken(parser->yax,yaxtoken);
+03         if(err) goto done;
+</pre>
+The "yax_nexttoken()" procedure is invoked
+obtain a yax token. The possible set of tokens is defined
+in the <a href="yaxapi">API section</a>.
+
+<h4>Token Determination Switch</h4>
+The core of the lexer is a switch
+on the yax tokentype.
+<pre>
+01 	switch(yaxtoken->tokentype) {
+02         default:
+03 	    /*report an unknown token type error*/
+04 	    yytoken = ERROR; /* cause the parser to enter error recovery */
+05 	    break;
+06 
+07 	case YAX_EOF:
+08 	    yytoken = 0;
+09 	    break;
+10 
+</pre>
+If an unknown token is returned, then generate an error message
+using yyerror() (aka xmlerror()) and return the token ERROR
+to initiate parser error recovery.
+<p>
+If yax_nexttoken() returns end-of-file, then return 0 as the value
+of yytoken to tell the parser that end of input was encountered.
+
+<h4>Simple Cases</h4>
+The following yax token type cases more or less convert
+the yax tokentype to a Bison token type in the obvious way.
+These case are: YAX_OPEN, YAX_EMPTYCLOSE, YAX_CLOSE, YAX_ATTRIBUTE,
+YAX_PROLOG, and YAX_DOCTYPE.
+They all have the form something like this.
+<pre>
+01 	case YAX_PROLOG:
+02 	    yytoken = PROLOG;
+03 	    break;
+04 
+</pre>
+
+<h4>Comments</h4>
+<pre>
+01 	case YAX_COMMENT:
+02 	    continue; /* ignore */
+03 
+</pre>
+This particular lexer suppresses comments and loops
+again to get the next yax token.
+
+<h4>Handling TEXT Elements</h4>
+<pre>
+01 	case YAX_TEXT: {
+02 	    /* We only want to return TEXT
+03 		when we are inside an OPEN.
+04 		If it occurs elsewhere and is not whitespace,
+05 		then fail.
+06 	    */ 
+07 	    if(parser->lexer.inopen) {
+08 		yytoken = TEXT;
+09 	    } else {
+10 		char* p = yaxtoken->text;
+11 		/* check for whitespace */
+12 		for(;*p;p++) {if(!iswhitespace(*p)) goto fail;}
+13 		/* suppress whitespace */
+14 		continue; /* look for another token */
+15 	    }
+16 	} break;
+</pre>
+When yax_nexttoken returns a token of type YAX_TEXT, we have
+to handle it. There are three possibilities.
+<ol>
+<li> The text instance occurs inside an openelement-closelement pair:
+&lt;element&gt;...&lt;/element&gt;.
+<li> The text instance occurs outside of case 1, but the text contains
+only whitespace characters.
+<li> The text instance occurs outside of case 1, but the text contains
+non-whitespace characters.
+</ol>
+For case 1, we should return a Bison-level TEXT token.
+For case 2, we should ignore the YAX_TEXT token.
+For case 3, we should declare an error.
+Without going into detail, we determine
+our case using a parser state flag.
+
+<h4>The xmllex Return Value</h4>
+<pre>
+done:
+    parser->lexer.charno = yaxtoken->charno;
+    return yytoken;
+fail:
+    yytoken = ERROR;
+    goto done;
+}
+</pre>
+The fail label sets yytoken to the Bison ERROR token
+and then returns. The normal return (label done:)
+saves the character position of the token vis-a-vis
+the input document. Then it returns the value of yytoken
+as the value of xmllex.
+
+<h3><a name="dap4">Example: DAP4 DDX</a></h3>
+For a second example, the DAP4 DDX [2] is parsed.
+The provided code only does validation; no
+data structure is constructed.
+This example demonstrates some additional
+elements in using yax plus Bison.
+
+<h4>The DAP4 Grammar File</h4>
+The Bison grammar file ("dap4.y") is very similar in structure
+to "xml.y" shown previously.
+It differs in several aspects.
+<ol>
+<li>Element specific open and close tokens are used.
+For example, for the &lt;Group&gt; element,
+two tokens are defined: the open token GROUP_
+and the corresponding close token _GROUP.
+<p>
+<li>Attribute specific tokens are defined. So the attribute
+"name", has a corresponding ATTR_NAME Bison token.
+<li>In some places, unexpected attributes are allowed,
+and so Bison token, UNKNOWN_ATTR, is defined.
+<p>
+<li>In addition to the special ERROR token,
+two additional tokens are defined: UNKNOWN and UNEXPECTED
+to signal special cases of ERROR.
+<p>
+<li>Since some of the elements have multiple allowed
+attributes, the list-based technique defined 
+<a href="#.y">previously</a> is used.
+<p>
+<li>Since we are doing only validation, no %union{...}
+is needed and no token or non-terminal typing is required.
+This means that the only part of a terminal of interest
+is its Bison token value.
+</ol>
+
+<h4>The DAP4 yylex()</h4>
+The <i>dap4lex()</i> procedure, the Bison-level lexer
+is again similar to xml_lexer.c but with some notable
+differences.
+<p>
+<pre>/*dap4_lexer.c*/
+01 int
+02 dap4lex(YYSTYPE *lvalp, DAP4parser* parser)
+03 {
+04 yax_token yaxtoken;
+05 struct dap4_keyword {
+06   char *name; int opentag ; int closetag; int attributetag;
+07 } keyword;
+</pre>
+Since we are doing validation only, the lvalp argument is unused.
+The DAP4parser type is, like XMLparser previously, for holding parser
+specific state.
+<pre>
+typedef struct DAP4Parser {
+    yax_lexer* yaxlexer;
+} DAP4parser;
+</pre>
+In this case, it holds the minimal possible,namely the yax lexer state.
+<p>
+We do need a yax token instance to pass into yax_nexttoken(),
+so it is defined as a local variable to dap4lex().
+As described below, we will need a special struct to use with
+our perfect has function described subsequently.
+
+<h4>The dap4lex Main Loop</h4>
+<pre>
+    while(yytoken == UNKNOWN) {
+	err = yax(parser->lexstate,yaxtoken);
+	if(err) goto done;
+
+	if(tokenstate->name != NULL)
+	    keyword = dap4_keyword_lookup(tokenstate->name,
+					  strlen(tokenstate->name));
+</pre>
+In this parser, it is useful to quickly convert a name (e.g. an element or
+attribute name) returned by yax_nexttoken() to a corresponding Bison token:
+map "Group" to GROUP_ and _GROUP for example.
+<p>
+In this case we use a perfect hash function generated
+by the Gnu gperf program [3] as described in an
+<a href="#perfecthash">Appendix</a>.
+<p>
+If the hash function returns NULL, then we have an unknown/unexpected
+element or attribute name and can return UNKNOWN_ELEMENT_OPEN,
+UNKNOWN_ELEMENT_OPEN, UNKNOWN_ATTRIBUTE as appropriate.
+<p>
+Otherwise,
+if we have a YAX_OPEN token, we can return keyword->opentag.
+If we have a YAX_CLOSE or YAX_EMPTYCLOSE token, we can return keyword->closetag.
+If we have a YAX_ATTRIBUTE token, we can return keyword->attributetag.
+
+<h2 class="break"><a name="yax"><u>Appendix: The yax C-Language library API</u></a></h2>
+The yax library is a support library used by the Bison-level
+lexer to produce tokens for the Bison grammar.
+It is a lexer for XML documents (or at least a subset thereof)
+that returns a sequence of tokens corresponding to the lexical
+tokens in the XML document.
+
+<h3>yax Token Structure</h3>
+The yax token type &mdash; <i>yax_token</i>
+contains information about each token extracted from the input document.
+<pre>
+typedef struct yax_token {
+    yax_tokentype tokentype;
+    char *name;
+    char *text;
+    int charno;
+} yax_token;
+</pre>
+The meaning of the fields is as follows.
+<ol>
+<li> tokentype - a small integer giving the type of this token.
+<li> name - a null terminated string indicating the name
+of an element or an attribute.
+<li> text - a null terminated string indicating the value
+of an attribute or the contents of the text content of an element.
+<li> charno - the offset in the document of the start of this token.
+</ol>
+Note that, depending on the token type, either the name field or the text
+field may be undefined in value.
+<p>
+The tokentype may have one of the following values,
+with associated meaning. Unless otherwise specified,
+the name and text fields are undefined.
+<ul>
+<li> YAX_EOF &ndash; the document has no more tokens.
+<li> YAX_OPEN &ndash; &lt;element...&gt;; name is the element name.
+<li> YAX_CLOSE &ndash; &lt;/element...&gt;; name is the element name.
+<li> YAX_EMPTYCLOSE ndash; .../&gt;; name is the element name.
+<li> YAX_ATTRIBUTE ndash; &lt;... x="y"... ; name is the attribute name,
+text is the attribute value (excluding any surrounding quotes.
+<li> YAX_TEXT ndash; &lt;element&gt;......&lt;/element&gt;; the text field is defined
+as the text inside of an element.
+<li> YAX_CDATA ndash; &lt;![CDATA[...]]&gt;; the text field contains the text
+between the second '[' and the last ']]'.
+<li> YAX_PROLOG ndash; &lt;?xml version="1.0"?&gt;; the text field contains the version.
+<li> YAX_DOCTYPE ndash; &lt;!DOCTYPE startsymbol ...&gt;; the name
+field contains the start symbol, the text symbol contains everything
+from the startsymbol to the final '&gt;'.
+<li> YAX_COMMENT ndash; &lt;!-- ... --&gt;; the text
+field contains everything between "&lt;!--" and "--&gt;".
+</ul>
+
+<h3>The yax API procedures</h3>
+
+<h4><u>yax_err yax_create(const char* input, int flags, yax_lexer** lexerp);</u></h4>
+This procedure creates an opaque lexer object of type <i>yax_lexer*</i>
+to hold information about the lexical processing of the input file.
+<p>
+<i>Arguments</i>:
+<ul>
+<li> input - an in-memory string containing the xml document. This string
+will not be modified, although a copy will be created as part of the
+<i>yax_lexer</i>
+<li> flags - a set of flags for controlling behavior of yax.
+<li> lexerp - a pointer into which a pointer to an instance of yax_lexer
+will be stored.
+</ul>
+<i>Return Value</i>:
+a small integer of type <i>yax_err</i>
+indicating an error condition.
+The full set of errors is defined in the file "yax.h".
+</ul>
+<p>
+The set of flags are as follows.
+<ul>
+<li>YXFLAG_NONE
+<li>YXFLAG_ESCAPE &ndash; convert \n,\r, etc to \\ form.
+<li>YXFLAG_NOCR &ndash; delete \r.
+<li>YXFLAG_ELIDETEXT &ndash; only print the first 12 characters of text.
+<li>YXFLAG_TRIMTEXT &ndash; remove leading and trailing whitespace;
+if result is empty, then ignore the whole text.
+</ul>
+
+<h4><u>yax_err yax_free(yax_lexer* lexer);</u></h4>
+This procedure frees any resources associated with the lexer.
+<p>
+<i>Arguments</i>:
+<ul>
+<li> lexer - the lexer object to be free'd.
+</ul>
+<i>Return Value</i>: <i>yax_err</i>.
+</ul>
+
+<h4><u>void yax_setflags(yax_lexer* lexer, int newflags);</u></h4>
+Change the set of flags associated with a yax_lexer object.
+<p>
+<i>Arguments</i>:
+<ul>
+<li> lexer - the lexer object.
+<li> newflags - the new set of flags for the lexer.
+</ul>
+<i>Return Value</i>: N.A.
+</ul>
+
+<h4><u>int yax_getflags(yax_lexer* lexer);</u></h4>
+Return the current set of flags associated with a yax_lexer object.
+<p>
+<i>Arguments</i>:
+<ul>
+<li> lexer - the lexer object.
+</ul>
+<i>Return Value</i>: the set of flags.
+</ul>
+
+<h4><u>yax_err yax_nexttoken(yax_lexer* lexer, yax_token* token);</u></h4>
+This procedure returns the next yax token from the xml document.
+<p>
+<i>Arguments</i>:
+<ul>
+<li> lexer - the lexer object representing the document being processed.
+<li> token - the next token from the document. The caller is responsible
+for providing the token instance; it will be filled in by this
+procedure.
+</ul>
+<i>Return Value</i>: <i>yax_err</i>.
+</ul>
+
+<h4><u>char* yax_unescape(char* s, char** translations);</u></h4>
+Given a null terminated string, scan it for Entities
+(e.g. &amp;amp;) and convert them to the actual represented
+character. The returned string must be free'd by the caller.
+<p>
+<i>Arguments</i>:
+<ul>
+<li> s - the string potentially containing entities.
+<li> translations - provide a list
+of the legal entities to recognize and translate.
+The translations argument is in envv form
+with position n being the entity name and
+position n+1 being the translation. The list is terminated
+with NULL.
+</ul>
+<i>Return Value</i>: a string with the entities translated.
+</ul>
+
+<h4><u>const char* yax_errstring(yax_err err);</u></h4>
+Given an error of type <i>yax_err</i>,
+this procedure returns a human readable error message.
+<p>
+<i>Arguments</i>:
+<ul>
+<li> err - the error value.
+</ul>
+<i>Return Value</i>: a string describing the error.
+</ul>
+
+<h4><u>yax_token* yax_tokendup(yax_token token);</u></h4>
+Duplicate a token instance into a heap copy.
+<p>
+<i>Arguments</i>:
+<ul>
+<li> token - the token to duplicate. WARNING: note that
+it is the token instance, not a pointer to a token instance.
+</ul>
+<i>Return Value</i>: a heap pointer to a duplicate of the token
+argument, or NULL if out of memory.
+</ul>
+
+<h4><u>char* yax_trace(yax_lexer* lexer, yax_token* token);</u></h4>
+This is primarily a debugging tool. Given a token,
+it provides a printable string describing the fields of the token.
+The caller must free the returned string.
+A NULL return value signals out of memory.
+<p>
+<i>Arguments</i>:
+<ul>
+<li> lexer - yax lexer.
+<li> token - the token for which a printable description is desired.
+</ul>
+<i>Return Value</i>: a string describing the token.
+</ul>
+
+<h2 class="break"><a name="perfecthash"><u>Appendix: Perfect Hashing</u></a></h2>
+In many parsers, it can be useful to quickly convert a name (e.g. an element or
+attribute name) returned by yax_nexttoken() to a corresponding Bison token.
+One way to do this is to use a perfect hash function.
+<p>
+The example provided in the yax source tree, dap4.gperf, uses
+the GNU gperf program to produce the perfect hash procedures.
+The skeleton of the .gperf file is something like this.
+The first three lines are directives to gperf.
+<pre>
+01 %define lookup-function-name XXX_keyword_lookup
+02 %readonly-tables
+03 %global-table
+04 
+05 %{
+06 /*insert any necessary #include directives here*/
+07 #include &lt;string.h&gt;
+08 #include "yxlist.h"
+09 #include "yax.h"
+10 ...
+11 %}
+12 
+13 %struct-type
+14 00 struct dap4_keyword {
+15   char *name; int opentag ; int closetag; int attributetag;
+16 } keyword;
+17 %%
+18 /* Define the element names */
+19 Element1, ELEMENT1OPEN, ELEMENT1CLOSE, 0
+20 Element2, ELEMENT2OPEN, ELEMENT2CLOSE, 0
+21 ...
+22 /* Define the attribute names */
+23 attr1, 0, 0, ATTR1
+24 attr2, 0, 0, ATTR2
+25 ...
+26 %%
+</pre>
+<p>
+The command to produce the perfect hash code is as follows.
+<pre>
+gperf xxx.gperf > xxx.c
+</pre>
+where xxx is whatever name you choose.
+<p>
+Within yylex, typical code might be as follows.
+<pre>
+01 const struct dap4_keyword* keyword;
+02 if(yaxtoken->name != NULL)
+03 keyword = dap4_keyword_lookup(yaxtoken->name, strlen(tokenstate->name));
+</pre>
+The perfect hash function will return a pointer to an instance
+of this struct as determined by the name field.
+If the struct is NULL then it means it is an unknown name.
+Otherwise, it gives, for elements, the Bison open and close tokens.
+For attributes, it gives the specific Bison attribute token.
+
+<h2><a name="references"><u>References</u></a></h2>
+<ol>
+<li> http://relaxng.org
+<li>http://docs.opendap.org/index.php/OPULS_Development#DAP4_Specification
+<li>http://www.gnu.org/software/gperf/
+</ol>
+
+<h2><a name="changelog"><u>Change Log</u></a></h2>
+<b>Version 1.0:</b>
+<ol>
+<li>7/15/2012 &ndash; Added a detailed discussion of xml.y
+<li>7/9/2012 &ndash; Initial draft.
+</ol
+
+</body>
+</html>

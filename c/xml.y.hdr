@@ -1,0 +1,13 @@
+%{
+#include "xml_actions.h"
+%}
+
+%union {
+    YXlist* list;
+    XMLnode* dom;
+    yax_token token;
+}
+
+%lex-param {XMLparser* parser}
+%parse-param {XMLparser* parser}
+

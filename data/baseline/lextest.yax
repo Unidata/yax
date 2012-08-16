@@ -1,0 +1,33 @@
+0: PROLOG: name=|version| value=|1.0|
+21: TEXT text=|| translation=||
+22: DOCTYPE: name=|startpoint| value=|SYSTEM "hello.dt...|
+62: TEXT text=|| translation=||
+63: DOCTYPE: name=|startpoint| value=|whatever|
+96: TEXT text=|| translation=||
+97: COMMENT: text=|number value=5 |
+119: TEXT text=|| translation=||
+120: COMMENT: text=|number value = 1...|
+145: TEXT text=|| translation=||
+146: OPEN: element=|element1|
+156: ATTRIBUTE: name=|name| value=|x&lt;yz|
+171: ATTRIBUTE: name=|value| value=|13|
+180: TEXT text=|&
+&amp;
+&mon;
+&;| translation=|&
+&
+&mon;
+&;|
+200: CLOSE: element=|element1|
+209: TEXT text=|| translation=||
+209: COMMENT: text=||
+216: TEXT text=|| translation=||
+217: OPEN: element=|e2|
+221: ATTRIBUTE: name=|a| value=|5|
+227: TEXT text=|| translation=||
+228: COMMENT: text=|cc|
+237: TEXT text=|| translation=||
+240: CLOSE: element=|e2|
+243: TEXT text=|| translation=||
+246: EOF
+No error

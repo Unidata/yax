@@ -1,0 +1,17 @@
+0: COMMENT: text=|c1|
+9: OPEN: element=|element|
+18: ATTRIBUTE: name=|a| value=|5|
+22: TEXT text=|| translation=||
+23: OPEN: element=|element|
+32: ATTRIBUTE: name=|a| value=|5|
+36: ATTRIBUTE: name=|x| value=|s|
+41: EMPTYCLOSE: element=|element|
+43: TEXT text=|| translation=||
+43: COMMENT: text=|c2|
+52: TEXT text=|| translation=||
+55: CLOSE: element=|element|
+63: TEXT text=|| translation=||
+64: COMMENT: text=|c3|
+73: TEXT text=|| translation=||
+76: EOF
+No error

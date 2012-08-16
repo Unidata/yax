@@ -1,0 +1,6 @@
+0: OPEN: element=|element|
+9: TEXT text=|abcdefghijklmnop...| translation=|abcdefghijklmnop...|
+41: CLOSE: element=|element|
+49: TEXT text=|| translation=||
+51: EOF
+No error
