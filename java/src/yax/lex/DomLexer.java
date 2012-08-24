@@ -168,11 +168,13 @@ public class DomLexer
                 state = new State(node); // moving left to right
                 // do not set tokentype so we will loop again
 	    } else { // we have completed processing of this node;
-	             // return close if it matches an element
-                     // otherwise try again
+	             // return close or emptyclose if it matches an
+                     // element, otherwise try again
 		node = state.node;
-                if(node.getNodeType() == ELEMENT_NODE)
-		    tokentype = Type.CLOSE;
+                if(node.getNodeType() == ELEMENT_NODE) {
+		    tokentype = (state.nchild == 0 ? Type.CLOSE
+						    : Type.EMPTYCLOSE);
+		}
 		state = null; // cause path to be popped
 	    }
 	}
@@ -183,7 +185,7 @@ public class DomLexer
     //////////////////////////////////////////////////
     // Misc.
 
-    boolean
+    static boolean
     isEmptyElement(Node element, boolean whitespaceok)
 	throws DOMException
     {
@@ -219,7 +221,7 @@ public class DomLexer
         return empty;
     }
 
-    Document
+    static Document
     buildDom(String input)
         throws Exception
     {

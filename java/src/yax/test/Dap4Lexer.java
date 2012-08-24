@@ -16,7 +16,7 @@ class Dap4Lexer implements Dap4Parser.Lexer
 
     //////////////////////////////////////////////////
     // Instance Variables
-    DomLexer lexer = null;
+    DomLexer domlexer = null;
     int flags = Util.FLAG_NONE;
     Node lval = null;
     KeywordMap keywords = new KeywordMap();
@@ -28,9 +28,9 @@ class Dap4Lexer implements Dap4Parser.Lexer
     public Dap4Lexer(String input, int flags)
             throws Exception
     {
-	lexer = new DomLexer(input);
+	domlexer = new DomLexer(input);
         this.flags = flags;
-	lexer.setFlags(flags);
+	domlexer.setFlags(flags);
 	defineKeywords(keywords);
     }
 
@@ -77,7 +77,7 @@ class Dap4Lexer implements Dap4Parser.Lexer
         Type yaxtoken = Type.UNDEFINED;
 
 	while(yytoken == UNKNOWN) {
-	    yaxtoken = lexer.nextToken(nodep);
+	    yaxtoken = domlexer.nextToken(nodep);
 	    lval = nodep[0];
 
 	    if((flags & Util.FLAG_TRACE)!=0) {
@@ -103,6 +103,7 @@ class Dap4Lexer implements Dap4Parser.Lexer
 		}
 		break;
     
+	    case EMPTYCLOSE:
 	    case CLOSE:
 		if(keyword == null) {// undefined
 		    yytoken = _UNKNOWN_ELEMENT;

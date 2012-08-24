@@ -1,3 +1,6 @@
+%error-verbose
+%pure-parser
+
 %{
 #include "yxlist.h"
 #include "yax.h"

@@ -1,6 +1,3 @@
-%error-verbose
-%pure-parser
-
 %token  GROUP_ _GROUP
 %token  ENUMERATION_ _ENUMERATION
 %token  ENUMCONST_ _ENUMCONST

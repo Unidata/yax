@@ -3,11 +3,13 @@
 
 package yax.lex;
 
+// The order here is such that the ordinal value matches that of the C code
 public enum Type {
 	UNDEFINED,
 	EOF,
 	OPEN,
 	CLOSE,
+	EMPTYCLOSE,
 	ATTRIBUTE,
 	TEXT,
 	CDATA,

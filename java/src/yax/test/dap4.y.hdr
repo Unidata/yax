@@ -1,5 +1,6 @@
 %debug
 %error-verbose
+%pure-parser
 
 %define public
 %define package "yax.test"

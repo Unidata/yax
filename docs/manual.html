@@ -1,4 +1,4 @@
-!- Copyright 2012, UCAR/Unidata -->
+<!-- Copyright 2012, UCAR/Unidata -->
 <!- See the COPYRIGHT file for more information. -->
 <html>
 <style>
@@ -13,9 +13,17 @@ h3:before {
   content: counter(H2) "." counter(H3) " ";
   counter-increment:H3;
 }
-h4 {font-size: 12pt; } /* For API procedures*/
-h5 {font-size: 14pt; } /* For Appendices */
-h6 {font-size: 16pt; } /* For Subtitles */
+h3 { counter-reset: H4; }
+h4:before {
+  content: counter(H2) "." counter(H3) "." counter(H4) " ";
+  counter-increment:H4;
+}
+h4 { counter-reset: H5; }
+h5:before {
+  content: counter(H2) "." counter(H3) "." counter(H4) "." counter(H5) " ";
+  counter-increment:H5;
+}
+h6 {font-size: 16pt; margin-bottom: 0pt; padding: 0pt; } /* For TOC */
 </style>
 <body>
 
@@ -32,18 +40,22 @@ h6 {font-size: 16pt; } /* For Subtitles */
 </table>
 </center>
 
-<h6 class="break"><u>Table of Contents</u></h6>
+<h6><u>Table of Contents</u></h6>
 <ol>
 <li><a href="#Introduction">Introduction</a>
 <li><a href="#Overview">Overview</a>
 <li><a href="#.y">Heuristic Construction of the Bison .y Grammar File</a>
 <li><a href="#yacctokens">Bison Grammar File Tokens</a>
-<li><a href="#c">C-Language Version</a>
+<li><a href="#c">C Language Version</a>
 <ol>
 <li><a href="#xml">Example: Construct a DOM Tree</a>
 <li><a href="#parserstate">Parser state</a>
 <li><a href="#yylex">Bison yylex Procedure</a>
 <li><a href="#dap4">Example: DAP4 DDX</a>
+</ol>
+<li><a href="#java">Java Language Version</a>
+<ol>
+<li><a href="#javadap4">Example: DAP4 DDX</a>
 </ol>
 <li><a href="#yax">Appendix: The yax C-Language library API</a>
 <li><a href="#perfecthash">Appendix: Perfect Hashing</a>
@@ -445,35 +457,35 @@ The start symbol for this grammar is the "document" production.
 01 %%
 02 
 03 document:
-04 	optional_prolog
-05 	optional_doctype
-06 	elementlist
-07 	    {$$=xmldocument(parser,$1,$2,$3);}
-08 	;
+04      optional_prolog
+05      optional_doctype
+06      elementlist
+07          {$$=xmldocument(parser,$1,$2,$3);}
+08      ;
 09 
-10 optional_prolog: /*empty*/ {$$=NULL;} |	prolog {$$=$1;} ;
+10 optional_prolog: /*empty*/ {$$=NULL;} |      prolog {$$=$1;} ;
 11 
 12 optional_doctype: /*empty*/ {$$=NULL;} | doctype {$$=$1;} ;
 13 
 14 prolog:
-15 	PROLOG {$$=xmlprolog(parser,$1); CHECK($$);}
-16 	;
+15      PROLOG {$$=xmlprolog(parser,$1); CHECK($$);}
+16      ;
 17 
 18 doctype:
-19 	DOCTYPE {$$=xmldoctype(parser,$1); CHECK($$);}
-20 	;
+19      DOCTYPE {$$=xmldoctype(parser,$1); CHECK($$);}
+20      ;
 21 
 22 element:
-23 	  OPEN attributelist EMPTYCLOSE
-24 	    {$$=xmlelement(parser,$1,$3,$2,null); CHECK($$);}
-25 	| OPEN attributelist elementlist CLOSE
-26 	    {$$=xmlelement(parser,$1,$4,$2,$3); CHECK($$);}
-27 	| TEXT {$$=xmlelementtext(parser,$1);}
-28 	| CDATA {$$=xmlelementtext(parser,$1);}
-29 	;
+23        OPEN attributelist EMPTYCLOSE
+24          {$$=xmlelement(parser,$1,$3,$2,null); CHECK($$);}
+25      | OPEN attributelist elementlist CLOSE
+26          {$$=xmlelement(parser,$1,$4,$2,$3); CHECK($$);}
+27      | TEXT {$$=xmlelementtext(parser,$1);}
+28      | CDATA {$$=xmlelementtext(parser,$1);}
+29      ;
 30 attribute:
-31 	ATTRIBUTE {$$=xmlattribute(parser,$1);}
-32 	;
+31      ATTRIBUTE {$$=xmlattribute(parser,$1);}
+32      ;
 </pre>
 An xml document consists of an optional prolog (of the form &lt;?xml...&gt;),
 followed by an optional doctype (of the form &lt;!DOCTYPE...&gt;), followed
@@ -508,14 +520,14 @@ converts it to an XMLnode instance.
 <h4><a name="lists">List Handling</a></h4>
 <pre>
 01 elementlist:
-02 	  /*empty*/ {$$=yxlistnew();}
-03 	| elementlist element {$$=yxlistpush($1,(void*)$2);}
-04 	;
+02        /*empty*/ {$$=yxlistnew();}
+03      | elementlist element {$$=yxlistpush($1,(void*)$2);}
+04      ;
 05 
 06 
 07 attributelist:
-08 	  /*empty*/ {$$=yxlistnew();}
-09 	| attributelist attribute {$$=yxlistpush($1,(void*)$2);}
+08        /*empty*/ {$$=yxlistnew();}
+09      | attributelist attribute {$$=yxlistpush($1,(void*)$2);}
 10 
 </pre>
 The productions "elementlist" and "attributelist" represent a common
@@ -553,8 +565,8 @@ typedef struct XMLparser {
    int flags;
    yax_lexer* yax;
    struct {
-	int charno;
-	int inopen;
+        int charno;
+        int inopen;
    } lexer; /* extra lexer specific state */
 } XMLparser;
 </pre>
@@ -619,15 +631,15 @@ in the <a href="yaxapi">API section</a>.
 The core of the lexer is a switch
 on the yax tokentype.
 <pre>
-01 	switch(yaxtoken->tokentype) {
+01      switch(yaxtoken->tokentype) {
 02         default:
-03 	    /*report an unknown token type error*/
-04 	    yytoken = ERROR; /* cause the parser to enter error recovery */
-05 	    break;
+03          /*report an unknown token type error*/
+04          yytoken = ERROR; /* cause the parser to enter error recovery */
+05          break;
 06 
-07 	case YAX_EOF:
-08 	    yytoken = 0;
-09 	    break;
+07      case YAX_EOF:
+08          yytoken = 0;
+09          break;
 10 
 </pre>
 If an unknown token is returned, then generate an error message
@@ -644,16 +656,16 @@ These case are: YAX_OPEN, YAX_EMPTYCLOSE, YAX_CLOSE, YAX_ATTRIBUTE,
 YAX_PROLOG, and YAX_DOCTYPE.
 They all have the form something like this.
 <pre>
-01 	case YAX_PROLOG:
-02 	    yytoken = PROLOG;
-03 	    break;
+01      case YAX_PROLOG:
+02          yytoken = PROLOG;
+03          break;
 04 
 </pre>
 
 <h4>Comments</h4>
 <pre>
-01 	case YAX_COMMENT:
-02 	    continue; /* ignore */
+01      case YAX_COMMENT:
+02          continue; /* ignore */
 03 
 </pre>
 This particular lexer suppresses comments and loops
@@ -661,22 +673,22 @@ again to get the next yax token.
 
 <h4>Handling TEXT Elements</h4>
 <pre>
-01 	case YAX_TEXT: {
-02 	    /* We only want to return TEXT
-03 		when we are inside an OPEN.
-04 		If it occurs elsewhere and is not whitespace,
-05 		then fail.
-06 	    */ 
-07 	    if(parser->lexer.inopen) {
-08 		yytoken = TEXT;
-09 	    } else {
-10 		char* p = yaxtoken->text;
-11 		/* check for whitespace */
-12 		for(;*p;p++) {if(!iswhitespace(*p)) goto fail;}
-13 		/* suppress whitespace */
-14 		continue; /* look for another token */
-15 	    }
-16 	} break;
+01      case YAX_TEXT: {
+02          /* We only want to return TEXT
+03              when we are inside an OPEN.
+04              If it occurs elsewhere and is not whitespace,
+05              then fail.
+06          */ 
+07          if(parser->lexer.inopen) {
+08              yytoken = TEXT;
+09          } else {
+10              char* p = yaxtoken->text;
+11              /* check for whitespace */
+12              for(;*p;p++) {if(!iswhitespace(*p)) goto fail;}
+13              /* suppress whitespace */
+14              continue; /* look for another token */
+15          }
+16      } break;
 </pre>
 When yax_nexttoken returns a token of type YAX_TEXT, we have
 to handle it. There are three possibilities.
@@ -749,8 +761,9 @@ is its Bison token value.
 <h4>The DAP4 yylex()</h4>
 The <i>dap4lex()</i> procedure, the Bison-level lexer
 is again similar to xml_lexer.c but with some notable
-differences.
-<p>
+differences. It is described in the following sections.
+
+<h5>Lexer Declarations</h5>
 <pre>/*dap4_lexer.c*/
 01 int
 02 dap4lex(YYSTYPE *lvalp, DAP4parser* parser)
@@ -775,15 +788,15 @@ so it is defined as a local variable to dap4lex().
 As described below, we will need a special struct to use with
 our perfect has function described subsequently.
 
-<h4>The dap4lex Main Loop</h4>
+<h5>The dap4lex Main Loop</h5>
 <pre>
     while(yytoken == UNKNOWN) {
-	err = yax(parser->lexstate,yaxtoken);
-	if(err) goto done;
+        err = yax(parser->lexstate,yaxtoken);
+        if(err) goto done;
 
-	if(tokenstate->name != NULL)
-	    keyword = dap4_keyword_lookup(tokenstate->name,
-					  strlen(tokenstate->name));
+        if(tokenstate->name != NULL)
+            keyword = dap4_keyword_lookup(tokenstate->name,
+                                          strlen(tokenstate->name));
 </pre>
 In this parser, it is useful to quickly convert a name (e.g. an element or
 attribute name) returned by yax_nexttoken() to a corresponding Bison token:
@@ -802,7 +815,159 @@ if we have a YAX_OPEN token, we can return keyword->opentag.
 If we have a YAX_CLOSE or YAX_EMPTYCLOSE token, we can return keyword->closetag.
 If we have a YAX_ATTRIBUTE token, we can return keyword->attributetag.
 
-<h2 class="break"><a name="yax"><u>Appendix: The yax C-Language library API</u></a></h2>
+<h2 class="break"><a name="java"><u>Java Language Version</u></a></h2>
+
+The Java version of yax differs from the C version in a number of ways.
+The biggest difference is that the Java version works from a DOM tree
+rather than directly from the text. The reason for this is that
+standard Java includes support for parsing to DOM trees via
+the org.w3c.dom package.
+<p>
+The basic idea is that we have a single class, <i>DomLexer</i>,
+that is given an org.w3c.dom.Document object as the root of a
+DOM tree. It walks that tree in prefix order, left-to-right for
+attributes and children, and depth first.
+Then for each type of DOM node, we map it to a token type
+that matches those defined in the C yax_tokentype.
+The Bison "yylex" lval for the token is the DOM tree node.
+<p>
+The net result is that it is generally possible to use
+the same core grammar for both C and Java, have similar,
+but not identical, versions of yylex and similar, but
+not identical, actions procedures.
+
+<h3><a name="javadap4">Example: DAP4 DDX</a></h3>
+This example does the DAP4 DDX in Java. It is instructive
+to compare it with the <a href="#dap4">C version</a>.
+As with the C version, only validation is performed;
+no data structure is constructed.
+
+<h4>The DAP4 Grammar File</h4>
+The Bison grammar file ("dap4.y") is used mostly unchanged
+from the C version. The prefix part, the part before the
+token declarations, differs, but the rest is the same.
+<p>
+The Java parser generated by Bison does not support the
+%union{...} construct. Rather, YYSTYPE is defined always
+to be an instance of the Java <i>Object</i> class.
+
+<h4>The Java DAP4 yylex()</h4>
+Java uses the "-p" flag to specify the name of the generated
+parser class only: <i>Dap4Parser</i> in this case.  All
+other names are fixed, so, the lexer is always of the type
+of the inner interface <i>Lexer</i> within Dap4Parser.
+<p>
+The Lexer interface has three defined methods.
+<dl>
+<dt><i>Object getLVal()</i>
+<dd>Method to retrieve the semantic value of the last scanned token.
+For yax, this will always be an instance of <i>org.w3c.Dom.Node</i>
+coming from the underlying DOM tree that is being walked as described
+previously.
+<p>
+<dt><i>int yylex() throws Exception</i>
+<dd> Entry point for the scanner.
+Returns the token identifier corresponding to the next token
+and prepares to return the semantic value of the token.
+<p>
+<dt><i>void yyerror(String s)</i>
+<dd>Entry point for error reporting.
+Emits an error in a user-defined way.
+</dl>
+<p> 
+The code for this Bison-level lexer is described in the
+following sections.
+
+<h5>Dap4Lexer Class</h5>
+<pre>/*Dap4Lexer.java*/
+class Dap4Lexer implements Dap4Parser.Lexer
+{
+    // Instance Variables
+    DomLexer walker = null;
+    int flags = Util.FLAG_NONE;
+    Node lval = null;
+    KeywordMap keywords = new KeywordMap();
+</pre>
+The instance variables have the following meaning.
+<ul>
+<li>The lexer is an instance of <i>DomLexer</i>
+for walking the given DOM tree.
+<li>The flags are used more or less as in the C version.
+<li>The lval holds the last org.w3c.dom.Node value
+returned by the DOM tree walker;
+<li>The keywords map serves the same role as the perfect hash function
+in the C code.
+</ul>
+
+<h5>Constructor</h5>
+<pre>
+    public Dap4Lexer(String input, int flags)
+            throws Exception
+    {
+        walker = new DomLexer(input);
+        this.flags = flags;
+        lexer.setFlags(flags);
+        defineKeywords(keywords);
+    }
+</pre>
+The constructor creates a DomLexer instance
+and fills in the keyword map.
+
+<h5>The yylex() Procedure Part 1</h5>
+<pre>
+    public int
+    yylex()
+            throws Exception
+    {
+        int yytoken = UNKNOWN;
+        String name;
+        KeywordMap.Keyword keyword;
+        Node[] nodep = new Node[]{null};
+        Type yaxtoken = Type.UNDEFINED;
+
+        while(yytoken == UNKNOWN) {
+            yaxtoken = walker.nextToken(nodep);
+            lval = nodep[0];
+
+            short ttype = lval.getNodeType();
+            String ttypename = Util.nodetypeName(ttype);
+            name = lval.getNodeName();
+            keyword = keywords.get(name);
+</pre>
+The nodep variable is a one element array to provide a poor-man's
+call by reference in Java. The DOM tree walker needs to return two
+things: a yax token type (defined in the class yax.lex.Type)
+and the org.w3c.dom.Node instance. It returns the former
+as its value and the latter is stored in the passed in array.
+<p>
+As with the C code, the DOM node name is used with the
+keyword map to obtain the information for mapping to
+specific Bison level tokens.
+<p>
+If the keyword map does not contain the requested name,
+then we have an unknown/unexpected
+element or attribute name and can return UNKNOWN_ELEMENT_OPEN,
+UNKNOWN_ELEMENT_OPEN, UNKNOWN_ATTRIBUTE as appropriate.
+
+<h5>The yylex() Procedure Part 2</h5>
+<pre>
+            switch(yaxtoken) {
+    
+            case OPEN: 
+            ...
+            case CLOSE:
+            ...
+</pre>
+The switch here is similar to that in the C code.
+It switches on the yax token value returned from the
+DomLexer.nexttoken() call.
+<p>
+As with the C code,
+if we have a YAX_OPEN token, we can return keyword.opentag.
+If we have a YAX_CLOSE or YAX_EMPTYCLOSE token, we can return keyword.closetag.
+If we have a YAX_ATTRIBUTE token, we can return keyword.attributetag.
+
+<h2 class="break"><a name="yax"><u>Appendix: The yax C Language library API</u></a></h2>
 The yax library is a support library used by the Bison-level
 lexer to produce tokens for the Bison grammar.
 It is a lexer for XML documents (or at least a subset thereof)
@@ -1050,6 +1215,9 @@ For attributes, it gives the specific Bison attribute token.
 <h2><a name="changelog"><u>Change Log</u></a></h2>
 <b>Version 1.0:</b>
 <ol>
+<li>7/24/2012 &ndash; Updated the manual to include a
+    description of the Java Implementation
+<li>7/23/2012 &ndash; Added the Java implementation
 <li>7/15/2012 &ndash; Added a detailed discussion of xml.y
 <li>7/9/2012 &ndash; Initial draft.
 </ol

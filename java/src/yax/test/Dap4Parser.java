@@ -1006,16 +1006,16 @@ public class Dap4Parser extends Dap4Test
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
   private static final short yyrline_[] =
   {
-         0,    77,    77,    80,    82,    83,    84,    85,    86,    87,
-      88,    91,    93,    94,    95,    96,    97,   101,   105,   106,
-     110,   111,   116,   120,   121,   124,   126,   130,   134,   138,
-     139,   143,   147,   148,   152,   153,   158,   163,   164,   165,
-     166,   167,   168,   169,   170,   171,   172,   173,   174,   175,
-     176,   177,   178,   182,   183,   184,   185,   186,   187,   188,
-     189,   190,   191,   192,   193,   194,   195,   196,   197,   200,
-     202,   203,   204,   208,   212,   215,   217,   218,   219,   222,
-     224,   228,   232,   238,   240,   241,   242,   245,   247,   251,
-     252,   255,   257
+         0,    75,    75,    78,    80,    81,    82,    83,    84,    85,
+      86,    89,    91,    92,    93,    94,    95,    99,   103,   104,
+     108,   109,   114,   118,   119,   122,   124,   128,   132,   136,
+     137,   141,   145,   146,   150,   151,   156,   161,   162,   163,
+     164,   165,   166,   167,   168,   169,   170,   171,   172,   173,
+     174,   175,   176,   180,   181,   182,   183,   184,   185,   186,
+     187,   188,   189,   190,   191,   192,   193,   194,   195,   198,
+     200,   201,   202,   206,   210,   213,   215,   216,   217,   220,
+     222,   226,   230,   236,   238,   239,   240,   243,   245,   249,
+     250,   253,   255
   };
 
   // Report on the debug stream that the rule yyrule is going to be reduced.
@@ -1098,7 +1098,7 @@ public class Dap4Parser extends Dap4Test
 /* Unqualified %code blocks.  */
 
 /* Line 876 of lalr1.java  */
-/* Line 12 of "F:\\svn\\yax\\java/src/yax/test/dap4.y"  */
+/* Line 13 of "F:\\svn\\yax\\java/src/yax/test/dap4.y"  */
 
 
     /**
@@ -1124,6 +1124,6 @@ public class Dap4Parser extends Dap4Test
 
 
 /* Line 880 of lalr1.java  */
-/* Line 260 of "F:\\svn\\yax\\java/src/yax/test/dap4.y"  */
+/* Line 258 of "F:\\svn\\yax\\java/src/yax/test/dap4.y"  */
 
 
