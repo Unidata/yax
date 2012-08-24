@@ -1,0 +1,28 @@
+%debug
+%error-verbose
+
+%define public
+%define package "yax.test"
+%define throws "Exception"
+%define lex_throws "Exception"
+%define extends "Dap4Test"
+
+%lex-param {Dap4Parser parser}
+
+%code {
+
+    /**
+     * Instantiates the Bison-generated parser.
+     *
+     */
+
+    public Dap4Parser(String document, int flags)
+	    throws Exception
+    {
+	this.dap4Lexer = new Dap4Lexer(document,flags);
+	this.yylexer = (Dap4Parser.Lexer)this.dap4Lexer;
+    }
+
+
+}
+

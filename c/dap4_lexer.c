@@ -11,7 +11,7 @@
 #include "dap4.h"
 #include "dap4.tab.h"
 
-#define TRACE
+#undef TRACE
 
 struct dap4_keyword {
 	char *name;
@@ -35,7 +35,6 @@ dap4lex(YYSTYPE *lvalp, DAP4parser* parser)
     yax_token* yaxtoken = &yaxtoken_instance;
     const struct dap4_keyword* keyword;
     int yytoken = UNKNOWN;
-    char* p;
 
     while(yytoken == UNKNOWN) {
 	err = yax_nexttoken(parser->yaxlexer,yaxtoken);
@@ -49,13 +48,6 @@ dap4lex(YYSTYPE *lvalp, DAP4parser* parser)
 	if(trace) free(trace);
 	}
 #endif
-
-	/* Remove any leading namespace except xmlns */
-	if((p=strchr(yaxtoken->name,':')) != NULL) {
-	    if(strncmp(yaxtoken->name,"xmlns:",7)!=0) {
-		yaxtoken->name = p+1;
-	    }
-	}
 
 	if(yaxtoken->name != NULL)
 	    keyword = dap4_keyword_lookup(yaxtoken->name,
@@ -77,12 +69,16 @@ dap4lex(YYSTYPE *lvalp, DAP4parser* parser)
 	case YAX_OPEN: 
 	    /* Since keyword is defined, this means the opentag is legal */
 	    yytoken = keyword->opentag;
+	    /* Check for the special case of <Value> */
+	    if(keyword->opentag == VALUE_)
+		parser->textok = 1;
 	    break;
 
 	case YAX_EMPTYCLOSE:
 	case YAX_CLOSE:
 	    /* Since keyword is defined, this means the closetag is legal */
 	    yytoken = keyword->closetag;
+	    parser->textok = 0;
 	    break;
 
 	case YAX_ATTRIBUTE:
@@ -91,14 +87,19 @@ dap4lex(YYSTYPE *lvalp, DAP4parser* parser)
 	    else
 	        /* Since keyword is defined,
                    this means the attribute is legal */
-	        yytoken = keyword->opentag;
+	        yytoken = keyword->attrtag;
+	    break;
+
+	case YAX_TEXT:
+	    if(parser->textok)
+		yytoken = TEXT;
+	    break;
+
+	case YAX_COMMENT:
 	    break;
 
 	case YAX_EOF:
 	    yytoken = 0;
-	    break;
-
-	case YAX_TEXT:
 	    break;
 
 	default: {

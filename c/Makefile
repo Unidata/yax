@@ -3,7 +3,8 @@
 
 # Paths of interest
 GRAMMARS=../etc
-TESTINPUTS=../testdata/testinput
+TESTINPUTS=./testdata/testinput
+TESTOUTPUTS=./testdata/testoutput
 
 #X=.exe
 
@@ -22,8 +23,11 @@ clean::
 	rm -f dap4test${X}
 	rm -f xml.y dap4.y
 
+testclean::
+	rm -f ../data/
+
 OPTS=-te
-tests:: lextest${X} domtest${X} dap4test${X}
+tests test:: lextest${X} domtest${X} dap4test${X}
 	./lextest.sh ${INIT}
 	./domtest.sh ${INIT}
 	./dap4test.sh ${INIT}

@@ -1,0 +1,135 @@
+<project name="YAX Build" default="all" basedir=".">
+
+
+<!--property name="INIT" value="1"/ use -DINIT=1 -->
+<!--property name="setup" value="true"/-->
+
+<property name="project.dir" value="${basedir}"/> <!--NOTE-->
+
+<property name="grammars.dir" value="${project.dir}/../etc"/>
+
+<property name="build.dir" value="${project.dir}/build"/>
+<property name="out.dir" value="${project.dir}/out"/>
+
+<property name="lib.dir" value="${project.dir}/libs"/>
+<property name="cli.jar" value="${lib.dir}/commons-cli-1.2.jar"/>
+
+<property name="data.dir" value="${project.dir}/data"/>
+<property name="testinput.dir" value="${data.dir}/testinput"/>
+<property name="baseline.dir" value="${data.dir}/baseline"/>
+<property name="testoutput.dir" value="${data.dir}/testoutput"/>
+
+<property name="src.dir" value="${project.dir}/src"/>
+<property name="lex.dir" value="${src.dir}/yax/lex"/>
+<property name="test.dir" value="${src.dir}/yax/test"/>
+
+<property name="yax.jar" value="${build.dir}/yax.jar"/>
+
+<property name="cp" value="${cli.jar}"/>
+<property name="test.cp" value="${build.dir};${cli.jar}"/>
+
+<target name="all" depends="build"/>
+
+<target name="init">
+  <mkdir dir="${build.dir}"/>
+  <mkdir dir="${testoutput.dir}"/>
+</target>
+
+<target name="build" depends="init">
+  <javac srcdir="${lex.dir}"
+ 	 destdir="${build.dir}"
+         classpath="${cp}"
+	 includeantruntime="false"
+  />
+</target>
+
+<target name="jar" depends="build">
+  <jar jarfile="${yax.jar}">
+    <fileset dir="${build.dir}/yax/lex"/>
+  </jar>
+</target>
+
+<target name="bison" depends="dap4.y">
+  <exec executable="bison">
+    <arg value="-Ljava"/>
+    <arg value="-v"/>
+    <arg value="-pDap4"/>
+    <arg value="${test.dir}/dap4.y"/>
+    <arg value="-o"/>
+    <arg value="${test.dir}/Dap4Parser.java"/>
+  </exec>
+</target>
+
+<target name="dap4.y">
+  <copy file="${grammars.dir}/dap4.y" tofile="${test.dir}/dap4.y.core"/>
+  <concat destfile="${test.dir}/dap4.y">
+    <filelist dir="${test.dir}" files="dap4.y.hdr,dap4.y.core"/>
+  </concat>
+  <replace file="${test.dir}/dap4.y" token="YYABORT" value="return YYABORT"/>
+  <replace file="${test.dir}/dap4.y" token="YYACCEPT" value="return YYACCEPT"/>
+  <replace file="${test.dir}/dap4.y" token="CHECK($$)" value=""/>
+  <replace file="${test.dir}/dap4.y" token="&lt;token&gt;" value="&lt;YaxToken&gt;"/>
+  <replace file="${test.dir}/dap4.y" token="&lt;list&gt;" value="&lt;List&gt;"/>
+  <replace file="${test.dir}/dap4.y" token="&lt;object&gt;" value="&lt;Object&gt;"/>
+</target>
+
+<target name="clean" depends="testclean">
+    <delete dir="${build.dir}"/>
+    <delete file="tmp"/>
+    <delete file="${test.dir}/dap4.y"/>
+    <delete file="${test.dir}/dap4.y.core"/>
+    <delete file="${test.dir}/dap4.output"/>
+</target>
+
+<!--
+Doing file comparisons
+and reporting the result
+is so ugly in ant that
+instead, this all pushed off
+to a shell script that is
+executed by this and build file.
+However we do do some things here
+like cleanup and running the actual tests
+-->
+
+<target name="testclean">
+  <delete dir="${testoutput.dir}"/>
+  <mkdir dir="${testoutput.dir}"/>
+</target>
+
+<target name="tests" depends="test"/>
+<target name="test" depends="compiletests,lextest,dap4test,compare"/>
+
+<target name="compiletests" depends="testclean,bison">
+  <javac srcdir="${test.dir}"
+ 	 destdir="${build.dir}"
+         classpath="${cp}"
+	 includeantruntime="false"
+  />
+</target>
+
+<target name="lextest">
+  <java classpath="${test.cp}" classname="yax.test.LexTest"
+        output="${testoutput.dir}/lextest.txt">
+    <arg value="-tle"/>
+    <arg value="${tests.dir}/books.xml"/>
+  </java>
+</target>
+
+<target name="dap4test">
+  <java classpath="${test.cp}" classname="yax.test.Dap4Test"
+        output="${testoutput.dir}/dap4.txt">
+    <arg value="-wtTle"/>
+    <arg value="${tests.dir}/dap4.xml"/>
+  </java>
+</target>
+
+<target name="compare">
+  <exec executable="bash" dir="${data.dir}">
+    <arg value="${test.dir}/compare.sh"/>
+    <arg value=""/>
+    <arg value="${INIT}"/>
+  </exec>
+</target>
+
+</project>

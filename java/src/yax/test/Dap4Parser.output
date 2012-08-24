@@ -1,0 +1,1302 @@
+Terminals unused in grammar
+
+   UNKNOWN_ELEMENT_
+   _UNKNOWN_ELEMENT
+   ERROR
+   UNKNOWN
+   UNEXPECTED
+
+
+Grammar
+
+    0 $accept: group $end
+
+    1 group: GROUP_ group_attr_list group_body _GROUP
+
+    2 group_attr_list: /* empty */
+    3                | group_attr_list ATTR_NAME
+    4                | group_attr_list ATTR_DAPVERSION
+    5                | group_attr_list ATTR_DDXVERSION
+    6                | group_attr_list ATTR_NS
+    7                | group_attr_list ATTR_BASE
+    8                | group_attr_list ATTR_XMLNS
+    9                | group_attr_list UNKNOWN_ATTR
+
+   10 group_body: /* empty */
+   11           | group_body enumdef
+   12           | group_body dimdef
+   13           | group_body variable
+   14           | group_body metadata
+   15           | group_body group
+
+   16 enumdef: ENUMERATION_ enum_attr_list enumconst_list _ENUMERATION
+
+   17 enum_attr_list: ATTR_NAME ATTR_BASETYPE
+   18               | ATTR_BASETYPE ATTR_NAME
+
+   19 enumconst_list: enumconst
+   20               | enumconst_list enumconst
+
+   21 enumconst: ENUMCONST_ enumconst_attr_list _ENUMCONST
+
+   22 enumconst_attr_list: ATTR_NAME ATTR_VALUE
+   23                    | ATTR_VALUE ATTR_NAME
+
+   24 namespace_list: /* empty */
+   25               | namespace_list namespace
+
+   26 namespace: NAMESPACE_ ATTR_HREF _NAMESPACE
+
+   27 dimdef: DIMENSION_ dimdef_attr_list metadatalist _DIMENSION
+
+   28 dimdef_attr_list: ATTR_NAME ATTR_SIZE
+   29                 | ATTR_SIZE ATTR_NAME
+
+   30 dimref: DIM_ dimref_attr_list _DIM
+
+   31 dimref_attr_list: ATTR_NAME
+   32                 | ATTR_SIZE
+
+   33 variable: simplevariable
+   34         | structurevariable
+
+   35 simplevariable: atomictype_ ATTR_NAME variabledef _atomictype
+
+   36 atomictype_: CHAR_
+   37            | BYTE_
+   38            | INT8_
+   39            | UINT8_
+   40            | INT16_
+   41            | UINT16_
+   42            | INT32_
+   43            | UINT32_
+   44            | INT64_
+   45            | UINT64_
+   46            | FLOAT32_
+   47            | FLOAT64_
+   48            | STRING_
+   49            | URL_
+   50            | OPAQUE_
+   51            | ENUM_ ATTR_ENUM
+
+   52 _atomictype: _CHAR
+   53            | _BYTE
+   54            | _INT8
+   55            | _UINT8
+   56            | _INT16
+   57            | _UINT16
+   58            | _INT32
+   59            | _UINT32
+   60            | _INT64
+   61            | _UINT64
+   62            | _FLOAT32
+   63            | _FLOAT64
+   64            | _STRING
+   65            | _URL
+   66            | _OPAQUE
+   67            | _ENUM
+
+   68 variabledef: /* empty */
+   69            | variabledef dimref
+   70            | variabledef mapref
+   71            | variabledef metadata
+
+   72 mapref: MAP_ ATTR_NAME _MAP
+
+   73 structurevariable: STRUCTURE_ ATTR_NAME structuredef _STRUCTURE
+
+   74 structuredef: /* empty */
+   75             | structuredef dimref
+   76             | structuredef variable
+   77             | structuredef metadata
+
+   78 metadatalist: /* empty */
+   79             | metadatalist metadata
+
+   80 metadata: attribute
+
+   81 attribute: ATTRIBUTE_ attribute_attr_list namespace_list value_list _ATTRIBUTE
+
+   82 attribute_attr_list: /* empty */
+   83                    | attribute_attr_list ATTR_NAME
+   84                    | attribute_attr_list ATTR_TYPE
+   85                    | attribute_attr_list ATTR_NAMESPACE
+
+   86 value_list: /* empty */
+   87           | value_list value
+
+   88 value: VALUE_ ATTR_VALUE _VALUE
+   89      | VALUE_ text_list _VALUE
+
+   90 text_list: /* empty */
+   91          | text_list TEXT
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256)
+GROUP_ (258) 1
+_GROUP (259) 1
+ENUMERATION_ (260) 16
+_ENUMERATION (261) 16
+ENUMCONST_ (262) 21
+_ENUMCONST (263) 21
+NAMESPACE_ (264) 26
+_NAMESPACE (265) 26
+DIMENSION_ (266) 27
+_DIMENSION (267) 27
+DIM_ (268) 30
+_DIM (269) 30
+ENUM_ (270) 51
+_ENUM (271) 67
+MAP_ (272) 72
+_MAP (273) 72
+STRUCTURE_ (274) 73
+_STRUCTURE (275) 73
+VALUE_ (276) 88 89
+_VALUE (277) 88 89
+ATTRIBUTE_ (278) 81
+_ATTRIBUTE (279) 81
+CHAR_ (280) 36
+_CHAR (281) 52
+BYTE_ (282) 37
+_BYTE (283) 53
+INT8_ (284) 38
+_INT8 (285) 54
+UINT8_ (286) 39
+_UINT8 (287) 55
+INT16_ (288) 40
+_INT16 (289) 56
+UINT16_ (290) 41
+_UINT16 (291) 57
+INT32_ (292) 42
+_INT32 (293) 58
+UINT32_ (294) 43
+_UINT32 (295) 59
+INT64_ (296) 44
+_INT64 (297) 60
+UINT64_ (298) 45
+_UINT64 (299) 61
+FLOAT32_ (300) 46
+_FLOAT32 (301) 62
+FLOAT64_ (302) 47
+_FLOAT64 (303) 63
+STRING_ (304) 48
+_STRING (305) 64
+URL_ (306) 49
+_URL (307) 65
+OPAQUE_ (308) 50
+_OPAQUE (309) 66
+ATTR_BASE (310) 7
+ATTR_BASETYPE (311) 17 18
+ATTR_DAPVERSION (312) 4
+ATTR_DDXVERSION (313) 5
+ATTR_ENUM (314) 51
+ATTR_HREF (315) 26
+ATTR_NAME (316) 3 17 18 22 23 28 29 31 35 72 73 83
+ATTR_NAMESPACE (317) 85
+ATTR_SIZE (318) 28 29 32
+ATTR_TYPE (319) 84
+ATTR_VALUE (320) 22 23 88
+ATTR_NS (321) 6
+ATTR_XMLNS (322) 8
+UNKNOWN_ATTR (323) 9
+UNKNOWN_ELEMENT_ (324)
+_UNKNOWN_ELEMENT (325)
+TEXT (326) 91
+ERROR (327)
+UNKNOWN (328)
+UNEXPECTED (329)
+
+
+Nonterminals, with rules where they appear
+
+$accept (75)
+    on left: 0
+group (76)
+    on left: 1, on right: 0 15
+group_attr_list (77)
+    on left: 2 3 4 5 6 7 8 9, on right: 1 3 4 5 6 7 8 9
+group_body (78)
+    on left: 10 11 12 13 14 15, on right: 1 11 12 13 14 15
+enumdef (79)
+    on left: 16, on right: 11
+enum_attr_list (80)
+    on left: 17 18, on right: 16
+enumconst_list (81)
+    on left: 19 20, on right: 16 20
+enumconst (82)
+    on left: 21, on right: 19 20
+enumconst_attr_list (83)
+    on left: 22 23, on right: 21
+namespace_list (84)
+    on left: 24 25, on right: 25 81
+namespace (85)
+    on left: 26, on right: 25
+dimdef (86)
+    on left: 27, on right: 12
+dimdef_attr_list (87)
+    on left: 28 29, on right: 27
+dimref (88)
+    on left: 30, on right: 69 75
+dimref_attr_list (89)
+    on left: 31 32, on right: 30
+variable (90)
+    on left: 33 34, on right: 13 76
+simplevariable (91)
+    on left: 35, on right: 33
+atomictype_ (92)
+    on left: 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51, on right:
+    35
+_atomictype (93)
+    on left: 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67, on right:
+    35
+variabledef (94)
+    on left: 68 69 70 71, on right: 35 69 70 71
+mapref (95)
+    on left: 72, on right: 70
+structurevariable (96)
+    on left: 73, on right: 34
+structuredef (97)
+    on left: 74 75 76 77, on right: 73 75 76 77
+metadatalist (98)
+    on left: 78 79, on right: 27 79
+metadata (99)
+    on left: 80, on right: 14 71 77 79
+attribute (100)
+    on left: 81, on right: 80
+attribute_attr_list (101)
+    on left: 82 83 84 85, on right: 81 83 84 85
+value_list (102)
+    on left: 86 87, on right: 81 87
+value (103)
+    on left: 88 89, on right: 87
+text_list (104)
+    on left: 90 91, on right: 89 91
+
+
+state 0
+
+    0 $accept: . group $end
+
+    GROUP_  shift, and go to state 1
+
+    group  go to state 2
+
+
+state 1
+
+    1 group: GROUP_ . group_attr_list group_body _GROUP
+
+    $default  reduce using rule 2 (group_attr_list)
+
+    group_attr_list  go to state 3
+
+
+state 2
+
+    0 $accept: group . $end
+
+    $end  shift, and go to state 4
+
+
+state 3
+
+    1 group: GROUP_ group_attr_list . group_body _GROUP
+    3 group_attr_list: group_attr_list . ATTR_NAME
+    4                | group_attr_list . ATTR_DAPVERSION
+    5                | group_attr_list . ATTR_DDXVERSION
+    6                | group_attr_list . ATTR_NS
+    7                | group_attr_list . ATTR_BASE
+    8                | group_attr_list . ATTR_XMLNS
+    9                | group_attr_list . UNKNOWN_ATTR
+
+    ATTR_BASE        shift, and go to state 5
+    ATTR_DAPVERSION  shift, and go to state 6
+    ATTR_DDXVERSION  shift, and go to state 7
+    ATTR_NAME        shift, and go to state 8
+    ATTR_NS          shift, and go to state 9
+    ATTR_XMLNS       shift, and go to state 10
+    UNKNOWN_ATTR     shift, and go to state 11
+
+    $default  reduce using rule 10 (group_body)
+
+    group_body  go to state 12
+
+
+state 4
+
+    0 $accept: group $end .
+
+    $default  accept
+
+
+state 5
+
+    7 group_attr_list: group_attr_list ATTR_BASE .
+
+    $default  reduce using rule 7 (group_attr_list)
+
+
+state 6
+
+    4 group_attr_list: group_attr_list ATTR_DAPVERSION .
+
+    $default  reduce using rule 4 (group_attr_list)
+
+
+state 7
+
+    5 group_attr_list: group_attr_list ATTR_DDXVERSION .
+
+    $default  reduce using rule 5 (group_attr_list)
+
+
+state 8
+
+    3 group_attr_list: group_attr_list ATTR_NAME .
+
+    $default  reduce using rule 3 (group_attr_list)
+
+
+state 9
+
+    6 group_attr_list: group_attr_list ATTR_NS .
+
+    $default  reduce using rule 6 (group_attr_list)
+
+
+state 10
+
+    8 group_attr_list: group_attr_list ATTR_XMLNS .
+
+    $default  reduce using rule 8 (group_attr_list)
+
+
+state 11
+
+    9 group_attr_list: group_attr_list UNKNOWN_ATTR .
+
+    $default  reduce using rule 9 (group_attr_list)
+
+
+state 12
+
+    1 group: GROUP_ group_attr_list group_body . _GROUP
+   11 group_body: group_body . enumdef
+   12           | group_body . dimdef
+   13           | group_body . variable
+   14           | group_body . metadata
+   15           | group_body . group
+
+    GROUP_        shift, and go to state 1
+    _GROUP        shift, and go to state 13
+    ENUMERATION_  shift, and go to state 14
+    DIMENSION_    shift, and go to state 15
+    ENUM_         shift, and go to state 16
+    STRUCTURE_    shift, and go to state 17
+    ATTRIBUTE_    shift, and go to state 18
+    CHAR_         shift, and go to state 19
+    BYTE_         shift, and go to state 20
+    INT8_         shift, and go to state 21
+    UINT8_        shift, and go to state 22
+    INT16_        shift, and go to state 23
+    UINT16_       shift, and go to state 24
+    INT32_        shift, and go to state 25
+    UINT32_       shift, and go to state 26
+    INT64_        shift, and go to state 27
+    UINT64_       shift, and go to state 28
+    FLOAT32_      shift, and go to state 29
+    FLOAT64_      shift, and go to state 30
+    STRING_       shift, and go to state 31
+    URL_          shift, and go to state 32
+    OPAQUE_       shift, and go to state 33
+
+    group              go to state 34
+    enumdef            go to state 35
+    dimdef             go to state 36
+    variable           go to state 37
+    simplevariable     go to state 38
+    atomictype_        go to state 39
+    structurevariable  go to state 40
+    metadata           go to state 41
+    attribute          go to state 42
+
+
+state 13
+
+    1 group: GROUP_ group_attr_list group_body _GROUP .
+
+    $default  reduce using rule 1 (group)
+
+
+state 14
+
+   16 enumdef: ENUMERATION_ . enum_attr_list enumconst_list _ENUMERATION
+
+    ATTR_BASETYPE  shift, and go to state 43
+    ATTR_NAME      shift, and go to state 44
+
+    enum_attr_list  go to state 45
+
+
+state 15
+
+   27 dimdef: DIMENSION_ . dimdef_attr_list metadatalist _DIMENSION
+
+    ATTR_NAME  shift, and go to state 46
+    ATTR_SIZE  shift, and go to state 47
+
+    dimdef_attr_list  go to state 48
+
+
+state 16
+
+   51 atomictype_: ENUM_ . ATTR_ENUM
+
+    ATTR_ENUM  shift, and go to state 49
+
+
+state 17
+
+   73 structurevariable: STRUCTURE_ . ATTR_NAME structuredef _STRUCTURE
+
+    ATTR_NAME  shift, and go to state 50
+
+
+state 18
+
+   81 attribute: ATTRIBUTE_ . attribute_attr_list namespace_list value_list _ATTRIBUTE
+
+    $default  reduce using rule 82 (attribute_attr_list)
+
+    attribute_attr_list  go to state 51
+
+
+state 19
+
+   36 atomictype_: CHAR_ .
+
+    $default  reduce using rule 36 (atomictype_)
+
+
+state 20
+
+   37 atomictype_: BYTE_ .
+
+    $default  reduce using rule 37 (atomictype_)
+
+
+state 21
+
+   38 atomictype_: INT8_ .
+
+    $default  reduce using rule 38 (atomictype_)
+
+
+state 22
+
+   39 atomictype_: UINT8_ .
+
+    $default  reduce using rule 39 (atomictype_)
+
+
+state 23
+
+   40 atomictype_: INT16_ .
+
+    $default  reduce using rule 40 (atomictype_)
+
+
+state 24
+
+   41 atomictype_: UINT16_ .
+
+    $default  reduce using rule 41 (atomictype_)
+
+
+state 25
+
+   42 atomictype_: INT32_ .
+
+    $default  reduce using rule 42 (atomictype_)
+
+
+state 26
+
+   43 atomictype_: UINT32_ .
+
+    $default  reduce using rule 43 (atomictype_)
+
+
+state 27
+
+   44 atomictype_: INT64_ .
+
+    $default  reduce using rule 44 (atomictype_)
+
+
+state 28
+
+   45 atomictype_: UINT64_ .
+
+    $default  reduce using rule 45 (atomictype_)
+
+
+state 29
+
+   46 atomictype_: FLOAT32_ .
+
+    $default  reduce using rule 46 (atomictype_)
+
+
+state 30
+
+   47 atomictype_: FLOAT64_ .
+
+    $default  reduce using rule 47 (atomictype_)
+
+
+state 31
+
+   48 atomictype_: STRING_ .
+
+    $default  reduce using rule 48 (atomictype_)
+
+
+state 32
+
+   49 atomictype_: URL_ .
+
+    $default  reduce using rule 49 (atomictype_)
+
+
+state 33
+
+   50 atomictype_: OPAQUE_ .
+
+    $default  reduce using rule 50 (atomictype_)
+
+
+state 34
+
+   15 group_body: group_body group .
+
+    $default  reduce using rule 15 (group_body)
+
+
+state 35
+
+   11 group_body: group_body enumdef .
+
+    $default  reduce using rule 11 (group_body)
+
+
+state 36
+
+   12 group_body: group_body dimdef .
+
+    $default  reduce using rule 12 (group_body)
+
+
+state 37
+
+   13 group_body: group_body variable .
+
+    $default  reduce using rule 13 (group_body)
+
+
+state 38
+
+   33 variable: simplevariable .
+
+    $default  reduce using rule 33 (variable)
+
+
+state 39
+
+   35 simplevariable: atomictype_ . ATTR_NAME variabledef _atomictype
+
+    ATTR_NAME  shift, and go to state 52
+
+
+state 40
+
+   34 variable: structurevariable .
+
+    $default  reduce using rule 34 (variable)
+
+
+state 41
+
+   14 group_body: group_body metadata .
+
+    $default  reduce using rule 14 (group_body)
+
+
+state 42
+
+   80 metadata: attribute .
+
+    $default  reduce using rule 80 (metadata)
+
+
+state 43
+
+   18 enum_attr_list: ATTR_BASETYPE . ATTR_NAME
+
+    ATTR_NAME  shift, and go to state 53
+
+
+state 44
+
+   17 enum_attr_list: ATTR_NAME . ATTR_BASETYPE
+
+    ATTR_BASETYPE  shift, and go to state 54
+
+
+state 45
+
+   16 enumdef: ENUMERATION_ enum_attr_list . enumconst_list _ENUMERATION
+
+    ENUMCONST_  shift, and go to state 55
+
+    enumconst_list  go to state 56
+    enumconst       go to state 57
+
+
+state 46
+
+   28 dimdef_attr_list: ATTR_NAME . ATTR_SIZE
+
+    ATTR_SIZE  shift, and go to state 58
+
+
+state 47
+
+   29 dimdef_attr_list: ATTR_SIZE . ATTR_NAME
+
+    ATTR_NAME  shift, and go to state 59
+
+
+state 48
+
+   27 dimdef: DIMENSION_ dimdef_attr_list . metadatalist _DIMENSION
+
+    $default  reduce using rule 78 (metadatalist)
+
+    metadatalist  go to state 60
+
+
+state 49
+
+   51 atomictype_: ENUM_ ATTR_ENUM .
+
+    $default  reduce using rule 51 (atomictype_)
+
+
+state 50
+
+   73 structurevariable: STRUCTURE_ ATTR_NAME . structuredef _STRUCTURE
+
+    $default  reduce using rule 74 (structuredef)
+
+    structuredef  go to state 61
+
+
+state 51
+
+   81 attribute: ATTRIBUTE_ attribute_attr_list . namespace_list value_list _ATTRIBUTE
+   83 attribute_attr_list: attribute_attr_list . ATTR_NAME
+   84                    | attribute_attr_list . ATTR_TYPE
+   85                    | attribute_attr_list . ATTR_NAMESPACE
+
+    ATTR_NAME       shift, and go to state 62
+    ATTR_NAMESPACE  shift, and go to state 63
+    ATTR_TYPE       shift, and go to state 64
+
+    $default  reduce using rule 24 (namespace_list)
+
+    namespace_list  go to state 65
+
+
+state 52
+
+   35 simplevariable: atomictype_ ATTR_NAME . variabledef _atomictype
+
+    $default  reduce using rule 68 (variabledef)
+
+    variabledef  go to state 66
+
+
+state 53
+
+   18 enum_attr_list: ATTR_BASETYPE ATTR_NAME .
+
+    $default  reduce using rule 18 (enum_attr_list)
+
+
+state 54
+
+   17 enum_attr_list: ATTR_NAME ATTR_BASETYPE .
+
+    $default  reduce using rule 17 (enum_attr_list)
+
+
+state 55
+
+   21 enumconst: ENUMCONST_ . enumconst_attr_list _ENUMCONST
+
+    ATTR_NAME   shift, and go to state 67
+    ATTR_VALUE  shift, and go to state 68
+
+    enumconst_attr_list  go to state 69
+
+
+state 56
+
+   16 enumdef: ENUMERATION_ enum_attr_list enumconst_list . _ENUMERATION
+   20 enumconst_list: enumconst_list . enumconst
+
+    _ENUMERATION  shift, and go to state 70
+    ENUMCONST_    shift, and go to state 55
+
+    enumconst  go to state 71
+
+
+state 57
+
+   19 enumconst_list: enumconst .
+
+    $default  reduce using rule 19 (enumconst_list)
+
+
+state 58
+
+   28 dimdef_attr_list: ATTR_NAME ATTR_SIZE .
+
+    $default  reduce using rule 28 (dimdef_attr_list)
+
+
+state 59
+
+   29 dimdef_attr_list: ATTR_SIZE ATTR_NAME .
+
+    $default  reduce using rule 29 (dimdef_attr_list)
+
+
+state 60
+
+   27 dimdef: DIMENSION_ dimdef_attr_list metadatalist . _DIMENSION
+   79 metadatalist: metadatalist . metadata
+
+    _DIMENSION  shift, and go to state 72
+    ATTRIBUTE_  shift, and go to state 18
+
+    metadata   go to state 73
+    attribute  go to state 42
+
+
+state 61
+
+   73 structurevariable: STRUCTURE_ ATTR_NAME structuredef . _STRUCTURE
+   75 structuredef: structuredef . dimref
+   76             | structuredef . variable
+   77             | structuredef . metadata
+
+    DIM_        shift, and go to state 74
+    ENUM_       shift, and go to state 16
+    STRUCTURE_  shift, and go to state 17
+    _STRUCTURE  shift, and go to state 75
+    ATTRIBUTE_  shift, and go to state 18
+    CHAR_       shift, and go to state 19
+    BYTE_       shift, and go to state 20
+    INT8_       shift, and go to state 21
+    UINT8_      shift, and go to state 22
+    INT16_      shift, and go to state 23
+    UINT16_     shift, and go to state 24
+    INT32_      shift, and go to state 25
+    UINT32_     shift, and go to state 26
+    INT64_      shift, and go to state 27
+    UINT64_     shift, and go to state 28
+    FLOAT32_    shift, and go to state 29
+    FLOAT64_    shift, and go to state 30
+    STRING_     shift, and go to state 31
+    URL_        shift, and go to state 32
+    OPAQUE_     shift, and go to state 33
+
+    dimref             go to state 76
+    variable           go to state 77
+    simplevariable     go to state 38
+    atomictype_        go to state 39
+    structurevariable  go to state 40
+    metadata           go to state 78
+    attribute          go to state 42
+
+
+state 62
+
+   83 attribute_attr_list: attribute_attr_list ATTR_NAME .
+
+    $default  reduce using rule 83 (attribute_attr_list)
+
+
+state 63
+
+   85 attribute_attr_list: attribute_attr_list ATTR_NAMESPACE .
+
+    $default  reduce using rule 85 (attribute_attr_list)
+
+
+state 64
+
+   84 attribute_attr_list: attribute_attr_list ATTR_TYPE .
+
+    $default  reduce using rule 84 (attribute_attr_list)
+
+
+state 65
+
+   25 namespace_list: namespace_list . namespace
+   81 attribute: ATTRIBUTE_ attribute_attr_list namespace_list . value_list _ATTRIBUTE
+
+    NAMESPACE_  shift, and go to state 79
+
+    $default  reduce using rule 86 (value_list)
+
+    namespace   go to state 80
+    value_list  go to state 81
+
+
+state 66
+
+   35 simplevariable: atomictype_ ATTR_NAME variabledef . _atomictype
+   69 variabledef: variabledef . dimref
+   70            | variabledef . mapref
+   71            | variabledef . metadata
+
+    DIM_        shift, and go to state 74
+    _ENUM       shift, and go to state 82
+    MAP_        shift, and go to state 83
+    ATTRIBUTE_  shift, and go to state 18
+    _CHAR       shift, and go to state 84
+    _BYTE       shift, and go to state 85
+    _INT8       shift, and go to state 86
+    _UINT8      shift, and go to state 87
+    _INT16      shift, and go to state 88
+    _UINT16     shift, and go to state 89
+    _INT32      shift, and go to state 90
+    _UINT32     shift, and go to state 91
+    _INT64      shift, and go to state 92
+    _UINT64     shift, and go to state 93
+    _FLOAT32    shift, and go to state 94
+    _FLOAT64    shift, and go to state 95
+    _STRING     shift, and go to state 96
+    _URL        shift, and go to state 97
+    _OPAQUE     shift, and go to state 98
+
+    dimref       go to state 99
+    _atomictype  go to state 100
+    mapref       go to state 101
+    metadata     go to state 102
+    attribute    go to state 42
+
+
+state 67
+
+   22 enumconst_attr_list: ATTR_NAME . ATTR_VALUE
+
+    ATTR_VALUE  shift, and go to state 103
+
+
+state 68
+
+   23 enumconst_attr_list: ATTR_VALUE . ATTR_NAME
+
+    ATTR_NAME  shift, and go to state 104
+
+
+state 69
+
+   21 enumconst: ENUMCONST_ enumconst_attr_list . _ENUMCONST
+
+    _ENUMCONST  shift, and go to state 105
+
+
+state 70
+
+   16 enumdef: ENUMERATION_ enum_attr_list enumconst_list _ENUMERATION .
+
+    $default  reduce using rule 16 (enumdef)
+
+
+state 71
+
+   20 enumconst_list: enumconst_list enumconst .
+
+    $default  reduce using rule 20 (enumconst_list)
+
+
+state 72
+
+   27 dimdef: DIMENSION_ dimdef_attr_list metadatalist _DIMENSION .
+
+    $default  reduce using rule 27 (dimdef)
+
+
+state 73
+
+   79 metadatalist: metadatalist metadata .
+
+    $default  reduce using rule 79 (metadatalist)
+
+
+state 74
+
+   30 dimref: DIM_ . dimref_attr_list _DIM
+
+    ATTR_NAME  shift, and go to state 106
+    ATTR_SIZE  shift, and go to state 107
+
+    dimref_attr_list  go to state 108
+
+
+state 75
+
+   73 structurevariable: STRUCTURE_ ATTR_NAME structuredef _STRUCTURE .
+
+    $default  reduce using rule 73 (structurevariable)
+
+
+state 76
+
+   75 structuredef: structuredef dimref .
+
+    $default  reduce using rule 75 (structuredef)
+
+
+state 77
+
+   76 structuredef: structuredef variable .
+
+    $default  reduce using rule 76 (structuredef)
+
+
+state 78
+
+   77 structuredef: structuredef metadata .
+
+    $default  reduce using rule 77 (structuredef)
+
+
+state 79
+
+   26 namespace: NAMESPACE_ . ATTR_HREF _NAMESPACE
+
+    ATTR_HREF  shift, and go to state 109
+
+
+state 80
+
+   25 namespace_list: namespace_list namespace .
+
+    $default  reduce using rule 25 (namespace_list)
+
+
+state 81
+
+   81 attribute: ATTRIBUTE_ attribute_attr_list namespace_list value_list . _ATTRIBUTE
+   87 value_list: value_list . value
+
+    VALUE_      shift, and go to state 110
+    _ATTRIBUTE  shift, and go to state 111
+
+    value  go to state 112
+
+
+state 82
+
+   67 _atomictype: _ENUM .
+
+    $default  reduce using rule 67 (_atomictype)
+
+
+state 83
+
+   72 mapref: MAP_ . ATTR_NAME _MAP
+
+    ATTR_NAME  shift, and go to state 113
+
+
+state 84
+
+   52 _atomictype: _CHAR .
+
+    $default  reduce using rule 52 (_atomictype)
+
+
+state 85
+
+   53 _atomictype: _BYTE .
+
+    $default  reduce using rule 53 (_atomictype)
+
+
+state 86
+
+   54 _atomictype: _INT8 .
+
+    $default  reduce using rule 54 (_atomictype)
+
+
+state 87
+
+   55 _atomictype: _UINT8 .
+
+    $default  reduce using rule 55 (_atomictype)
+
+
+state 88
+
+   56 _atomictype: _INT16 .
+
+    $default  reduce using rule 56 (_atomictype)
+
+
+state 89
+
+   57 _atomictype: _UINT16 .
+
+    $default  reduce using rule 57 (_atomictype)
+
+
+state 90
+
+   58 _atomictype: _INT32 .
+
+    $default  reduce using rule 58 (_atomictype)
+
+
+state 91
+
+   59 _atomictype: _UINT32 .
+
+    $default  reduce using rule 59 (_atomictype)
+
+
+state 92
+
+   60 _atomictype: _INT64 .
+
+    $default  reduce using rule 60 (_atomictype)
+
+
+state 93
+
+   61 _atomictype: _UINT64 .
+
+    $default  reduce using rule 61 (_atomictype)
+
+
+state 94
+
+   62 _atomictype: _FLOAT32 .
+
+    $default  reduce using rule 62 (_atomictype)
+
+
+state 95
+
+   63 _atomictype: _FLOAT64 .
+
+    $default  reduce using rule 63 (_atomictype)
+
+
+state 96
+
+   64 _atomictype: _STRING .
+
+    $default  reduce using rule 64 (_atomictype)
+
+
+state 97
+
+   65 _atomictype: _URL .
+
+    $default  reduce using rule 65 (_atomictype)
+
+
+state 98
+
+   66 _atomictype: _OPAQUE .
+
+    $default  reduce using rule 66 (_atomictype)
+
+
+state 99
+
+   69 variabledef: variabledef dimref .
+
+    $default  reduce using rule 69 (variabledef)
+
+
+state 100
+
+   35 simplevariable: atomictype_ ATTR_NAME variabledef _atomictype .
+
+    $default  reduce using rule 35 (simplevariable)
+
+
+state 101
+
+   70 variabledef: variabledef mapref .
+
+    $default  reduce using rule 70 (variabledef)
+
+
+state 102
+
+   71 variabledef: variabledef metadata .
+
+    $default  reduce using rule 71 (variabledef)
+
+
+state 103
+
+   22 enumconst_attr_list: ATTR_NAME ATTR_VALUE .
+
+    $default  reduce using rule 22 (enumconst_attr_list)
+
+
+state 104
+
+   23 enumconst_attr_list: ATTR_VALUE ATTR_NAME .
+
+    $default  reduce using rule 23 (enumconst_attr_list)
+
+
+state 105
+
+   21 enumconst: ENUMCONST_ enumconst_attr_list _ENUMCONST .
+
+    $default  reduce using rule 21 (enumconst)
+
+
+state 106
+
+   31 dimref_attr_list: ATTR_NAME .
+
+    $default  reduce using rule 31 (dimref_attr_list)
+
+
+state 107
+
+   32 dimref_attr_list: ATTR_SIZE .
+
+    $default  reduce using rule 32 (dimref_attr_list)
+
+
+state 108
+
+   30 dimref: DIM_ dimref_attr_list . _DIM
+
+    _DIM  shift, and go to state 114
+
+
+state 109
+
+   26 namespace: NAMESPACE_ ATTR_HREF . _NAMESPACE
+
+    _NAMESPACE  shift, and go to state 115
+
+
+state 110
+
+   88 value: VALUE_ . ATTR_VALUE _VALUE
+   89      | VALUE_ . text_list _VALUE
+
+    ATTR_VALUE  shift, and go to state 116
+
+    $default  reduce using rule 90 (text_list)
+
+    text_list  go to state 117
+
+
+state 111
+
+   81 attribute: ATTRIBUTE_ attribute_attr_list namespace_list value_list _ATTRIBUTE .
+
+    $default  reduce using rule 81 (attribute)
+
+
+state 112
+
+   87 value_list: value_list value .
+
+    $default  reduce using rule 87 (value_list)
+
+
+state 113
+
+   72 mapref: MAP_ ATTR_NAME . _MAP
+
+    _MAP  shift, and go to state 118
+
+
+state 114
+
+   30 dimref: DIM_ dimref_attr_list _DIM .
+
+    $default  reduce using rule 30 (dimref)
+
+
+state 115
+
+   26 namespace: NAMESPACE_ ATTR_HREF _NAMESPACE .
+
+    $default  reduce using rule 26 (namespace)
+
+
+state 116
+
+   88 value: VALUE_ ATTR_VALUE . _VALUE
+
+    _VALUE  shift, and go to state 119
+
+
+state 117
+
+   89 value: VALUE_ text_list . _VALUE
+   91 text_list: text_list . TEXT
+
+    _VALUE  shift, and go to state 120
+    TEXT    shift, and go to state 121
+
+
+state 118
+
+   72 mapref: MAP_ ATTR_NAME _MAP .
+
+    $default  reduce using rule 72 (mapref)
+
+
+state 119
+
+   88 value: VALUE_ ATTR_VALUE _VALUE .
+
+    $default  reduce using rule 88 (value)
+
+
+state 120
+
+   89 value: VALUE_ text_list _VALUE .
+
+    $default  reduce using rule 89 (value)
+
+
+state 121
+
+   91 text_list: text_list TEXT .
+
+    $default  reduce using rule 91 (text_list)

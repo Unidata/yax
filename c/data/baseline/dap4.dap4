@@ -1,0 +1,1204 @@
+Starting parse
+Entering state 0
+Reading a token: Next token is token GROUP_ ()
+Shifting token GROUP_ ()
+Entering state 1
+Reducing stack by rule 2 (line 62):
+-> $$ = nterm group_attr_list ()
+Stack now 0 1
+Entering state 3
+Reading a token: Next token is token ATTR_NAME ()
+Shifting token ATTR_NAME ()
+Entering state 8
+Reducing stack by rule 3 (line 64):
+   $1 = nterm group_attr_list ()
+   $2 = token ATTR_NAME ()
+-> $$ = nterm group_attr_list ()
+Stack now 0 1
+Entering state 3
+Reading a token: Next token is token ATTR_DAPVERSION ()
+Shifting token ATTR_DAPVERSION ()
+Entering state 6
+Reducing stack by rule 4 (line 65):
+   $1 = nterm group_attr_list ()
+   $2 = token ATTR_DAPVERSION ()
+-> $$ = nterm group_attr_list ()
+Stack now 0 1
+Entering state 3
+Reading a token: Next token is token ATTR_XMLNS ()
+Shifting token ATTR_XMLNS ()
+Entering state 10
+Reducing stack by rule 8 (line 69):
+   $1 = nterm group_attr_list ()
+   $2 = token ATTR_XMLNS ()
+-> $$ = nterm group_attr_list ()
+Stack now 0 1
+Entering state 3
+Reading a token: Next token is token ENUMERATION_ ()
+Reducing stack by rule 10 (line 73):
+-> $$ = nterm group_body ()
+Stack now 0 1 3
+Entering state 12
+Next token is token ENUMERATION_ ()
+Shifting token ENUMERATION_ ()
+Entering state 14
+Reading a token: Next token is token ATTR_NAME ()
+Shifting token ATTR_NAME ()
+Entering state 44
+Reading a token: Next token is token ATTR_BASETYPE ()
+Shifting token ATTR_BASETYPE ()
+Entering state 54
+Reducing stack by rule 17 (line 87):
+   $1 = token ATTR_NAME ()
+   $2 = token ATTR_BASETYPE ()
+-> $$ = nterm enum_attr_list ()
+Stack now 0 1 3 12 14
+Entering state 45
+Reading a token: Next token is token ENUMCONST_ ()
+Shifting token ENUMCONST_ ()
+Entering state 55
+Reading a token: Next token is token ATTR_NAME ()
+Shifting token ATTR_NAME ()
+Entering state 67
+Reading a token: Next token is token ATTR_VALUE ()
+Shifting token ATTR_VALUE ()
+Entering state 103
+Reducing stack by rule 22 (line 102):
+   $1 = token ATTR_NAME ()
+   $2 = token ATTR_VALUE ()
+-> $$ = nterm enumconst_attr_list ()
+Stack now 0 1 3 12 14 45 55
+Entering state 69
+Reading a token: Next token is token _ENUMCONST ()
+Shifting token _ENUMCONST ()
+Entering state 105
+Reducing stack by rule 21 (line 98):
+   $1 = token ENUMCONST_ ()
+   $2 = nterm enumconst_attr_list ()
+   $3 = token _ENUMCONST ()
+-> $$ = nterm enumconst ()
+Stack now 0 1 3 12 14 45
+Entering state 57
+Reducing stack by rule 19 (line 92):
+   $1 = nterm enumconst ()
+-> $$ = nterm enumconst_list ()
+Stack now 0 1 3 12 14 45
+Entering state 56
+Reading a token: Next token is token ENUMCONST_ ()
+Shifting token ENUMCONST_ ()
+Entering state 55
+Reading a token: Next token is token ATTR_NAME ()
+Shifting token ATTR_NAME ()
+Entering state 67
+Reading a token: Next token is token ATTR_VALUE ()
+Shifting token ATTR_VALUE ()
+Entering state 103
+Reducing stack by rule 22 (line 102):
+   $1 = token ATTR_NAME ()
+   $2 = token ATTR_VALUE ()
+-> $$ = nterm enumconst_attr_list ()
+Stack now 0 1 3 12 14 45 56 55
+Entering state 69
+Reading a token: Next token is token _ENUMCONST ()
+Shifting token _ENUMCONST ()
+Entering state 105
+Reducing stack by rule 21 (line 98):
+   $1 = token ENUMCONST_ ()
+   $2 = nterm enumconst_attr_list ()
+   $3 = token _ENUMCONST ()
+-> $$ = nterm enumconst ()
+Stack now 0 1 3 12 14 45 56
+Entering state 71
+Reducing stack by rule 20 (line 93):
+   $1 = nterm enumconst_list ()
+   $2 = nterm enumconst ()
+-> $$ = nterm enumconst_list ()
+Stack now 0 1 3 12 14 45
+Entering state 56
+Reading a token: Next token is token _ENUMERATION ()
+Shifting token _ENUMERATION ()
+Entering state 70
+Reducing stack by rule 16 (line 83):
+   $1 = token ENUMERATION_ ()
+   $2 = nterm enum_attr_list ()
+   $3 = nterm enumconst_list ()
+   $4 = token _ENUMERATION ()
+-> $$ = nterm enumdef ()
+Stack now 0 1 3 12
+Entering state 35
+Reducing stack by rule 11 (line 75):
+   $1 = nterm group_body ()
+   $2 = nterm enumdef ()
+-> $$ = nterm group_body ()
+Stack now 0 1 3
+Entering state 12
+Reading a token: Next token is token DIMENSION_ ()
+Shifting token DIMENSION_ ()
+Entering state 15
+Reading a token: Next token is token ATTR_NAME ()
+Shifting token ATTR_NAME ()
+Entering state 46
+Reading a token: Next token is token ATTR_SIZE ()
+Shifting token ATTR_SIZE ()
+Entering state 58
+Reducing stack by rule 28 (line 120):
+   $1 = token ATTR_NAME ()
+   $2 = token ATTR_SIZE ()
+-> $$ = nterm dimdef_attr_list ()
+Stack now 0 1 3 12 15
+Entering state 48
+Reducing stack by rule 78 (line 204):
+-> $$ = nterm metadatalist ()
+Stack now 0 1 3 12 15 48
+Entering state 60
+Reading a token: Next token is token _DIMENSION ()
+Shifting token _DIMENSION ()
+Entering state 72
+Reducing stack by rule 27 (line 116):
+   $1 = token DIMENSION_ ()
+   $2 = nterm dimdef_attr_list ()
+   $3 = nterm metadatalist ()
+   $4 = token _DIMENSION ()
+-> $$ = nterm dimdef ()
+Stack now 0 1 3 12
+Entering state 36
+Reducing stack by rule 12 (line 76):
+   $1 = nterm group_body ()
+   $2 = nterm dimdef ()
+-> $$ = nterm group_body ()
+Stack now 0 1 3
+Entering state 12
+Reading a token: Next token is token DIMENSION_ ()
+Shifting token DIMENSION_ ()
+Entering state 15
+Reading a token: Next token is token ATTR_NAME ()
+Shifting token ATTR_NAME ()
+Entering state 46
+Reading a token: Next token is token ATTR_SIZE ()
+Shifting token ATTR_SIZE ()
+Entering state 58
+Reducing stack by rule 28 (line 120):
+   $1 = token ATTR_NAME ()
+   $2 = token ATTR_SIZE ()
+-> $$ = nterm dimdef_attr_list ()
+Stack now 0 1 3 12 15
+Entering state 48
+Reducing stack by rule 78 (line 204):
+-> $$ = nterm metadatalist ()
+Stack now 0 1 3 12 15 48
+Entering state 60
+Reading a token: Next token is token _DIMENSION ()
+Shifting token _DIMENSION ()
+Entering state 72
+Reducing stack by rule 27 (line 116):
+   $1 = token DIMENSION_ ()
+   $2 = nterm dimdef_attr_list ()
+   $3 = nterm metadatalist ()
+   $4 = token _DIMENSION ()
+-> $$ = nterm dimdef ()
+Stack now 0 1 3 12
+Entering state 36
+Reducing stack by rule 12 (line 76):
+   $1 = nterm group_body ()
+   $2 = nterm dimdef ()
+-> $$ = nterm group_body ()
+Stack now 0 1 3
+Entering state 12
+Reading a token: Next token is token DIMENSION_ ()
+Shifting token DIMENSION_ ()
+Entering state 15
+Reading a token: Next token is token ATTR_NAME ()
+Shifting token ATTR_NAME ()
+Entering state 46
+Reading a token: Next token is token ATTR_SIZE ()
+Shifting token ATTR_SIZE ()
+Entering state 58
+Reducing stack by rule 28 (line 120):
+   $1 = token ATTR_NAME ()
+   $2 = token ATTR_SIZE ()
+-> $$ = nterm dimdef_attr_list ()
+Stack now 0 1 3 12 15
+Entering state 48
+Reducing stack by rule 78 (line 204):
+-> $$ = nterm metadatalist ()
+Stack now 0 1 3 12 15 48
+Entering state 60
+Reading a token: Next token is token _DIMENSION ()
+Shifting token _DIMENSION ()
+Entering state 72
+Reducing stack by rule 27 (line 116):
+   $1 = token DIMENSION_ ()
+   $2 = nterm dimdef_attr_list ()
+   $3 = nterm metadatalist ()
+   $4 = token _DIMENSION ()
+-> $$ = nterm dimdef ()
+Stack now 0 1 3 12
+Entering state 36
+Reducing stack by rule 12 (line 76):
+   $1 = nterm group_body ()
+   $2 = nterm dimdef ()
+-> $$ = nterm group_body ()
+Stack now 0 1 3
+Entering state 12
+Reading a token: Next token is token INT32_ ()
+Shifting token INT32_ ()
+Entering state 25
+Reducing stack by rule 42 (line 151):
+   $1 = token INT32_ ()
+-> $$ = nterm atomictype_ ()
+Stack now 0 1 3 12
+Entering state 39
+Reading a token: Next token is token ATTR_NAME ()
+Shifting token ATTR_NAME ()
+Entering state 52
+Reducing stack by rule 68 (line 182):
+-> $$ = nterm variabledef ()
+Stack now 0 1 3 12 39 52
+Entering state 66
+Reading a token: Next token is token _INT32 ()
+Shifting token _INT32 ()
+Entering state 90
+Reducing stack by rule 58 (line 170):
+   $1 = token _INT32 ()
+-> $$ = nterm _atomictype ()
+Stack now 0 1 3 12 39 52 66
+Entering state 100
+Reducing stack by rule 35 (line 140):
+   $1 = nterm atomictype_ ()
+   $2 = token ATTR_NAME ()
+   $3 = nterm variabledef ()
+   $4 = nterm _atomictype ()
+-> $$ = nterm simplevariable ()
+Stack now 0 1 3 12
+Entering state 38
+Reducing stack by rule 33 (line 134):
+   $1 = nterm simplevariable ()
+-> $$ = nterm variable ()
+Stack now 0 1 3 12
+Entering state 37
+Reducing stack by rule 13 (line 77):
+   $1 = nterm group_body ()
+   $2 = nterm variable ()
+-> $$ = nterm group_body ()
+Stack now 0 1 3
+Entering state 12
+Reading a token: Next token is token FLOAT32_ ()
+Shifting token FLOAT32_ ()
+Entering state 29
+Reducing stack by rule 46 (line 155):
+   $1 = token FLOAT32_ ()
+-> $$ = nterm atomictype_ ()
+Stack now 0 1 3 12
+Entering state 39
+Reading a token: Next token is token ATTR_NAME ()
+Shifting token ATTR_NAME ()
+Entering state 52
+Reducing stack by rule 68 (line 182):
+-> $$ = nterm variabledef ()
+Stack now 0 1 3 12 39 52
+Entering state 66
+Reading a token: Next token is token DIM_ ()
+Shifting token DIM_ ()
+Entering state 74
+Reading a token: Next token is token ATTR_NAME ()
+Shifting token ATTR_NAME ()
+Entering state 106
+Reducing stack by rule 31 (line 129):
+   $1 = token ATTR_NAME ()
+-> $$ = nterm dimref_attr_list ()
+Stack now 0 1 3 12 39 52 66 74
+Entering state 108
+Reading a token: Next token is token _DIM ()
+Shifting token _DIM ()
+Entering state 114
+Reducing stack by rule 30 (line 125):
+   $1 = token DIM_ ()
+   $2 = nterm dimref_attr_list ()
+   $3 = token _DIM ()
+-> $$ = nterm dimref ()
+Stack now 0 1 3 12 39 52 66
+Entering state 99
+Reducing stack by rule 69 (line 184):
+   $1 = nterm variabledef ()
+   $2 = nterm dimref ()
+-> $$ = nterm variabledef ()
+Stack now 0 1 3 12 39 52
+Entering state 66
+Reading a token: Next token is token _FLOAT32 ()
+Shifting token _FLOAT32 ()
+Entering state 94
+Reducing stack by rule 62 (line 174):
+   $1 = token _FLOAT32 ()
+-> $$ = nterm _atomictype ()
+Stack now 0 1 3 12 39 52 66
+Entering state 100
+Reducing stack by rule 35 (line 140):
+   $1 = nterm atomictype_ ()
+   $2 = token ATTR_NAME ()
+   $3 = nterm variabledef ()
+   $4 = nterm _atomictype ()
+-> $$ = nterm simplevariable ()
+Stack now 0 1 3 12
+Entering state 38
+Reducing stack by rule 33 (line 134):
+   $1 = nterm simplevariable ()
+-> $$ = nterm variable ()
+Stack now 0 1 3 12
+Entering state 37
+Reducing stack by rule 13 (line 77):
+   $1 = nterm group_body ()
+   $2 = nterm variable ()
+-> $$ = nterm group_body ()
+Stack now 0 1 3
+Entering state 12
+Reading a token: Next token is token FLOAT32_ ()
+Shifting token FLOAT32_ ()
+Entering state 29
+Reducing stack by rule 46 (line 155):
+   $1 = token FLOAT32_ ()
+-> $$ = nterm atomictype_ ()
+Stack now 0 1 3 12
+Entering state 39
+Reading a token: Next token is token ATTR_NAME ()
+Shifting token ATTR_NAME ()
+Entering state 52
+Reducing stack by rule 68 (line 182):
+-> $$ = nterm variabledef ()
+Stack now 0 1 3 12 39 52
+Entering state 66
+Reading a token: Next token is token DIM_ ()
+Shifting token DIM_ ()
+Entering state 74
+Reading a token: Next token is token ATTR_NAME ()
+Shifting token ATTR_NAME ()
+Entering state 106
+Reducing stack by rule 31 (line 129):
+   $1 = token ATTR_NAME ()
+-> $$ = nterm dimref_attr_list ()
+Stack now 0 1 3 12 39 52 66 74
+Entering state 108
+Reading a token: Next token is token _DIM ()
+Shifting token _DIM ()
+Entering state 114
+Reducing stack by rule 30 (line 125):
+   $1 = token DIM_ ()
+   $2 = nterm dimref_attr_list ()
+   $3 = token _DIM ()
+-> $$ = nterm dimref ()
+Stack now 0 1 3 12 39 52 66
+Entering state 99
+Reducing stack by rule 69 (line 184):
+   $1 = nterm variabledef ()
+   $2 = nterm dimref ()
+-> $$ = nterm variabledef ()
+Stack now 0 1 3 12 39 52
+Entering state 66
+Reading a token: Next token is token _FLOAT32 ()
+Shifting token _FLOAT32 ()
+Entering state 94
+Reducing stack by rule 62 (line 174):
+   $1 = token _FLOAT32 ()
+-> $$ = nterm _atomictype ()
+Stack now 0 1 3 12 39 52 66
+Entering state 100
+Reducing stack by rule 35 (line 140):
+   $1 = nterm atomictype_ ()
+   $2 = token ATTR_NAME ()
+   $3 = nterm variabledef ()
+   $4 = nterm _atomictype ()
+-> $$ = nterm simplevariable ()
+Stack now 0 1 3 12
+Entering state 38
+Reducing stack by rule 33 (line 134):
+   $1 = nterm simplevariable ()
+-> $$ = nterm variable ()
+Stack now 0 1 3 12
+Entering state 37
+Reducing stack by rule 13 (line 77):
+   $1 = nterm group_body ()
+   $2 = nterm variable ()
+-> $$ = nterm group_body ()
+Stack now 0 1 3
+Entering state 12
+Reading a token: Next token is token STRUCTURE_ ()
+Shifting token STRUCTURE_ ()
+Entering state 17
+Reading a token: Next token is token ATTR_NAME ()
+Shifting token ATTR_NAME ()
+Entering state 50
+Reducing stack by rule 74 (line 197):
+-> $$ = nterm structuredef ()
+Stack now 0 1 3 12 17 50
+Entering state 61
+Reading a token: Next token is token OPAQUE_ ()
+Shifting token OPAQUE_ ()
+Entering state 33
+Reducing stack by rule 50 (line 159):
+   $1 = token OPAQUE_ ()
+-> $$ = nterm atomictype_ ()
+Stack now 0 1 3 12 17 50 61
+Entering state 39
+Reading a token: Next token is token ATTR_NAME ()
+Shifting token ATTR_NAME ()
+Entering state 52
+Reducing stack by rule 68 (line 182):
+-> $$ = nterm variabledef ()
+Stack now 0 1 3 12 17 50 61 39 52
+Entering state 66
+Reading a token: Next token is token _OPAQUE ()
+Shifting token _OPAQUE ()
+Entering state 98
+Reducing stack by rule 66 (line 178):
+   $1 = token _OPAQUE ()
+-> $$ = nterm _atomictype ()
+Stack now 0 1 3 12 17 50 61 39 52 66
+Entering state 100
+Reducing stack by rule 35 (line 140):
+   $1 = nterm atomictype_ ()
+   $2 = token ATTR_NAME ()
+   $3 = nterm variabledef ()
+   $4 = nterm _atomictype ()
+-> $$ = nterm simplevariable ()
+Stack now 0 1 3 12 17 50 61
+Entering state 38
+Reducing stack by rule 33 (line 134):
+   $1 = nterm simplevariable ()
+-> $$ = nterm variable ()
+Stack now 0 1 3 12 17 50 61
+Entering state 77
+Reducing stack by rule 76 (line 200):
+   $1 = nterm structuredef ()
+   $2 = nterm variable ()
+-> $$ = nterm structuredef ()
+Stack now 0 1 3 12 17 50
+Entering state 61
+Reading a token: Next token is token ATTRIBUTE_ ()
+Shifting token ATTRIBUTE_ ()
+Entering state 18
+Reducing stack by rule 82 (line 220):
+-> $$ = nterm attribute_attr_list ()
+Stack now 0 1 3 12 17 50 61 18
+Entering state 51
+Reading a token: Next token is token ATTR_NAME ()
+Shifting token ATTR_NAME ()
+Entering state 62
+Reducing stack by rule 83 (line 222):
+   $1 = nterm attribute_attr_list ()
+   $2 = token ATTR_NAME ()
+-> $$ = nterm attribute_attr_list ()
+Stack now 0 1 3 12 17 50 61 18
+Entering state 51
+Reading a token: Next token is token ATTR_TYPE ()
+Shifting token ATTR_TYPE ()
+Entering state 64
+Reducing stack by rule 84 (line 223):
+   $1 = nterm attribute_attr_list ()
+   $2 = token ATTR_TYPE ()
+-> $$ = nterm attribute_attr_list ()
+Stack now 0 1 3 12 17 50 61 18
+Entering state 51
+Reading a token: Next token is token _ATTRIBUTE ()
+Reducing stack by rule 24 (line 106):
+-> $$ = nterm namespace_list ()
+Stack now 0 1 3 12 17 50 61 18 51
+Entering state 65
+Next token is token _ATTRIBUTE ()
+Reducing stack by rule 86 (line 227):
+-> $$ = nterm value_list ()
+Stack now 0 1 3 12 17 50 61 18 51 65
+Entering state 81
+Next token is token _ATTRIBUTE ()
+Shifting token _ATTRIBUTE ()
+Entering state 111
+Reducing stack by rule 81 (line 214):
+   $1 = token ATTRIBUTE_ ()
+   $2 = nterm attribute_attr_list ()
+   $3 = nterm namespace_list ()
+   $4 = nterm value_list ()
+   $5 = token _ATTRIBUTE ()
+-> $$ = nterm attribute ()
+Stack now 0 1 3 12 17 50 61
+Entering state 42
+Reducing stack by rule 80 (line 210):
+   $1 = nterm attribute ()
+-> $$ = nterm metadata ()
+Stack now 0 1 3 12 17 50 61
+Entering state 78
+Reducing stack by rule 77 (line 201):
+   $1 = nterm structuredef ()
+   $2 = nterm metadata ()
+-> $$ = nterm structuredef ()
+Stack now 0 1 3 12 17 50
+Entering state 61
+Reading a token: Next token is token ATTRIBUTE_ ()
+Shifting token ATTRIBUTE_ ()
+Entering state 18
+Reducing stack by rule 82 (line 220):
+-> $$ = nterm attribute_attr_list ()
+Stack now 0 1 3 12 17 50 61 18
+Entering state 51
+Reading a token: Next token is token ATTR_NAME ()
+Shifting token ATTR_NAME ()
+Entering state 62
+Reducing stack by rule 83 (line 222):
+   $1 = nterm attribute_attr_list ()
+   $2 = token ATTR_NAME ()
+-> $$ = nterm attribute_attr_list ()
+Stack now 0 1 3 12 17 50 61 18
+Entering state 51
+Reading a token: Next token is token ATTR_TYPE ()
+Shifting token ATTR_TYPE ()
+Entering state 64
+Reducing stack by rule 84 (line 223):
+   $1 = nterm attribute_attr_list ()
+   $2 = token ATTR_TYPE ()
+-> $$ = nterm attribute_attr_list ()
+Stack now 0 1 3 12 17 50 61 18
+Entering state 51
+Reading a token: Next token is token VALUE_ ()
+Reducing stack by rule 24 (line 106):
+-> $$ = nterm namespace_list ()
+Stack now 0 1 3 12 17 50 61 18 51
+Entering state 65
+Next token is token VALUE_ ()
+Reducing stack by rule 86 (line 227):
+-> $$ = nterm value_list ()
+Stack now 0 1 3 12 17 50 61 18 51 65
+Entering state 81
+Next token is token VALUE_ ()
+Shifting token VALUE_ ()
+Entering state 110
+Reading a token: Next token is token ATTR_VALUE ()
+Shifting token ATTR_VALUE ()
+Entering state 116
+Reading a token: Next token is token _VALUE ()
+Shifting token _VALUE ()
+Entering state 119
+Reducing stack by rule 88 (line 233):
+   $1 = token VALUE_ ()
+   $2 = token ATTR_VALUE ()
+   $3 = token _VALUE ()
+-> $$ = nterm value ()
+Stack now 0 1 3 12 17 50 61 18 51 65 81
+Entering state 112
+Reducing stack by rule 87 (line 229):
+   $1 = nterm value_list ()
+   $2 = nterm value ()
+-> $$ = nterm value_list ()
+Stack now 0 1 3 12 17 50 61 18 51 65
+Entering state 81
+Reading a token: Next token is token VALUE_ ()
+Shifting token VALUE_ ()
+Entering state 110
+Reading a token: Next token is token TEXT ()
+Reducing stack by rule 90 (line 237):
+-> $$ = nterm text_list ()
+Stack now 0 1 3 12 17 50 61 18 51 65 81 110
+Entering state 117
+Next token is token TEXT ()
+Shifting token TEXT ()
+Entering state 121
+Reducing stack by rule 91 (line 239):
+   $1 = nterm text_list ()
+   $2 = token TEXT ()
+-> $$ = nterm text_list ()
+Stack now 0 1 3 12 17 50 61 18 51 65 81 110
+Entering state 117
+Reading a token: Next token is token _VALUE ()
+Shifting token _VALUE ()
+Entering state 120
+Reducing stack by rule 89 (line 234):
+   $1 = token VALUE_ ()
+   $2 = nterm text_list ()
+   $3 = token _VALUE ()
+-> $$ = nterm value ()
+Stack now 0 1 3 12 17 50 61 18 51 65 81
+Entering state 112
+Reducing stack by rule 87 (line 229):
+   $1 = nterm value_list ()
+   $2 = nterm value ()
+-> $$ = nterm value_list ()
+Stack now 0 1 3 12 17 50 61 18 51 65
+Entering state 81
+Reading a token: Next token is token _ATTRIBUTE ()
+Shifting token _ATTRIBUTE ()
+Entering state 111
+Reducing stack by rule 81 (line 214):
+   $1 = token ATTRIBUTE_ ()
+   $2 = nterm attribute_attr_list ()
+   $3 = nterm namespace_list ()
+   $4 = nterm value_list ()
+   $5 = token _ATTRIBUTE ()
+-> $$ = nterm attribute ()
+Stack now 0 1 3 12 17 50 61
+Entering state 42
+Reducing stack by rule 80 (line 210):
+   $1 = nterm attribute ()
+-> $$ = nterm metadata ()
+Stack now 0 1 3 12 17 50 61
+Entering state 78
+Reducing stack by rule 77 (line 201):
+   $1 = nterm structuredef ()
+   $2 = nterm metadata ()
+-> $$ = nterm structuredef ()
+Stack now 0 1 3 12 17 50
+Entering state 61
+Reading a token: Next token is token DIM_ ()
+Shifting token DIM_ ()
+Entering state 74
+Reading a token: Next token is token ATTR_SIZE ()
+Shifting token ATTR_SIZE ()
+Entering state 107
+Reducing stack by rule 32 (line 130):
+   $1 = token ATTR_SIZE ()
+-> $$ = nterm dimref_attr_list ()
+Stack now 0 1 3 12 17 50 61 74
+Entering state 108
+Reading a token: Next token is token _DIM ()
+Shifting token _DIM ()
+Entering state 114
+Reducing stack by rule 30 (line 125):
+   $1 = token DIM_ ()
+   $2 = nterm dimref_attr_list ()
+   $3 = token _DIM ()
+-> $$ = nterm dimref ()
+Stack now 0 1 3 12 17 50 61
+Entering state 76
+Reducing stack by rule 75 (line 199):
+   $1 = nterm structuredef ()
+   $2 = nterm dimref ()
+-> $$ = nterm structuredef ()
+Stack now 0 1 3 12 17 50
+Entering state 61
+Reading a token: Next token is token DIM_ ()
+Shifting token DIM_ ()
+Entering state 74
+Reading a token: Next token is token ATTR_NAME ()
+Shifting token ATTR_NAME ()
+Entering state 106
+Reducing stack by rule 31 (line 129):
+   $1 = token ATTR_NAME ()
+-> $$ = nterm dimref_attr_list ()
+Stack now 0 1 3 12 17 50 61 74
+Entering state 108
+Reading a token: Next token is token _DIM ()
+Shifting token _DIM ()
+Entering state 114
+Reducing stack by rule 30 (line 125):
+   $1 = token DIM_ ()
+   $2 = nterm dimref_attr_list ()
+   $3 = token _DIM ()
+-> $$ = nterm dimref ()
+Stack now 0 1 3 12 17 50 61
+Entering state 76
+Reducing stack by rule 75 (line 199):
+   $1 = nterm structuredef ()
+   $2 = nterm dimref ()
+-> $$ = nterm structuredef ()
+Stack now 0 1 3 12 17 50
+Entering state 61
+Reading a token: Next token is token DIM_ ()
+Shifting token DIM_ ()
+Entering state 74
+Reading a token: Next token is token ATTR_SIZE ()
+Shifting token ATTR_SIZE ()
+Entering state 107
+Reducing stack by rule 32 (line 130):
+   $1 = token ATTR_SIZE ()
+-> $$ = nterm dimref_attr_list ()
+Stack now 0 1 3 12 17 50 61 74
+Entering state 108
+Reading a token: Next token is token _DIM ()
+Shifting token _DIM ()
+Entering state 114
+Reducing stack by rule 30 (line 125):
+   $1 = token DIM_ ()
+   $2 = nterm dimref_attr_list ()
+   $3 = token _DIM ()
+-> $$ = nterm dimref ()
+Stack now 0 1 3 12 17 50 61
+Entering state 76
+Reducing stack by rule 75 (line 199):
+   $1 = nterm structuredef ()
+   $2 = nterm dimref ()
+-> $$ = nterm structuredef ()
+Stack now 0 1 3 12 17 50
+Entering state 61
+Reading a token: Next token is token _STRUCTURE ()
+Shifting token _STRUCTURE ()
+Entering state 75
+Reducing stack by rule 73 (line 194):
+   $1 = token STRUCTURE_ ()
+   $2 = token ATTR_NAME ()
+   $3 = nterm structuredef ()
+   $4 = token _STRUCTURE ()
+-> $$ = nterm structurevariable ()
+Stack now 0 1 3 12
+Entering state 40
+Reducing stack by rule 34 (line 135):
+   $1 = nterm structurevariable ()
+-> $$ = nterm variable ()
+Stack now 0 1 3 12
+Entering state 37
+Reducing stack by rule 13 (line 77):
+   $1 = nterm group_body ()
+   $2 = nterm variable ()
+-> $$ = nterm group_body ()
+Stack now 0 1 3
+Entering state 12
+Reading a token: Next token is token GROUP_ ()
+Shifting token GROUP_ ()
+Entering state 1
+Reducing stack by rule 2 (line 62):
+-> $$ = nterm group_attr_list ()
+Stack now 0 1 3 12 1
+Entering state 3
+Reading a token: Next token is token ATTR_NAME ()
+Shifting token ATTR_NAME ()
+Entering state 8
+Reducing stack by rule 3 (line 64):
+   $1 = nterm group_attr_list ()
+   $2 = token ATTR_NAME ()
+-> $$ = nterm group_attr_list ()
+Stack now 0 1 3 12 1
+Entering state 3
+Reading a token: Next token is token DIMENSION_ ()
+Reducing stack by rule 10 (line 73):
+-> $$ = nterm group_body ()
+Stack now 0 1 3 12 1 3
+Entering state 12
+Next token is token DIMENSION_ ()
+Shifting token DIMENSION_ ()
+Entering state 15
+Reading a token: Next token is token ATTR_NAME ()
+Shifting token ATTR_NAME ()
+Entering state 46
+Reading a token: Next token is token ATTR_SIZE ()
+Shifting token ATTR_SIZE ()
+Entering state 58
+Reducing stack by rule 28 (line 120):
+   $1 = token ATTR_NAME ()
+   $2 = token ATTR_SIZE ()
+-> $$ = nterm dimdef_attr_list ()
+Stack now 0 1 3 12 1 3 12 15
+Entering state 48
+Reducing stack by rule 78 (line 204):
+-> $$ = nterm metadatalist ()
+Stack now 0 1 3 12 1 3 12 15 48
+Entering state 60
+Reading a token: Next token is token _DIMENSION ()
+Shifting token _DIMENSION ()
+Entering state 72
+Reducing stack by rule 27 (line 116):
+   $1 = token DIMENSION_ ()
+   $2 = nterm dimdef_attr_list ()
+   $3 = nterm metadatalist ()
+   $4 = token _DIMENSION ()
+-> $$ = nterm dimdef ()
+Stack now 0 1 3 12 1 3 12
+Entering state 36
+Reducing stack by rule 12 (line 76):
+   $1 = nterm group_body ()
+   $2 = nterm dimdef ()
+-> $$ = nterm group_body ()
+Stack now 0 1 3 12 1 3
+Entering state 12
+Reading a token: Next token is token DIMENSION_ ()
+Shifting token DIMENSION_ ()
+Entering state 15
+Reading a token: Next token is token ATTR_NAME ()
+Shifting token ATTR_NAME ()
+Entering state 46
+Reading a token: Next token is token ATTR_SIZE ()
+Shifting token ATTR_SIZE ()
+Entering state 58
+Reducing stack by rule 28 (line 120):
+   $1 = token ATTR_NAME ()
+   $2 = token ATTR_SIZE ()
+-> $$ = nterm dimdef_attr_list ()
+Stack now 0 1 3 12 1 3 12 15
+Entering state 48
+Reducing stack by rule 78 (line 204):
+-> $$ = nterm metadatalist ()
+Stack now 0 1 3 12 1 3 12 15 48
+Entering state 60
+Reading a token: Next token is token _DIMENSION ()
+Shifting token _DIMENSION ()
+Entering state 72
+Reducing stack by rule 27 (line 116):
+   $1 = token DIMENSION_ ()
+   $2 = nterm dimdef_attr_list ()
+   $3 = nterm metadatalist ()
+   $4 = token _DIMENSION ()
+-> $$ = nterm dimdef ()
+Stack now 0 1 3 12 1 3 12
+Entering state 36
+Reducing stack by rule 12 (line 76):
+   $1 = nterm group_body ()
+   $2 = nterm dimdef ()
+-> $$ = nterm group_body ()
+Stack now 0 1 3 12 1 3
+Entering state 12
+Reading a token: Next token is token FLOAT32_ ()
+Shifting token FLOAT32_ ()
+Entering state 29
+Reducing stack by rule 46 (line 155):
+   $1 = token FLOAT32_ ()
+-> $$ = nterm atomictype_ ()
+Stack now 0 1 3 12 1 3 12
+Entering state 39
+Reading a token: Next token is token ATTR_NAME ()
+Shifting token ATTR_NAME ()
+Entering state 52
+Reducing stack by rule 68 (line 182):
+-> $$ = nterm variabledef ()
+Stack now 0 1 3 12 1 3 12 39 52
+Entering state 66
+Reading a token: Next token is token DIM_ ()
+Shifting token DIM_ ()
+Entering state 74
+Reading a token: Next token is token ATTR_NAME ()
+Shifting token ATTR_NAME ()
+Entering state 106
+Reducing stack by rule 31 (line 129):
+   $1 = token ATTR_NAME ()
+-> $$ = nterm dimref_attr_list ()
+Stack now 0 1 3 12 1 3 12 39 52 66 74
+Entering state 108
+Reading a token: Next token is token _DIM ()
+Shifting token _DIM ()
+Entering state 114
+Reducing stack by rule 30 (line 125):
+   $1 = token DIM_ ()
+   $2 = nterm dimref_attr_list ()
+   $3 = token _DIM ()
+-> $$ = nterm dimref ()
+Stack now 0 1 3 12 1 3 12 39 52 66
+Entering state 99
+Reducing stack by rule 69 (line 184):
+   $1 = nterm variabledef ()
+   $2 = nterm dimref ()
+-> $$ = nterm variabledef ()
+Stack now 0 1 3 12 1 3 12 39 52
+Entering state 66
+Reading a token: Next token is token DIM_ ()
+Shifting token DIM_ ()
+Entering state 74
+Reading a token: Next token is token ATTR_NAME ()
+Shifting token ATTR_NAME ()
+Entering state 106
+Reducing stack by rule 31 (line 129):
+   $1 = token ATTR_NAME ()
+-> $$ = nterm dimref_attr_list ()
+Stack now 0 1 3 12 1 3 12 39 52 66 74
+Entering state 108
+Reading a token: Next token is token _DIM ()
+Shifting token _DIM ()
+Entering state 114
+Reducing stack by rule 30 (line 125):
+   $1 = token DIM_ ()
+   $2 = nterm dimref_attr_list ()
+   $3 = token _DIM ()
+-> $$ = nterm dimref ()
+Stack now 0 1 3 12 1 3 12 39 52 66
+Entering state 99
+Reducing stack by rule 69 (line 184):
+   $1 = nterm variabledef ()
+   $2 = nterm dimref ()
+-> $$ = nterm variabledef ()
+Stack now 0 1 3 12 1 3 12 39 52
+Entering state 66
+Reading a token: Next token is token MAP_ ()
+Shifting token MAP_ ()
+Entering state 83
+Reading a token: Next token is token ATTR_NAME ()
+Shifting token ATTR_NAME ()
+Entering state 113
+Reading a token: Next token is token _MAP ()
+Shifting token _MAP ()
+Entering state 118
+Reducing stack by rule 72 (line 190):
+   $1 = token MAP_ ()
+   $2 = token ATTR_NAME ()
+   $3 = token _MAP ()
+-> $$ = nterm mapref ()
+Stack now 0 1 3 12 1 3 12 39 52 66
+Entering state 101
+Reducing stack by rule 70 (line 185):
+   $1 = nterm variabledef ()
+   $2 = nterm mapref ()
+-> $$ = nterm variabledef ()
+Stack now 0 1 3 12 1 3 12 39 52
+Entering state 66
+Reading a token: Next token is token MAP_ ()
+Shifting token MAP_ ()
+Entering state 83
+Reading a token: Next token is token ATTR_NAME ()
+Shifting token ATTR_NAME ()
+Entering state 113
+Reading a token: Next token is token _MAP ()
+Shifting token _MAP ()
+Entering state 118
+Reducing stack by rule 72 (line 190):
+   $1 = token MAP_ ()
+   $2 = token ATTR_NAME ()
+   $3 = token _MAP ()
+-> $$ = nterm mapref ()
+Stack now 0 1 3 12 1 3 12 39 52 66
+Entering state 101
+Reducing stack by rule 70 (line 185):
+   $1 = nterm variabledef ()
+   $2 = nterm mapref ()
+-> $$ = nterm variabledef ()
+Stack now 0 1 3 12 1 3 12 39 52
+Entering state 66
+Reading a token: Next token is token _FLOAT32 ()
+Shifting token _FLOAT32 ()
+Entering state 94
+Reducing stack by rule 62 (line 174):
+   $1 = token _FLOAT32 ()
+-> $$ = nterm _atomictype ()
+Stack now 0 1 3 12 1 3 12 39 52 66
+Entering state 100
+Reducing stack by rule 35 (line 140):
+   $1 = nterm atomictype_ ()
+   $2 = token ATTR_NAME ()
+   $3 = nterm variabledef ()
+   $4 = nterm _atomictype ()
+-> $$ = nterm simplevariable ()
+Stack now 0 1 3 12 1 3 12
+Entering state 38
+Reducing stack by rule 33 (line 134):
+   $1 = nterm simplevariable ()
+-> $$ = nterm variable ()
+Stack now 0 1 3 12 1 3 12
+Entering state 37
+Reducing stack by rule 13 (line 77):
+   $1 = nterm group_body ()
+   $2 = nterm variable ()
+-> $$ = nterm group_body ()
+Stack now 0 1 3 12 1 3
+Entering state 12
+Reading a token: Next token is token ENUM_ ()
+Shifting token ENUM_ ()
+Entering state 16
+Reading a token: Next token is token ATTR_ENUM ()
+Shifting token ATTR_ENUM ()
+Entering state 49
+Reducing stack by rule 51 (line 160):
+   $1 = token ENUM_ ()
+   $2 = token ATTR_ENUM ()
+-> $$ = nterm atomictype_ ()
+Stack now 0 1 3 12 1 3 12
+Entering state 39
+Reading a token: Next token is token ATTR_NAME ()
+Shifting token ATTR_NAME ()
+Entering state 52
+Reducing stack by rule 68 (line 182):
+-> $$ = nterm variabledef ()
+Stack now 0 1 3 12 1 3 12 39 52
+Entering state 66
+Reading a token: Next token is token _ENUM ()
+Shifting token _ENUM ()
+Entering state 82
+Reducing stack by rule 67 (line 179):
+   $1 = token _ENUM ()
+-> $$ = nterm _atomictype ()
+Stack now 0 1 3 12 1 3 12 39 52 66
+Entering state 100
+Reducing stack by rule 35 (line 140):
+   $1 = nterm atomictype_ ()
+   $2 = token ATTR_NAME ()
+   $3 = nterm variabledef ()
+   $4 = nterm _atomictype ()
+-> $$ = nterm simplevariable ()
+Stack now 0 1 3 12 1 3 12
+Entering state 38
+Reducing stack by rule 33 (line 134):
+   $1 = nterm simplevariable ()
+-> $$ = nterm variable ()
+Stack now 0 1 3 12 1 3 12
+Entering state 37
+Reducing stack by rule 13 (line 77):
+   $1 = nterm group_body ()
+   $2 = nterm variable ()
+-> $$ = nterm group_body ()
+Stack now 0 1 3 12 1 3
+Entering state 12
+Reading a token: Next token is token _GROUP ()
+Shifting token _GROUP ()
+Entering state 13
+Reducing stack by rule 1 (line 59):
+   $1 = token GROUP_ ()
+   $2 = nterm group_attr_list ()
+   $3 = nterm group_body ()
+   $4 = token _GROUP ()
+-> $$ = nterm group ()
+Stack now 0 1 3 12
+Entering state 34
+Reducing stack by rule 15 (line 79):
+   $1 = nterm group_body ()
+   $2 = nterm group ()
+-> $$ = nterm group_body ()
+Stack now 0 1 3
+Entering state 12
+Reading a token: Next token is token GROUP_ ()
+Shifting token GROUP_ ()
+Entering state 1
+Reducing stack by rule 2 (line 62):
+-> $$ = nterm group_attr_list ()
+Stack now 0 1 3 12 1
+Entering state 3
+Reading a token: Next token is token ATTR_NAME ()
+Shifting token ATTR_NAME ()
+Entering state 8
+Reducing stack by rule 3 (line 64):
+   $1 = nterm group_attr_list ()
+   $2 = token ATTR_NAME ()
+-> $$ = nterm group_attr_list ()
+Stack now 0 1 3 12 1
+Entering state 3
+Reading a token: Next token is token DIMENSION_ ()
+Reducing stack by rule 10 (line 73):
+-> $$ = nterm group_body ()
+Stack now 0 1 3 12 1 3
+Entering state 12
+Next token is token DIMENSION_ ()
+Shifting token DIMENSION_ ()
+Entering state 15
+Reading a token: Next token is token ATTR_NAME ()
+Shifting token ATTR_NAME ()
+Entering state 46
+Reading a token: Next token is token ATTR_SIZE ()
+Shifting token ATTR_SIZE ()
+Entering state 58
+Reducing stack by rule 28 (line 120):
+   $1 = token ATTR_NAME ()
+   $2 = token ATTR_SIZE ()
+-> $$ = nterm dimdef_attr_list ()
+Stack now 0 1 3 12 1 3 12 15
+Entering state 48
+Reducing stack by rule 78 (line 204):
+-> $$ = nterm metadatalist ()
+Stack now 0 1 3 12 1 3 12 15 48
+Entering state 60
+Reading a token: Next token is token _DIMENSION ()
+Shifting token _DIMENSION ()
+Entering state 72
+Reducing stack by rule 27 (line 116):
+   $1 = token DIMENSION_ ()
+   $2 = nterm dimdef_attr_list ()
+   $3 = nterm metadatalist ()
+   $4 = token _DIMENSION ()
+-> $$ = nterm dimdef ()
+Stack now 0 1 3 12 1 3 12
+Entering state 36
+Reducing stack by rule 12 (line 76):
+   $1 = nterm group_body ()
+   $2 = nterm dimdef ()
+-> $$ = nterm group_body ()
+Stack now 0 1 3 12 1 3
+Entering state 12
+Reading a token: Next token is token _GROUP ()
+Shifting token _GROUP ()
+Entering state 13
+Reducing stack by rule 1 (line 59):
+   $1 = token GROUP_ ()
+   $2 = nterm group_attr_list ()
+   $3 = nterm group_body ()
+   $4 = token _GROUP ()
+-> $$ = nterm group ()
+Stack now 0 1 3 12
+Entering state 34
+Reducing stack by rule 15 (line 79):
+   $1 = nterm group_body ()
+   $2 = nterm group ()
+-> $$ = nterm group_body ()
+Stack now 0 1 3
+Entering state 12
+Reading a token: Next token is token INT32_ ()
+Shifting token INT32_ ()
+Entering state 25
+Reducing stack by rule 42 (line 151):
+   $1 = token INT32_ ()
+-> $$ = nterm atomictype_ ()
+Stack now 0 1 3 12
+Entering state 39
+Reading a token: Next token is token ATTR_NAME ()
+Shifting token ATTR_NAME ()
+Entering state 52
+Reducing stack by rule 68 (line 182):
+-> $$ = nterm variabledef ()
+Stack now 0 1 3 12 39 52
+Entering state 66
+Reading a token: Next token is token DIM_ ()
+Shifting token DIM_ ()
+Entering state 74
+Reading a token: Next token is token ATTR_NAME ()
+Shifting token ATTR_NAME ()
+Entering state 106
+Reducing stack by rule 31 (line 129):
+   $1 = token ATTR_NAME ()
+-> $$ = nterm dimref_attr_list ()
+Stack now 0 1 3 12 39 52 66 74
+Entering state 108
+Reading a token: Next token is token _DIM ()
+Shifting token _DIM ()
+Entering state 114
+Reducing stack by rule 30 (line 125):
+   $1 = token DIM_ ()
+   $2 = nterm dimref_attr_list ()
+   $3 = token _DIM ()
+-> $$ = nterm dimref ()
+Stack now 0 1 3 12 39 52 66
+Entering state 99
+Reducing stack by rule 69 (line 184):
+   $1 = nterm variabledef ()
+   $2 = nterm dimref ()
+-> $$ = nterm variabledef ()
+Stack now 0 1 3 12 39 52
+Entering state 66
+Reading a token: Next token is token _INT32 ()
+Shifting token _INT32 ()
+Entering state 90
+Reducing stack by rule 58 (line 170):
+   $1 = token _INT32 ()
+-> $$ = nterm _atomictype ()
+Stack now 0 1 3 12 39 52 66
+Entering state 100
+Reducing stack by rule 35 (line 140):
+   $1 = nterm atomictype_ ()
+   $2 = token ATTR_NAME ()
+   $3 = nterm variabledef ()
+   $4 = nterm _atomictype ()
+-> $$ = nterm simplevariable ()
+Stack now 0 1 3 12
+Entering state 38
+Reducing stack by rule 33 (line 134):
+   $1 = nterm simplevariable ()
+-> $$ = nterm variable ()
+Stack now 0 1 3 12
+Entering state 37
+Reducing stack by rule 13 (line 77):
+   $1 = nterm group_body ()
+   $2 = nterm variable ()
+-> $$ = nterm group_body ()
+Stack now 0 1 3
+Entering state 12
+Reading a token: Next token is token _GROUP ()
+Shifting token _GROUP ()
+Entering state 13
+Reducing stack by rule 1 (line 59):
+   $1 = token GROUP_ ()
+   $2 = nterm group_attr_list ()
+   $3 = nterm group_body ()
+   $4 = token _GROUP ()
+-> $$ = nterm group ()
+Stack now 0
+Entering state 2
+Reading a token: Now at end of input.
+Shifting token $end ()
+Entering state 4
+Stack now 0 2 4
+Cleanup: popping token $end ()
+Cleanup: popping nterm group ()

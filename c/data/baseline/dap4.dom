@@ -21,7 +21,8 @@
 [02] <Attribute name="a2" type="Float64">
 [03] text=||
 [03] <Value value="7.5"/>
-[03] <Value value="10"/>
+[03] <Value>
+[04] text=|10|
 [02] <Dim size="*"/>
 [02] <Dim name="/d1"/>
 [02] <Dim size="10"/>

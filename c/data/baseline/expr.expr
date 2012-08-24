@@ -1,0 +1,70 @@
+Starting parse
+Entering state 0
+Reading a token: Next token is token MINUS ()
+Shifting token MINUS ()
+Entering state 2
+Reading a token: Next token is token NUMBEROPEN ()
+Shifting token NUMBEROPEN ()
+Entering state 3
+Reading a token: Next token is token VALUEATTR ()
+Shifting token VALUEATTR ()
+Entering state 9
+Reading a token: Next token is token NUMBERCLOSE ()
+Shifting token NUMBERCLOSE ()
+Entering state 14
+Reducing stack by rule 5 (line 89):
+   $1 = token NUMBEROPEN ()
+   $2 = token VALUEATTR ()
+   $3 = token NUMBERCLOSE ()
+-> $$ = nterm number ()
+Stack now 0 2
+Entering state 6
+Reducing stack by rule 2 (line 81):
+   $1 = nterm number ()
+-> $$ = nterm term ()
+Stack now 0 2
+Entering state 8
+Reading a token: Next token is token NUMBEROPEN ()
+Shifting token NUMBEROPEN ()
+Entering state 3
+Reading a token: Next token is token TEXT ()
+Shifting token TEXT ()
+Entering state 10
+Reading a token: Next token is token NUMBERCLOSE ()
+Shifting token NUMBERCLOSE ()
+Entering state 15
+Reducing stack by rule 6 (line 90):
+   $1 = token NUMBEROPEN ()
+   $2 = token TEXT ()
+   $3 = token NUMBERCLOSE ()
+-> $$ = nterm number ()
+Stack now 0 2 8
+Entering state 6
+Reducing stack by rule 2 (line 81):
+   $1 = nterm number ()
+-> $$ = nterm term ()
+Stack now 0 2 8
+Entering state 13
+Reading a token: Next token is token MINUSCLOSE ()
+Shifting token MINUSCLOSE ()
+Entering state 17
+Reducing stack by rule 4 (line 84):
+   $1 = token MINUS ()
+   $2 = nterm term ()
+   $3 = nterm term ()
+   $4 = token MINUSCLOSE ()
+-> $$ = nterm term ()
+Stack now 0
+Entering state 5
+Reducing stack by rule 1 (line 78):
+   $1 = nterm term ()
+-> $$ = nterm expr ()
+Stack now 0
+Entering state 4
+Reading a token: Now at end of input.
+Shifting token $end ()
+Entering state 11
+Stack now 0 4 11
+Cleanup: popping token $end ()
+Cleanup: popping nterm expr ()
+expr=|-(5,19)|

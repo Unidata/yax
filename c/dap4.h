@@ -13,6 +13,7 @@
 
 typedef struct DAP4parser {
     yax_lexer* yaxlexer;    
+    int textok;
 } DAP4parser;
 
 /* From dap4.y via dap4.tab.c */

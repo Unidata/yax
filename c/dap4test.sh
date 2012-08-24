@@ -4,7 +4,7 @@
 
 if test "x$1" = "x1" ; then INIT=1; fi
 
-DATA="../data"
+DATA="./data"
 
 CASES="dap4"
 

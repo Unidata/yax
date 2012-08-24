@@ -1,0 +1,170 @@
+0: OPEN: element=|Group|
+7: ATTRIBUTE: name=|name| value=|example|
+29: ATTRIBUTE: name=|dapVersion| value=|4.0|
+53: ATTRIBUTE: name=|xmlns| value=|http://xml.opend...|
+96: TEXT text=|| translation=||
+98: OPEN: element=|Enumeration|
+111: ATTRIBUTE: name=|name| value=|e1|
+121: ATTRIBUTE: name=|basetype| value=|UInt8|
+138: TEXT text=|| translation=||
+141: OPEN: element=|EnumConst|
+152: ATTRIBUTE: name=|name| value=|econst1|
+167: ATTRIBUTE: name=|value| value=|1|
+176: EMPTYCLOSE: element=|EnumConst|
+178: TEXT text=|| translation=||
+181: OPEN: element=|EnumConst|
+192: ATTRIBUTE: name=|name| value=|econst2|
+207: ATTRIBUTE: name=|value| value=|2|
+216: EMPTYCLOSE: element=|EnumConst|
+218: TEXT text=|| translation=||
+221: CLOSE: element=|Enumeration|
+233: TEXT text=|| translation=||
+235: OPEN: element=|Dimension|
+246: ATTRIBUTE: name=|name| value=|d1|
+256: ATTRIBUTE: name=|size| value=|10|
+265: EMPTYCLOSE: element=|Dimension|
+267: TEXT text=|| translation=||
+268: OPEN: element=|Dimension|
+279: ATTRIBUTE: name=|name| value=|lat|
+290: ATTRIBUTE: name=|size| value=|20|
+299: EMPTYCLOSE: element=|Dimension|
+301: TEXT text=|| translation=||
+302: OPEN: element=|Dimension|
+313: ATTRIBUTE: name=|name| value=|lon|
+324: ATTRIBUTE: name=|size| value=|20|
+333: EMPTYCLOSE: element=|Dimension|
+335: TEXT text=|| translation=||
+337: OPEN: element=|Int32|
+344: ATTRIBUTE: name=|name| value=|x|
+352: EMPTYCLOSE: element=|Int32|
+354: TEXT text=|| translation=||
+355: OPEN: element=|Float32|
+364: ATTRIBUTE: name=|name| value=|lat|
+375: TEXT text=|| translation=||
+378: OPEN: element=|Dim|
+383: ATTRIBUTE: name=|name| value=|/lat|
+394: EMPTYCLOSE: element=|Dim|
+396: TEXT text=|| translation=||
+399: CLOSE: element=|Float32|
+407: TEXT text=|| translation=||
+408: OPEN: element=|Float32|
+417: ATTRIBUTE: name=|name| value=|lon|
+428: TEXT text=|| translation=||
+431: OPEN: element=|Dim|
+436: ATTRIBUTE: name=|name| value=|/lon|
+447: EMPTYCLOSE: element=|Dim|
+449: TEXT text=|| translation=||
+452: CLOSE: element=|Float32|
+460: TEXT text=|| translation=||
+461: OPEN: element=|Structure|
+472: ATTRIBUTE: name=|name| value=|y|
+481: TEXT text=|| translation=||
+484: OPEN: element=|Opaque|
+492: ATTRIBUTE: name=|name| value=|f1|
+501: EMPTYCLOSE: element=|Opaque|
+503: TEXT text=|| translation=||
+506: OPEN: element=|Attribute|
+517: ATTRIBUTE: name=|name| value=|a1|
+527: ATTRIBUTE: name=|type| value=|Int32|
+539: EMPTYCLOSE: element=|Attribute|
+541: TEXT text=|| translation=||
+544: OPEN: element=|Attribute|
+555: ATTRIBUTE: name=|name| value=|a2|
+565: ATTRIBUTE: name=|type| value=|Float64|
+580: TEXT text=|| translation=||
+585: OPEN: element=|Value|
+592: ATTRIBUTE: name=|value| value=|7.5|
+603: EMPTYCLOSE: element=|Value|
+605: TEXT text=|| translation=||
+614: OPEN: element=|Value|
+621: TEXT text=|10| translation=|10|
+625: CLOSE: element=|Value|
+631: TEXT text=|| translation=||
+640: CLOSE: element=|Attribute|
+650: TEXT text=|| translation=||
+655: COMMENT: text=| Structure dimen...|
+684: TEXT text=|| translation=||
+687: OPEN: element=|Dim|
+692: ATTRIBUTE: name=|size| value=|*|
+700: EMPTYCLOSE: element=|Dim|
+702: TEXT text=|| translation=||
+705: OPEN: element=|Dim|
+710: ATTRIBUTE: name=|name| value=|/d1|
+720: EMPTYCLOSE: element=|Dim|
+722: TEXT text=|| translation=||
+725: OPEN: element=|Dim|
+730: ATTRIBUTE: name=|size| value=|10|
+739: EMPTYCLOSE: element=|Dim|
+741: TEXT text=|| translation=||
+744: CLOSE: element=|Structure|
+754: TEXT text=|| translation=||
+756: OPEN: element=|Group|
+763: ATTRIBUTE: name=|name| value=|g1|
+773: TEXT text=|| translation=||
+776: OPEN: element=|Dimension|
+787: ATTRIBUTE: name=|name| value=|d1|
+797: ATTRIBUTE: name=|size| value=|10|
+806: EMPTYCLOSE: element=|Dimension|
+808: TEXT text=|| translation=||
+811: OPEN: element=|Dimension|
+822: ATTRIBUTE: name=|name| value=|d2|
+832: ATTRIBUTE: name=|size| value=|20|
+841: EMPTYCLOSE: element=|Dimension|
+843: TEXT text=|| translation=||
+847: OPEN: element=|Float32|
+856: ATTRIBUTE: name=|name| value=|tempb|
+869: TEXT text=|| translation=||
+874: OPEN: element=|Dim|
+879: ATTRIBUTE: name=|name| value=|/lat|
+890: EMPTYCLOSE: element=|Dim|
+892: TEXT text=|| translation=||
+897: OPEN: element=|Dim|
+902: ATTRIBUTE: name=|name| value=|/lon|
+913: EMPTYCLOSE: element=|Dim|
+915: TEXT text=|| translation=||
+920: OPEN: element=|Map|
+925: ATTRIBUTE: name=|name| value=|/lat|
+936: EMPTYCLOSE: element=|Map|
+938: TEXT text=|| translation=||
+943: OPEN: element=|Map|
+948: ATTRIBUTE: name=|name| value=|/lon|
+959: EMPTYCLOSE: element=|Map|
+961: TEXT text=|| translation=||
+966: CLOSE: element=|Float32|
+974: TEXT text=|| translation=||
+977: OPEN: element=|Enum|
+983: ATTRIBUTE: name=|enum| value=|/e1|
+994: ATTRIBUTE: name=|name| value=|evar|
+1005: EMPTYCLOSE: element=|Enum|
+1007: TEXT text=|| translation=||
+1011: CLOSE: element=|Group|
+1017: TEXT text=|| translation=||
+1019: COMMENT: text=| Test FQN name p...|
+1052: TEXT text=|| translation=||
+1053: OPEN: element=|Group|
+1060: ATTRIBUTE: name=|name| value=|g.@/\$|
+1074: TEXT text=|| translation=||
+1075: COMMENT: text=| Provide a dimen...|
+1145: TEXT text=|| translation=||
+1146: OPEN: element=|Dimension|
+1157: ATTRIBUTE: name=|name| value=|lon/2.\|
+1172: ATTRIBUTE: name=|size| value=|20|
+1181: EMPTYCLOSE: element=|Dimension|
+1183: TEXT text=|| translation=||
+1186: CLOSE: element=|Group|
+1192: TEXT text=|| translation=||
+1194: COMMENT: text=| reference the d...|
+1253: TEXT text=|| translation=||
+1254: OPEN: element=|Int32|
+1261: ATTRIBUTE: name=|name| value=|funny|
+1274: TEXT text=|| translation=||
+1277: OPEN: element=|Dim|
+1282: ATTRIBUTE: name=|name| value=|/g\.@\/\\$/lon\/...|
+1310: EMPTYCLOSE: element=|Dim|
+1312: TEXT text=|| translation=||
+1315: CLOSE: element=|Int32|
+1321: TEXT text=|| translation=||
+1325: CLOSE: element=|Group|
+1331: TEXT text=|| translation=||
+1332: EOF
+No error
