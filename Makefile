@@ -6,6 +6,7 @@ all::
 clean::
 	cd c; ${MAKE} clean	
 	cd java; ant clean
+	rm -fr ./git
 
 git::
 	${SH} ./git.sh

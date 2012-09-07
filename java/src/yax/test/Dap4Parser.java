@@ -35,7 +35,7 @@ package yax.test;
 
 
 /**
- * A Bison parser, automatically generated from <tt>F:\\svn\\yax\\java/src/yax/test/dap4.y</tt>.
+ * A Bison parser, automatically generated from <tt>F:\\git\\yax\\java/src/yax/test/dap4.y</tt>.
  *
  * @author LALR (1) parser skeleton written by Paolo Bonzini.
  */
@@ -418,7 +418,7 @@ public class Dap4Parser extends Dap4Test
 	
 
 /* Line 354 of lalr1.java  */
-/* Line 422 of "F:\\svn\\yax\\java/src/yax/test/Dap4Parser.java"  */
+/* Line 422 of "F:\\git\\yax\\java/src/yax/test/Dap4Parser.java"  */
 	default: break;
       }
 
@@ -1098,7 +1098,7 @@ public class Dap4Parser extends Dap4Test
 /* Unqualified %code blocks.  */
 
 /* Line 876 of lalr1.java  */
-/* Line 13 of "F:\\svn\\yax\\java/src/yax/test/dap4.y"  */
+/* Line 13 of "F:\\git\\yax\\java/src/yax/test/dap4.y"  */
 
 
     /**
@@ -1118,12 +1118,12 @@ public class Dap4Parser extends Dap4Test
 
 
 /* Line 876 of lalr1.java  */
-/* Line 1122 of "F:\\svn\\yax\\java/src/yax/test/Dap4Parser.java"  */
+/* Line 1122 of "F:\\git\\yax\\java/src/yax/test/Dap4Parser.java"  */
 
 }
 
 
 /* Line 880 of lalr1.java  */
-/* Line 258 of "F:\\svn\\yax\\java/src/yax/test/dap4.y"  */
+/* Line 258 of "F:\\git\\yax\\java/src/yax/test/dap4.y"  */
 
 

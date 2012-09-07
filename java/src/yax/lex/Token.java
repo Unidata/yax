@@ -3,10 +3,6 @@
 
 package yax.lex;
 
-/**
-Walk a DOM tree in prefix order, left-to-right, depth first.
-*/
-
 public class Token
 {
 

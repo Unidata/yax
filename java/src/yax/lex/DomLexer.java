@@ -238,7 +238,6 @@ public class DomLexer
     {
 	DocumentBuilderFactory docfactory = DocumentBuilderFactory.newInstance();
 	docfactory.setValidating(false);
-	docfactory.setValidating(false);
 	docfactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
 	
 	if(false) {
@@ -276,4 +275,4 @@ public class DomLexer
         return Type.UNDEFINED;
     }
 
-} // class DomLexer return Type.DomLexe;
+} // class DomLexer

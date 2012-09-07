@@ -56,26 +56,35 @@ c/data/testinput/dap4.xml
 c/data/testinput/expr.xml
 c/data/testinput/lextest.xml
 
-
 java/build.xml
 java/libs/commons-cli-1.2.jar
 
 java/src/yax/lex/DomLexer.java
+java/src/yax/lex/Lexeme.java
+java/src/yax/lex/LexException.java
+java/src/yax/lex/SaxLexer.java
+java/src/yax/lex/SaxToken.java
+java/src/yax/lex/SaxEvent.java
 java/src/yax/lex/Token.java
 java/src/yax/lex/Type.java
 java/src/yax/lex/Util.java
 
-java/src/yax/test/Dap4Lexer.java
-java/src/yax/test/Dap4Parser.java
-java/src/yax/test/Dap4Parser.output
-java/src/yax/test/Dap4Test.java
+java/src/yax/test/Dap4DomLexer.java
+java/src/yax/test/Dap4DomTest.java
 java/src/yax/test/KeywordMap.java
-java/src/yax/test/LexTest.java
+java/src/yax/test/DomTest.java
+java/src/yax/test/SaxTest.java
+java/src/yax/test/Dap4SaxLexer.java
+java/src/yax/test/Dap4SaxTest.java
+java/src/yax/test/dap4.y.dom
+java/src/yax/test/dap4.y.sax
 java/src/yax/test/compare.sh
-java/src/yax/test/dap4.y.hdr
 
-java/data/baseline/dap4.txt
-java/data/baseline/lextest.txt
+java/data/baseline/dap4dom.txt
+java/data/baseline/dap4sax.txt
+java/data/baseline/domtest.txt
+java/data/baseline/saxtest.txt
+
 java/data/testinput/books.xml
 java/data/testinput/comments.xml
 java/data/testinput/d.xml

@@ -23,7 +23,7 @@
   <Attribute name="a1" type="Int32"/>
   <Attribute name="a2" type="Float64">
     <Value value="7.5"/>    
-1    <Value>10</Value>    
+    <Value>10</Value>    
   </Attribute>  
   <!-- Structure dimensions -->
   <Dim size="*"/>

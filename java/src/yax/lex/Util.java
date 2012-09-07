@@ -59,12 +59,9 @@ public class Util
     */
     
     static public String
-    trace(Type type, Node node)
-    {
-	return trace(type,node,DEFAULTFLAGS);
-    }
+    trace(Type type, Node node) {return trace(type,node,DEFAULTFLAGS);}
 
-    static String
+    static public String
     trace(Type type, Node node, int flags)
     {
         StringBuilder result = new StringBuilder();
@@ -282,5 +279,62 @@ public class Util
         return "UNDEFINED";
     }
 
+
+    // Trace a SAX Token 
+    static public String
+    trace(SaxToken token) {return trace(token,DEFAULTFLAGS);}
+
+    static public String
+    trace(SaxToken token, int flags)
+    {
+        StringBuilder result = new StringBuilder();
+        String name = "UNDEFINED";
+	String value = "";
+	String text = "";
+        Type type = null;
+
+        name = token.name;
+	value = token.value;
+	text = token.text;
+        type = token.type;
+
+        result.append("["+type.name()+"] ");
+
+        switch(type) {
+        case OPEN:
+        case CLOSE:
+            result.append(": element=|");
+            result.append(name);
+            result.append("|");
+            break;
+        case COMMENT:
+        case TEXT:
+            result.append(" text=");
+            addtext(result,text,flags);
+            String trans = unescape(text);
+            result.append(" translation=");
+            addtext(result,trans,flags);
+            break;
+        case ATTRIBUTE:
+            result.append(": name=");
+            addtext(result,name,flags);
+            result.append(" value=");
+            addtext(result,value,flags);
+            break;
+        case CDATA:
+            result.append(": text=");
+            addtext(result,value,flags);
+            break;
+        case DOCTYPE:
+            break;
+        case EOF:
+            break;
+	case UNDEFINED:
+	    break;
+        default:
+            assert(false) : "Unexpected tokentype";
+        }
+        return result.toString();
+    }
 
 } // class Util

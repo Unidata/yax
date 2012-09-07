@@ -16,15 +16,17 @@ CC=gcc
 
 all: libyax.a
 
-clean::
+clean:: testclean
 	rm -f libyax.a *.o
+
+testclean::
 	rm -f lextest${X}
 	rm -f domtest${X}
 	rm -f dap4test${X}
 	rm -f xml.y dap4.y
-
-testclean::
-	rm -f ../data/
+	rm -f dap4.output dap4.tab.c dap4.tab.h
+	rm -fr xml.output xml.tab.c xml.tab.h
+	rm -fr data/testoutput
 
 OPTS=-te
 tests test:: lextest${X} domtest${X} dap4test${X}
