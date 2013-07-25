@@ -1,3 +1,5 @@
+EXPORT=f:/git/export
+
 .PHONEY: test tests check clean install all
 
 all::
@@ -17,5 +19,7 @@ git::
 	${SH} ./git.sh
 
 install::
-	cp -fr ./git/yax f:/git/export
+	rm -fr ${EXPORT}/yax/*
+	cp -fr ./git/yax ${EXPORT}
+
 
