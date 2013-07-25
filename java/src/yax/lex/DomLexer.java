@@ -94,6 +94,8 @@ public class DomLexer
     
     int flags = Util.FLAG_NONE; // in case we are tracing
 
+    Node currentnode = null;
+
     //////////////////////////////////////////////////
     // Constructors
     
@@ -130,12 +132,12 @@ public class DomLexer
 
     /**
      * Entry point for the scanner. Returns a Yax token type
-     * and (via an array) the current node.
+     * and sets the value of currentnode.
      * @return the yax.lex.Type corresponding to the next token
      *         and fill in token
      */
     public Type
-    nextToken(Node[] nodep)
+    nextToken()
         throws Exception
     {
 	Node node = null;
@@ -178,10 +180,15 @@ public class DomLexer
 		state = null; // cause path to be popped
 	    }
 	}
-	if(nodep != null) nodep[0] = node;
+	currentnode = node;
 	return tokentype;
     }
     
+    /**
+        Obtain the most current Node instance
+    */
+    public Node nextNode() {return this.currentnode;}
+
     //////////////////////////////////////////////////
     // Misc.
 

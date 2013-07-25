@@ -2,12 +2,9 @@ Makefile
 README.md
 COPYRIGHT
 Inventory
+git.sh
 
 docs/manual.html
-
-etc/dap4.y
-etc/rng.y
-etc/xml.y
 
 c/Makefile
 c/dap4.h
@@ -32,6 +29,10 @@ c/yax.c
 c/yax.h
 c/yxlist.c
 c/yxlist.h
+
+c/grammars/dap4.y
+c/grammars/rng.y
+c/grammars/xml.y
 
 c/data/baseline/books.dom
 c/data/baseline/books.yax
@@ -62,9 +63,9 @@ java/libs/commons-cli-1.2.jar
 java/src/yax/lex/DomLexer.java
 java/src/yax/lex/Lexeme.java
 java/src/yax/lex/LexException.java
-java/src/yax/lex/SaxLexer.java
-java/src/yax/lex/SaxToken.java
 java/src/yax/lex/SaxEvent.java
+java/src/yax/lex/SaxEventHandler.java
+java/src/yax/lex/SaxToken.java
 java/src/yax/lex/Token.java
 java/src/yax/lex/Type.java
 java/src/yax/lex/Util.java
@@ -74,11 +75,12 @@ java/src/yax/test/Dap4DomTest.java
 java/src/yax/test/KeywordMap.java
 java/src/yax/test/DomTest.java
 java/src/yax/test/SaxTest.java
-java/src/yax/test/Dap4SaxLexer.java
+java/src/yax/test/Dap4SaxEventHandler.java
 java/src/yax/test/Dap4SaxTest.java
-java/src/yax/test/dap4.y.dom
-java/src/yax/test/dap4.y.sax
+java/src/yax/test/dap4.dom.y
+java/src/yax/test/dap4.sax.y
 java/src/yax/test/compare.sh
+java/src/yax/test/lalr1.push
 
 java/data/baseline/dap4dom.txt
 java/data/baseline/dap4sax.txt

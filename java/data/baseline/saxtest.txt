@@ -1,0 +1,277 @@
+saxtest: [DOCTYPE]  event=STARTDOCUMENT
+saxtest: [OPEN] : element=|Group| event=STARTELEMENT
+saxtest: [ATTRIBUTE] : name=|name| value=|example| event=ATTRIBUTE
+saxtest: [ATTRIBUTE] : name=|dapVersion| value=|4.0| event=ATTRIBUTE
+saxtest: [TEXT]  text=|
+
+| translation=|
+
+| event=CHARACTERS
+saxtest: [OPEN] : element=|Enumeration| event=STARTELEMENT
+saxtest: [ATTRIBUTE] : name=|name| value=|e1| event=ATTRIBUTE
+saxtest: [ATTRIBUTE] : name=|basetype| value=|UInt8| event=ATTRIBUTE
+saxtest: [TEXT]  text=|
+  | translation=|
+  | event=CHARACTERS
+saxtest: [OPEN] : element=|EnumConst| event=STARTELEMENT
+saxtest: [ATTRIBUTE] : name=|name| value=|econst1| event=ATTRIBUTE
+saxtest: [ATTRIBUTE] : name=|value| value=|1| event=ATTRIBUTE
+saxtest: [CLOSE] : element=|EnumConst| event=ENDELEMENT
+saxtest: [TEXT]  text=|
+  | translation=|
+  | event=CHARACTERS
+saxtest: [OPEN] : element=|EnumConst| event=STARTELEMENT
+saxtest: [ATTRIBUTE] : name=|name| value=|econst2| event=ATTRIBUTE
+saxtest: [ATTRIBUTE] : name=|value| value=|2| event=ATTRIBUTE
+saxtest: [CLOSE] : element=|EnumConst| event=ENDELEMENT
+saxtest: [TEXT]  text=|
+| translation=|
+| event=CHARACTERS
+saxtest: [CLOSE] : element=|Enumeration| event=ENDELEMENT
+saxtest: [TEXT]  text=|
+
+| translation=|
+
+| event=CHARACTERS
+saxtest: [OPEN] : element=|Dimension| event=STARTELEMENT
+saxtest: [ATTRIBUTE] : name=|name| value=|d1| event=ATTRIBUTE
+saxtest: [ATTRIBUTE] : name=|size| value=|10| event=ATTRIBUTE
+saxtest: [CLOSE] : element=|Dimension| event=ENDELEMENT
+saxtest: [TEXT]  text=|
+| translation=|
+| event=CHARACTERS
+saxtest: [OPEN] : element=|Dimension| event=STARTELEMENT
+saxtest: [ATTRIBUTE] : name=|name| value=|lat| event=ATTRIBUTE
+saxtest: [ATTRIBUTE] : name=|size| value=|20| event=ATTRIBUTE
+saxtest: [CLOSE] : element=|Dimension| event=ENDELEMENT
+saxtest: [TEXT]  text=|
+| translation=|
+| event=CHARACTERS
+saxtest: [OPEN] : element=|Dimension| event=STARTELEMENT
+saxtest: [ATTRIBUTE] : name=|name| value=|lon| event=ATTRIBUTE
+saxtest: [ATTRIBUTE] : name=|size| value=|20| event=ATTRIBUTE
+saxtest: [CLOSE] : element=|Dimension| event=ENDELEMENT
+saxtest: [TEXT]  text=|
+
+| translation=|
+
+| event=CHARACTERS
+saxtest: [OPEN] : element=|Int32| event=STARTELEMENT
+saxtest: [ATTRIBUTE] : name=|name| value=|x| event=ATTRIBUTE
+saxtest: [CLOSE] : element=|Int32| event=ENDELEMENT
+saxtest: [TEXT]  text=|
+| translation=|
+| event=CHARACTERS
+saxtest: [OPEN] : element=|Float32| event=STARTELEMENT
+saxtest: [ATTRIBUTE] : name=|name| value=|lat| event=ATTRIBUTE
+saxtest: [TEXT]  text=|
+  | translation=|
+  | event=CHARACTERS
+saxtest: [OPEN] : element=|Dim| event=STARTELEMENT
+saxtest: [ATTRIBUTE] : name=|name| value=|/lat| event=ATTRIBUTE
+saxtest: [CLOSE] : element=|Dim| event=ENDELEMENT
+saxtest: [TEXT]  text=|
+| translation=|
+| event=CHARACTERS
+saxtest: [CLOSE] : element=|Float32| event=ENDELEMENT
+saxtest: [TEXT]  text=|
+| translation=|
+| event=CHARACTERS
+saxtest: [OPEN] : element=|Float32| event=STARTELEMENT
+saxtest: [ATTRIBUTE] : name=|name| value=|lon| event=ATTRIBUTE
+saxtest: [TEXT]  text=|
+  | translation=|
+  | event=CHARACTERS
+saxtest: [OPEN] : element=|Dim| event=STARTELEMENT
+saxtest: [ATTRIBUTE] : name=|name| value=|/lon| event=ATTRIBUTE
+saxtest: [CLOSE] : element=|Dim| event=ENDELEMENT
+saxtest: [TEXT]  text=|
+| translation=|
+| event=CHARACTERS
+saxtest: [CLOSE] : element=|Float32| event=ENDELEMENT
+saxtest: [TEXT]  text=|
+| translation=|
+| event=CHARACTERS
+saxtest: [OPEN] : element=|Structure| event=STARTELEMENT
+saxtest: [ATTRIBUTE] : name=|name| value=|y| event=ATTRIBUTE
+saxtest: [TEXT]  text=|
+  | translation=|
+  | event=CHARACTERS
+saxtest: [OPEN] : element=|Opaque| event=STARTELEMENT
+saxtest: [ATTRIBUTE] : name=|name| value=|f1| event=ATTRIBUTE
+saxtest: [CLOSE] : element=|Opaque| event=ENDELEMENT
+saxtest: [TEXT]  text=|
+  | translation=|
+  | event=CHARACTERS
+saxtest: [OPEN] : element=|Attribute| event=STARTELEMENT
+saxtest: [ATTRIBUTE] : name=|name| value=|a1| event=ATTRIBUTE
+saxtest: [ATTRIBUTE] : name=|type| value=|Int32| event=ATTRIBUTE
+saxtest: [CLOSE] : element=|Attribute| event=ENDELEMENT
+saxtest: [TEXT]  text=|
+  | translation=|
+  | event=CHARACTERS
+saxtest: [OPEN] : element=|Attribute| event=STARTELEMENT
+saxtest: [ATTRIBUTE] : name=|name| value=|a2| event=ATTRIBUTE
+saxtest: [ATTRIBUTE] : name=|type| value=|Float64| event=ATTRIBUTE
+saxtest: [TEXT]  text=|
+    | translation=|
+    | event=CHARACTERS
+saxtest: [OPEN] : element=|Value| event=STARTELEMENT
+saxtest: [ATTRIBUTE] : name=|value| value=|7.5| event=ATTRIBUTE
+saxtest: [CLOSE] : element=|Value| event=ENDELEMENT
+saxtest: [TEXT]  text=|    
+    | translation=|    
+    | event=CHARACTERS
+saxtest: [OPEN] : element=|Value| event=STARTELEMENT
+saxtest: [TEXT]  text=|10| translation=|10| event=CHARACTERS
+saxtest: [CLOSE] : element=|Value| event=ENDELEMENT
+saxtest: [TEXT]  text=|    
+  | translation=|    
+  | event=CHARACTERS
+saxtest: [CLOSE] : element=|Attribute| event=ENDELEMENT
+saxtest: [TEXT]  text=|  
+  | translation=|  
+  | event=CHARACTERS
+saxtest: [TEXT]  text=|
+  | translation=|
+  | event=CHARACTERS
+saxtest: [OPEN] : element=|Dim| event=STARTELEMENT
+saxtest: [ATTRIBUTE] : name=|size| value=|*| event=ATTRIBUTE
+saxtest: [CLOSE] : element=|Dim| event=ENDELEMENT
+saxtest: [TEXT]  text=|
+  | translation=|
+  | event=CHARACTERS
+saxtest: [OPEN] : element=|Dim| event=STARTELEMENT
+saxtest: [ATTRIBUTE] : name=|name| value=|/d1| event=ATTRIBUTE
+saxtest: [CLOSE] : element=|Dim| event=ENDELEMENT
+saxtest: [TEXT]  text=|
+  | translation=|
+  | event=CHARACTERS
+saxtest: [OPEN] : element=|Dim| event=STARTELEMENT
+saxtest: [ATTRIBUTE] : name=|size| value=|10| event=ATTRIBUTE
+saxtest: [CLOSE] : element=|Dim| event=ENDELEMENT
+saxtest: [TEXT]  text=|
+| translation=|
+| event=CHARACTERS
+saxtest: [CLOSE] : element=|Structure| event=ENDELEMENT
+saxtest: [TEXT]  text=|
+
+| translation=|
+
+| event=CHARACTERS
+saxtest: [OPEN] : element=|Group| event=STARTELEMENT
+saxtest: [ATTRIBUTE] : name=|name| value=|g1| event=ATTRIBUTE
+saxtest: [TEXT]  text=|
+  | translation=|
+  | event=CHARACTERS
+saxtest: [OPEN] : element=|Dimension| event=STARTELEMENT
+saxtest: [ATTRIBUTE] : name=|name| value=|d1| event=ATTRIBUTE
+saxtest: [ATTRIBUTE] : name=|size| value=|10| event=ATTRIBUTE
+saxtest: [CLOSE] : element=|Dimension| event=ENDELEMENT
+saxtest: [TEXT]  text=|
+  | translation=|
+  | event=CHARACTERS
+saxtest: [OPEN] : element=|Dimension| event=STARTELEMENT
+saxtest: [ATTRIBUTE] : name=|name| value=|d2| event=ATTRIBUTE
+saxtest: [ATTRIBUTE] : name=|size| value=|20| event=ATTRIBUTE
+saxtest: [CLOSE] : element=|Dimension| event=ENDELEMENT
+saxtest: [TEXT]  text=|
+
+  | translation=|
+
+  | event=CHARACTERS
+saxtest: [OPEN] : element=|Float32| event=STARTELEMENT
+saxtest: [ATTRIBUTE] : name=|name| value=|tempb| event=ATTRIBUTE
+saxtest: [TEXT]  text=|
+    | translation=|
+    | event=CHARACTERS
+saxtest: [OPEN] : element=|Dim| event=STARTELEMENT
+saxtest: [ATTRIBUTE] : name=|name| value=|/lat| event=ATTRIBUTE
+saxtest: [CLOSE] : element=|Dim| event=ENDELEMENT
+saxtest: [TEXT]  text=|
+    | translation=|
+    | event=CHARACTERS
+saxtest: [OPEN] : element=|Dim| event=STARTELEMENT
+saxtest: [ATTRIBUTE] : name=|name| value=|/lon| event=ATTRIBUTE
+saxtest: [CLOSE] : element=|Dim| event=ENDELEMENT
+saxtest: [TEXT]  text=|
+    | translation=|
+    | event=CHARACTERS
+saxtest: [OPEN] : element=|Map| event=STARTELEMENT
+saxtest: [ATTRIBUTE] : name=|name| value=|/lat| event=ATTRIBUTE
+saxtest: [CLOSE] : element=|Map| event=ENDELEMENT
+saxtest: [TEXT]  text=|
+    | translation=|
+    | event=CHARACTERS
+saxtest: [OPEN] : element=|Map| event=STARTELEMENT
+saxtest: [ATTRIBUTE] : name=|name| value=|/lon| event=ATTRIBUTE
+saxtest: [CLOSE] : element=|Map| event=ENDELEMENT
+saxtest: [TEXT]  text=|
+  | translation=|
+  | event=CHARACTERS
+saxtest: [CLOSE] : element=|Float32| event=ENDELEMENT
+saxtest: [TEXT]  text=|
+  | translation=|
+  | event=CHARACTERS
+saxtest: [OPEN] : element=|Enum| event=STARTELEMENT
+saxtest: [ATTRIBUTE] : name=|enum| value=|/e1| event=ATTRIBUTE
+saxtest: [ATTRIBUTE] : name=|name| value=|evar| event=ATTRIBUTE
+saxtest: [CLOSE] : element=|Enum| event=ENDELEMENT
+saxtest: [TEXT]  text=|
+
+| translation=|
+
+| event=CHARACTERS
+saxtest: [CLOSE] : element=|Group| event=ENDELEMENT
+saxtest: [TEXT]  text=|
+
+| translation=|
+
+| event=CHARACTERS
+saxtest: [TEXT]  text=|
+| translation=|
+| event=CHARACTERS
+saxtest: [OPEN] : element=|Group| event=STARTELEMENT
+saxtest: [ATTRIBUTE] : name=|name| value=|g.@/\$| event=ATTRIBUTE
+saxtest: [TEXT]  text=|
+| translation=|
+| event=CHARACTERS
+saxtest: [TEXT]  text=|
+| translation=|
+| event=CHARACTERS
+saxtest: [OPEN] : element=|Dimension| event=STARTELEMENT
+saxtest: [ATTRIBUTE] : name=|name| value=|lon/2.\| event=ATTRIBUTE
+saxtest: [ATTRIBUTE] : name=|size| value=|20| event=ATTRIBUTE
+saxtest: [CLOSE] : element=|Dimension| event=ENDELEMENT
+saxtest: [TEXT]  text=|
+| translation=|
+| event=CHARACTERS
+saxtest: [CLOSE] : element=|Group| event=ENDELEMENT
+saxtest: [TEXT]  text=|
+
+| translation=|
+
+| event=CHARACTERS
+saxtest: [TEXT]  text=|
+| translation=|
+| event=CHARACTERS
+saxtest: [OPEN] : element=|Int32| event=STARTELEMENT
+saxtest: [ATTRIBUTE] : name=|name| value=|funny| event=ATTRIBUTE
+saxtest: [TEXT]  text=|
+  | translation=|
+  | event=CHARACTERS
+saxtest: [OPEN] : element=|Dim| event=STARTELEMENT
+saxtest: [ATTRIBUTE] : name=|name| value=|/g\.@\/\\$/lon\/2\.\\| event=ATTRIBUTE
+saxtest: [CLOSE] : element=|Dim| event=ENDELEMENT
+saxtest: [TEXT]  text=|
+| translation=|
+| event=CHARACTERS
+saxtest: [CLOSE] : element=|Int32| event=ENDELEMENT
+saxtest: [TEXT]  text=|
+
+| translation=|
+
+| event=CHARACTERS
+saxtest: [CLOSE] : element=|Group| event=ENDELEMENT
+saxtest: [EOF]  event=ENDDOCUMENT
+No error

@@ -1,6 +1,12 @@
-%{
+%code requires {
 #include "xml_actions.h"
-%}
+}
+
+%code {
+#include "xml.tab.h"
+/* from xml_lexer.c  */
+extern int xmllex(YYSTYPE* lvalp, XMLparser*);
+}
 
 %union {
     YXlist* list;

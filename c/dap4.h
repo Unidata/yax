@@ -21,8 +21,13 @@ extern int dap4parse(DAP4parser*);
 extern int dap4lex(int* lvalp, DAP4parser*);
 extern int dap4error(DAP4parser*, const char*);
 
-/* From dap4_perfect.c */
-extern const struct dap4_keyword* dap4_keyword_lookup(const char* s, unsigned int len);
+#undef PERFECTHASH
 
+#ifdef PERFECTHASH
+/* Perfect Hash Function */
+extern const struct dap4_keyword* dap4_keyword_lookup(const char* s, unsigned int len);
+#else
+extern void keyword_init(const char**);
+#endif
 
 #endif /*DAP4_H*/

@@ -7,6 +7,7 @@
 #include <unistd.h>
 
 #include "xml_actions.h"
+#include "xml.tab.h"
 
 #undef TRACE
 

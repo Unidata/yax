@@ -35,7 +35,7 @@ Activity #3, DOM trees, is actually an example of #2
 where the grammar is a general grammar for xml (see the file
 xml.y) and the created data structure is a DOM tree.
 
-# Over View
+# Overview
 
 In order to use _yax_, it is necessary to manually produce
 the following pieces of code.

@@ -282,21 +282,23 @@ public class Util
 
     // Trace a SAX Token 
     static public String
-    trace(SaxToken token) {return trace(token,DEFAULTFLAGS);}
+    trace(SaxEvent token) {return trace(token,DEFAULTFLAGS);}
 
     static public String
-    trace(SaxToken token, int flags)
+    trace(SaxEvent token, int flags)
     {
         StringBuilder result = new StringBuilder();
         String name = "UNDEFINED";
 	String value = "";
 	String text = "";
         Type type = null;
+	SaxEventType event = null;
 
         name = token.name;
 	value = token.value;
 	text = token.text;
         type = token.type;
+        event = token.event;
 
         result.append("["+type.name()+"] ");
 
@@ -334,6 +336,7 @@ public class Util
         default:
             assert(false) : "Unexpected tokentype";
         }
+        result.append(" event="+event.name());
         return result.toString();
     }
 

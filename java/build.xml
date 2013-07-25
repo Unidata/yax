@@ -6,7 +6,7 @@
 
 <property name="project.dir" value="${basedir}"/> <!--NOTE-->
 
-<property name="grammars.dir" value="${project.dir}/../etc"/>
+<!--property name="grammars.dir" value="${project.dir}/../etc"/-->
 
 <property name="build.dir" value="${project.dir}/build"/>
 <property name="out.dir" value="${project.dir}/out"/>
@@ -28,45 +28,138 @@
 <property name="cp" value="${cli.jar}"/>
 <property name="test.cp" value="${build.dir};${cli.jar}"/>
 
-<target name="all" depends="build"/>
+<target name="all" depends="jar"/>
 
 <target name="init">
   <mkdir dir="${build.dir}"/>
 </target>
 
-<target name="build" depends="init">
+
+<target name="compile" depends="init">
   <javac srcdir="${lex.dir}"
  	 destdir="${build.dir}"
          classpath="${cp}"
 	 includeantruntime="false"
+         includes="*.java"
+         excludes="ckp*"
   />
 </target>
 
-<target name="jar" depends="build">
+<target name="jar" depends="compile">
   <jar jarfile="${yax.jar}">
     <fileset dir="${build.dir}/yax/lex"/>
   </jar>
 </target>
 
+<target name="clean" depends="parseclean,testclean">
+    <delete dir="${build.dir}"/>
+    <delete file="tmp"/>
+</target>
+
+<!-- ************************************************** -->
+<!--
+Doing file comparisons
+and reporting the result
+is so ugly in ant that
+instead, this all pushed off
+to a shell script that is
+executed by the build file.
+However we do do some things here
+like cleanup and running the actual tests
+-->
+
+<target name="testclean">
+  <delete dir="${testoutput.dir}"/>
+</target>
+
+<target name="test"
+        depends="testclean,init,generate,compile.tests,run.tests,compare">
+</target>
+<target name="tests" depends="test"/> <!--alias-->
+<target name="check" depends="test"/> <!--alias-->
+
+<target name="outputdir">
+  <mkdir dir="${testoutput.dir}"/>
+</target>
+
+<target name="compile.tests">
+  <javac srcdir="${test.dir}"
+ 	 destdir="${build.dir}"
+         classpath="${cp}"
+	 includeantruntime="false"
+         includes="*.java"
+         excludes="ckp*"
+  />
+</target>
+
+<target name="run.tests" depends="outputdir,domtests,saxtests"/>
+
+<target name="domtests">
+  <java classpath="${test.cp}" classname="yax.test.DomTest"
+        output="${testoutput.dir}/domtest.txt" fork="true">
+    <arg value="-le"/>
+    <arg value="${testinput.dir}/books.xml"/>
+  </java>
+  <java classpath="${test.cp}" classname="yax.test.Dap4DomTest"
+        output="${testoutput.dir}/dap4dom.txt" fork="true">
+    <arg value="-dwle"/>
+    <arg value="${testinput.dir}/dap4.xml"/>
+  </java>
+</target>
+
+<target name="saxtests">
+  <java classpath="${test.cp}" classname="yax.test.SaxTest"
+        output="${testoutput.dir}/saxtest.txt" fork="true">
+    <arg value="-le"/>
+    <arg value="${testinput.dir}/dap4.xml"/>
+  </java>
+  <java classpath="${test.cp}" classname="yax.test.Dap4SaxTest"
+        output="${testoutput.dir}/dap4sax.txt" fork="true">
+    <arg value="-dwle"/>
+    <arg value="${testinput.dir}/dap4.xml"/>
+  </java>
+</target>
+
+<target name="compare">
+  <exec executable="bash" dir="${data.dir}">
+    <arg value="${test.dir}/compare.sh"/>
+    <arg value="${INIT}"/>
+  </exec>
+</target>
+
+<!-- ************************************************** -->
+
+<!-- Generate the various parsers from the .y files -->
+
+<target name="generate"
+        depends="Dap4DomParser.java,Dap4SaxParser.java">
+</target>
+
+<target name="Dap4DomParser.java">
+    <antcall target="bison">
+      <param name="SRC" value="dap4.dom.y"/>
+      <param name="DST" value="Dap4DomParser.java"/>
+    </antcall>
+</target>
+
+<target name="Dap4SaxParser.java">
+    <antcall target="bison">
+      <param name="SRC" value="dap4.sax.y"/>
+      <param name="DST" value="Dap4SaxParser.java"/>
+    </antcall>
+</target>
+
+<!-- antcall parameters: SRC, DST -->
+<!-- Requires bison version 3.0 or later -->
 <target name="bison">
   <exec executable="bison">
     <arg value="-Ljava"/>
     <arg value="-v"/>
     <arg value="-pDap4"/>
-    <arg value="${test.dir}/dap4.y"/>
+    <arg value="${test.dir}/${SRC}"/>
     <arg value="-o"/>
-    <arg value="${test.dir}/Dap4Parser.java"/>
+    <arg value="${test.dir}/${DST}"/>
   </exec>
-</target>
-
-<target name="dap4.y.dom">
-  <copy file="${test.dir}/dap4.y.dom" tofile="${test.dir}/dap4.y"/>
-  <antcall target="dap4.y.fixup"/>
-</target>
-
-<target name="dap4.y.sax">
-  <copy file="${test.dir}/dap4.y.sax" tofile="${test.dir}/dap4.y"/>
-  <antcall target="dap4.y.fixup"/>
 </target>
 
 <target name="dap4.y.fixup">
@@ -78,79 +171,9 @@
   <replace file="${test.dir}/dap4.y" token="&lt;object&gt;" value="&lt;Object&gt;"/>
 </target>
 
-<target name="clean" depends="testclean">
-    <delete dir="${build.dir}"/>
-    <delete file="tmp"/>
-</target>
-
-<!--
-Doing file comparisons
-and reporting the result
-is so ugly in ant that
-instead, this all pushed off
-to a shell script that is
-executed by this and build file.
-However we do do some things here
-like cleanup and running the actual tests
--->
-
-<target name="testclean">
-  <delete dir="${testoutput.dir}"/>
-  <!-- following are generated by or for Bison -->
-  <delete file="${test.dir}/dap4.y"/>
-  <delete file="${test.dir}/dap4.y.core"/>
-  <delete file="${test.dir}/dap4.output"/>
-  <delete file="${test.dir}/Dap4Parser.java"/>
-  <delete file="${test.dir}/Dap4Parser.output"/>
-</target>
-
-<target name="tests" depends="test"/>
-<target name="test" depends="testclean,domtests,saxtests,compare"/>
-
-<target name="testoutput">
-  <mkdir dir="${testoutput.dir}"/>
-</target>
-
-<target name="compiletests" depends="build">
-  <javac srcdir="${test.dir}"
- 	 destdir="${build.dir}"
-         classpath="${cp}"
-	 includeantruntime="false"
-  />
-</target>
-
-<target name="domtests" depends="dap4.y.dom,bison,compiletests,testoutput">
-  <java classpath="${test.cp}" classname="yax.test.DomTest"
-        output="${testoutput.dir}/domtest.txt">
-    <arg value="-tle"/>
-    <arg value="${testinput.dir}/books.xml"/>
-  </java>
-  <java classpath="${test.cp}" classname="yax.test.Dap4DomTest"
-        output="${testoutput.dir}/dap4dom.txt">
-    <arg value="-wtTle"/>
-    <arg value="${testinput.dir}/dap4.xml"/>
-  </java>
-</target>
-
-<target name="saxtests" depends="dap4.y.sax,bison,compiletests,testoutput">
-  <java classpath="${test.cp}" classname="yax.test.SaxTest"
-        output="${testoutput.dir}/saxtest.txt">
-    <arg value="-tle"/>
-    <arg value="${testinput.dir}/dap4.xml"/>
-  </java>
-  <java classpath="${test.cp}" classname="yax.test.Dap4SaxTest"
-        output="${testoutput.dir}/dap4sax.txt">
-    <arg value="-wtTle"/>
-    <arg value="${testinput.dir}/dap4.xml"/>
-  </java>
-</target>
-
-<target name="compare">
-  <exec executable="bash" dir="${data.dir}">
-    <arg value="${test.dir}/compare.sh"/>
-    <arg value=""/>
-    <arg value="${INIT}"/>
-  </exec>
+<target name="parseclean">
+  <delete file="${test.dir}/Dap4DomParser.java"/>
+  <delete file="${test.dir}/Dap4SaxParser.java"/>
 </target>
 
 </project>

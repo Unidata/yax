@@ -13,11 +13,16 @@ mkdir -p ${DATA}/testoutput
 
 for f in $CASES ; do
   echo "*** Testing dap4_test: ${f}.dap4"
-  ./dap4test -dte ${DATA}/testinput/${f}.xml >& ${DATA}/testoutput/${f}.dap4
+  rm -f ./tmp
+  echo "test=./dap4test -dte ${DATA}/testinput/${f}.xml"
+  ./dap4test -dte ${DATA}/testinput/${f}.xml >& ./tmp
+  # Remove the (line xxx) to make this insensitive to minor changes to .y file
+  sed -e 's/(line [0-9][0-9]*)//' <./tmp >${DATA}/testoutput/${f}.dap4
   if test "x${INIT}" = x1 ; then
     cp ${DATA}/testoutput/${f}.dap4 ${DATA}/baseline/${f}.dap4 
+  else
+    if ! diff -w ${DATA}/baseline/${f}.dap4 ${DATA}/testoutput/${f}.dap4; then echo "*** FAIL: ${f}.dap4";  fi
   fi
-  if ! diff -w ${DATA}/baseline/${f}.dap4 ${DATA}/testoutput/${f}.dap4 ; then echo "*** FAIL: ${f}.dap4";  fi
 done
 
 echo "*** Passed all tests"

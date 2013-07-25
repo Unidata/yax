@@ -1,7 +1,12 @@
+.PHONEY: test tests check clean install all
 
 all::
-	cd c; ${MAKE} all tests
-	cd java; ant all tests
+	cd c; ${MAKE} all
+	cd java; ant all
+
+test tests check::
+	cd c; ${MAKE} tests
+	cd java; ant tests
 
 clean::
 	cd c; ${MAKE} clean	
@@ -12,4 +17,5 @@ git::
 	${SH} ./git.sh
 
 install::
-	cp -fr ./git/yax f:/git
+	cp -fr ./git/yax f:/git/export
+

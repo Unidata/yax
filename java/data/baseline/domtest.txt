@@ -1,0 +1,67 @@
+domtest: [DOCUMENT_NODE]DOCTYPE: name=|#document| value=null
+domtest: [DOCUMENT_TYPE_NODE]UNDEFINED
+domtest: [ELEMENT_NODE]OPEN: element=|authors|
+domtest: [TEXT_NODE]TEXT text=|| translation=||
+domtest: [ELEMENT_NODE]OPEN: element=|author|
+domtest: [ATTRIBUTE_NODE]ATTRIBUTE: name=|name| value=|J.K. Rowling|
+domtest: [TEXT_NODE]TEXT text=|| translation=||
+domtest: [ELEMENT_NODE]OPEN: element=|book|
+domtest: [ATTRIBUTE_NODE]ATTRIBUTE: name=|price| value=|119.99|
+domtest: [ATTRIBUTE_NODE]ATTRIBUTE: name=|title| value=|Harry Potter...|
+domtest: [TEXT_NODE]TEXT text=|| translation=||
+domtest: [ELEMENT_NODE]OPEN: element=|description|
+domtest: [TEXT_NODE]TEXT text=|Harry potter...| translation=|Harry potter...|
+domtest: [ELEMENT_NODE]EMPTYCLOSE
+domtest: [TEXT_NODE]TEXT text=|| translation=||
+domtest: [ELEMENT_NODE]EMPTYCLOSE
+domtest: [TEXT_NODE]TEXT text=|| translation=||
+domtest: [ELEMENT_NODE]OPEN: element=|book|
+domtest: [ATTRIBUTE_NODE]ATTRIBUTE: name=|price| value=|8.99|
+domtest: [ATTRIBUTE_NODE]ATTRIBUTE: name=|title| value=|Harry Potter...|
+domtest: [TEXT_NODE]TEXT text=|| translation=||
+domtest: [ELEMENT_NODE]OPEN: element=|description|
+domtest: [TEXT_NODE]TEXT text=|When the Cha...| translation=|When the Cha...|
+domtest: [ELEMENT_NODE]EMPTYCLOSE
+domtest: [TEXT_NODE]TEXT text=|| translation=||
+domtest: [ELEMENT_NODE]EMPTYCLOSE
+domtest: [TEXT_NODE]TEXT text=|| translation=||
+domtest: [ELEMENT_NODE]OPEN: element=|book|
+domtest: [ATTRIBUTE_NODE]ATTRIBUTE: name=|price| value=|12.99|
+domtest: [ATTRIBUTE_NODE]ATTRIBUTE: name=|title| value=|Harry Potter...|
+domtest: [TEXT_NODE]TEXT text=|| translation=||
+domtest: [ELEMENT_NODE]OPEN: element=|description|
+domtest: [TEXT_NODE]TEXT text=|Harry Potter...| translation=|Harry Potter...|
+domtest: [ELEMENT_NODE]EMPTYCLOSE
+domtest: [TEXT_NODE]TEXT text=|| translation=||
+domtest: [ELEMENT_NODE]EMPTYCLOSE
+domtest: [TEXT_NODE]TEXT text=|| translation=||
+domtest: [ELEMENT_NODE]EMPTYCLOSE
+domtest: [TEXT_NODE]TEXT text=|| translation=||
+domtest: [ELEMENT_NODE]OPEN: element=|author|
+domtest: [ATTRIBUTE_NODE]ATTRIBUTE: name=|name| value=|Douglas Adam...|
+domtest: [TEXT_NODE]TEXT text=|| translation=||
+domtest: [ELEMENT_NODE]OPEN: element=|book|
+domtest: [ATTRIBUTE_NODE]ATTRIBUTE: name=|price| value=|15.49|
+domtest: [ATTRIBUTE_NODE]ATTRIBUTE: name=|title| value=|The Hitchhik...|
+domtest: [TEXT_NODE]TEXT text=|| translation=||
+domtest: [ELEMENT_NODE]OPEN: element=|description|
+domtest: [TEXT_NODE]TEXT text=|Join Douglas...| translation=|Join Douglas...|
+domtest: [ELEMENT_NODE]EMPTYCLOSE
+domtest: [TEXT_NODE]TEXT text=|| translation=||
+domtest: [ELEMENT_NODE]EMPTYCLOSE
+domtest: [TEXT_NODE]TEXT text=|| translation=||
+domtest: [ELEMENT_NODE]OPEN: element=|book|
+domtest: [ATTRIBUTE_NODE]ATTRIBUTE: name=|price| value=|14.36|
+domtest: [ATTRIBUTE_NODE]ATTRIBUTE: name=|title| value=|The Restaura...|
+domtest: [TEXT_NODE]TEXT text=|| translation=||
+domtest: [ELEMENT_NODE]OPEN: element=|description|
+domtest: [TEXT_NODE]TEXT text=|Arthur and F...| translation=|Arthur and F...|
+domtest: [ELEMENT_NODE]EMPTYCLOSE
+domtest: [TEXT_NODE]TEXT text=|| translation=||
+domtest: [ELEMENT_NODE]EMPTYCLOSE
+domtest: [TEXT_NODE]TEXT text=|| translation=||
+domtest: [ELEMENT_NODE]EMPTYCLOSE
+domtest: [TEXT_NODE]TEXT text=|| translation=||
+domtest: [ELEMENT_NODE]EMPTYCLOSE
+domtest: [DOCUMENT_NODE]EOF
+No error

@@ -1,3 +1,7 @@
+/* Copyright 2009, UCAR/Unidata
+   See the COPYRIGHT file for more information.
+*/
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
