@@ -5,8 +5,7 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.PosixParser;
 import org.w3c.dom.Node;
-import yax.lex.Type;
-import yax.lex.Util;
+import yax.lex.*;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -24,22 +23,22 @@ public abstract class Dap4SaxTest
     main(String[] argv)
     {
         int flags = Util.FLAG_NONE;
-        Type tokentype = null;
-	Node[] nodep = new Node[]{null};
+        SaxEventType tokentype = null;
+        Node[] nodep = new Node[]{null};
 
         String document;
-        int i,c;
-	Dap4SaxParser dap4pushparser = null;
+        int i, c;
+        Dap4SaxParser dap4pushparser = null;
         Dap4SaxEventHandler dap4eventhandler = null;
 
         try {
             Options options = new Options();
-            options.addOption("w",false,"trim whitespace ");
-            options.addOption("l",false,"Limit size of text printout");
-            options.addOption("e",false,"Escape control characters");
-            options.addOption("t",false,"Trace parser");
-            options.addOption("d",false,"Parser debug");
-            options.addOption("T",false,"Trace lexer");
+            options.addOption("w", false, "trim whitespace ");
+            options.addOption("l", false, "Limit size of text printout");
+            options.addOption("e", false, "Escape control characters");
+            options.addOption("t", false, "Trace parser");
+            options.addOption("d", false, "Parser debug");
+            options.addOption("T", false, "Trace lexer");
 
             CommandLineParser clparser = new PosixParser();
             CommandLine cmd = clparser.parse(options, argv);
@@ -47,8 +46,8 @@ public abstract class Dap4SaxTest
             argv = cmd.getArgs();
 
             if(argv.length == 0) {
-              System.err.printf("no input\n");
-              System.exit(1);
+                System.err.printf("no input\n");
+                System.exit(1);
             }
 
             document = getinput(argv[0]);
@@ -60,19 +59,19 @@ public abstract class Dap4SaxTest
                 flags |= Util.FLAG_ELIDETEXT;
             if(cmd.hasOption('e'))
                 flags |= Util.FLAG_ESCAPE;
-              if(cmd.hasOption('T'))
+            if(cmd.hasOption('T'))
                 flags |= Util.FLAG_TRACE;
 
-	    // 1. push parser
-	    dap4pushparser = new Dap4SaxParser();
+            // 1. push parser
+            dap4pushparser = new Dap4SaxParser();
             if(cmd.hasOption('d'))
                 dap4pushparser.setDebugLevel(1);
 
-	    // 2. event handler
-	    dap4eventhandler = new Dap4SaxEventHandler(document,dap4pushparser);
-	    if(!dap4eventhandler.parse()) {
-		System.err.println("Parse failed");
-	    }
+            // 2. event handler
+            dap4eventhandler = new Dap4SaxEventHandler(document, dap4pushparser);
+            if(!dap4eventhandler.parse()) {
+                System.err.println("Parse failed");
+            }
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);
@@ -89,8 +88,8 @@ public abstract class Dap4SaxTest
         FileReader file = new FileReader(filename);
         int c;
 
-        while((c=file.read()) > 0) {
-            buf.append((char)c);
+        while((c = file.read()) > 0) {
+            buf.append((char) c);
         }
         return buf.toString();
     }

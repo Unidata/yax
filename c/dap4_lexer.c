@@ -37,6 +37,7 @@ static struct dap4_keyword* hashtable[NKEYS];
 
 struct dap4_keyword keywords[] = {
 {"Attribute", ATTRIBUTE_, _ATTRIBUTE, 0},
+{"Dataset", DATASET_, _DATASET, 0},
 {"Dim", DIM_, _DIM, 0},
 {"Dimension", DIMENSION_, _DIMENSION, 0},
 {"EnumConst", ENUMCONST_, _ENUMCONST, 0},

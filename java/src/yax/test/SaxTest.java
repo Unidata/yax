@@ -14,19 +14,25 @@ public class SaxTest
     // Simple subclass of SaxEventHandler
     static public class SaxTestHandler extends SaxEventHandler
     {
-	public SaxTestHandler(String document) throws SAXException
-		{super(document);}
-	// Define the abstract methods
-	public String[] orderedAttributes(String element) {return null;}
+        public SaxTestHandler(String document) throws SAXException
+        {
+            super(document);
+        }
 
-	public void yyevent(SaxEvent token)
-	    throws SAXException
-	{
+        // Define the abstract methods
+        public String[] orderedAttributes(String element)
+        {
+            return null;
+        }
+
+        public void yyevent(SaxEvent token)
+            throws SAXException
+        {
             String trace = null;
-            trace = Util.trace(token,0);
-            System.out.printf("saxtest: %s\n",trace);
+            trace = Util.trace(token, 0);
+            System.out.printf("saxtest: %s\n", trace);
             System.out.flush();
-	}
+        }
     }
 
     static public void
@@ -34,17 +40,17 @@ public class SaxTest
     {
         SaxTestHandler handler;
         int flags = Util.FLAG_NONE;
-        Type tokentype = null;
-	Node[] nodep = new Node[]{null};
-	
+        SaxEventType tokentype = null;
+        Node[] nodep = new Node[]{null};
+
         String input;
-        int i,c;
+        int i, c;
 
         try {
             Options options = new Options();
-            options.addOption("t",false,"trim text");
-            options.addOption("l",false,"Limit size of text printout");
-            options.addOption("e",false,"Escape control characters");
+            options.addOption("t", false, "trim text");
+            options.addOption("l", false, "Limit size of text printout");
+            options.addOption("e", false, "Escape control characters");
 
             CommandLineParser parser = new PosixParser();
             CommandLine cmd = parser.parse(options, argv);
@@ -52,8 +58,8 @@ public class SaxTest
             argv = cmd.getArgs();
 
             if(argv.length == 0) {
-              System.err.printf("no input\n");
-              System.exit(1);
+                System.err.printf("no input\n");
+                System.exit(1);
             }
 
             input = getinput(argv[0]);
@@ -67,7 +73,7 @@ public class SaxTest
                 flags |= Util.FLAG_ESCAPE;
 
             handler = new SaxTestHandler(input);
-	    handler.parse();
+            handler.parse();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -85,8 +91,8 @@ public class SaxTest
         FileReader file = new FileReader(filename);
         int c;
 
-        while((c=file.read()) > 0) {
-            buf.append((char)c);
+        while((c = file.read()) > 0) {
+            buf.append((char) c);
         }
         return buf.toString();
     }

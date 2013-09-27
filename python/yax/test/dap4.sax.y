@@ -1,42 +1,56 @@
-/* Incomplete dap4 parser; it will be prefixed
-   as required to produce a complete parser.
-*/
-%token  DATASET_ _DATASET
-%token  GROUP_ _GROUP
-%token  ENUMERATION_ _ENUMERATION
-%token  ENUMCONST_ _ENUMCONST
-%token  NAMESPACE_ _NAMESPACE
-%token  DIMENSION_ _DIMENSION
-%token  DIM_ _DIM
-%token  ENUM_ _ENUM
-%token  MAP_ _MAP
-%token  STRUCTURE_ _STRUCTURE
-%token  VALUE_ _VALUE
-%token  ATTRIBUTE_ _ATTRIBUTE
+%define parser_class_name {Dap4SaxParser}
+%define api.push-pull push
+
+%code imports {
+import sys
+}
+
+%code lexer {
+def yylex(self) : return ("0",None)
+def yyerror(self,s) : sys.stderr.write(s+'\n')
+}
+
+/* Following should be same for both sax and dom parsers */
+%debug
+%error-verbose
+
+/* For python, avoid token names starting with underscore */
+%token  DATASET DATASET_
+%token  GROUP GROUP_
+%token  ENUMERATION ENUMERATION_
+%token  ENUMCONST ENUMCONST_
+%token  NAMESPACE NAMESPACE_
+%token  DIMENSION DIMENSION_
+%token  DIM DIM_
+%token  ENUM ENUM_
+%token  MAP MAP_
+%token  STRUCTURE STRUCTURE_
+%token  VALUE VALUE_
+%token  ATTRIBUTE ATTRIBUTE_
 
 /* atomictype lexemes */
-%token  CHAR_ _CHAR
-%token  BYTE_ _BYTE
-%token  INT8_ _INT8
-%token  UINT8_ _UINT8
-%token  INT16_ _INT16
-%token  UINT16_ _UINT16
-%token  INT32_ _INT32
-%token  UINT32_ _UINT32
-%token  INT64_ _INT64
-%token  UINT64_ _UINT64
-%token  FLOAT32_ _FLOAT32
-%token  FLOAT64_ _FLOAT64
-%token  STRING_ _STRING
-%token  URL_ _URL
-%token  OPAQUE_ _OPAQUE
+%token  CHAR CHAR_
+%token  BYTE BYTE_
+%token  INT8 INT8_
+%token  UINT8 UINT8_
+%token  INT16 INT16_
+%token  UINT16 UINT16_
+%token  INT32 INT32_
+%token  UINT32 UINT32_
+%token  INT64 INT64_
+%token  UINT64 UINT64_
+%token  FLOAT32 FLOAT32_
+%token  FLOAT64 FLOAT64_
+%token  STRING STRING_
+%token  URL URL_
+%token  OPAQUE OPAQUE_
 
 /* Standard attributes */
 %token  ATTR_BASE ATTR_BASETYPE ATTR_DAPVERSION ATTR_DDXVERSION
 %token  ATTR_ENUM ATTR_HREF ATTR_NAME ATTR_NAMESPACE
 %token  ATTR_SIZE ATTR_TYPE ATTR_VALUE 
 %token  ATTR_NS ATTR_XMLNS
-%token  UNKNOWN_ATTR UNKNOWN_ELEMENT_ _UNKNOWN_ELEMENT
+%token  UNKNOWN_ATTR UNKNOWN_ELEMENT UNKNOWN_ELEMENT_
 
 %token  TEXT
 
@@ -47,11 +61,11 @@
 
 %%
 dataset:
-	DATASET_ group_attr_list group_body _DATASET
+	DATASET group_attr_list group_body DATASET_
 	;
 
 group:
-	GROUP_ group_attr_list group_body _GROUP
+	GROUP group_attr_list group_body GROUP_
 	;
 
 group_attr_list:
@@ -75,7 +89,7 @@ group_body:
 	;
 
 enumdef:
-	ENUMERATION_ enum_attr_list enumconst_list _ENUMERATION
+	ENUMERATION enum_attr_list enumconst_list ENUMERATION_
 	;
 
 enum_attr_list:
@@ -90,7 +104,7 @@ enumconst_list:
 
 
 enumconst:
-	ENUMCONST_ enumconst_attr_list _ENUMCONST
+	ENUMCONST enumconst_attr_list ENUMCONST_
 	;
 	
 enumconst_attr_list:
@@ -104,11 +118,11 @@ namespace_list:
 	;
 
 namespace:
-	NAMESPACE_ ATTR_HREF _NAMESPACE
+	NAMESPACE ATTR_HREF NAMESPACE_
 	;
 
 dimdef:
-	DIMENSION_ dimdef_attr_list metadatalist _DIMENSION
+	DIMENSION dimdef_attr_list metadatalist DIMENSION_
 	;
 
 dimdef_attr_list:
@@ -117,7 +131,7 @@ dimdef_attr_list:
 	;
 
 dimref:
-	DIM_ dimref_attr_list _DIM
+	DIM dimref_attr_list DIM_
 	;
 
 dimref_attr_list:
@@ -132,9 +146,28 @@ variable:
 
 /* Use atomic type to avoid rule explosion */
 simplevariable:
-	atomictype_ ATTR_NAME variabledef _atomictype
+	atomictype ATTR_NAME variabledef atomictype_
 	;
 
+
+atomictype:
+	  CHAR
+	| BYTE
+	| INT8
+	| UINT8
+	| INT16
+	| UINT16
+	| INT32
+	| UINT32
+	| INT64
+	| UINT64
+	| FLOAT32
+	| FLOAT64
+	| STRING
+	| URL
+	| OPAQUE
+	| ENUM ATTR_ENUM
+	;
 
 atomictype_:
 	  CHAR_
@@ -152,26 +185,7 @@ atomictype_:
 	| STRING_
 	| URL_
 	| OPAQUE_
-	| ENUM_ ATTR_ENUM
-	;
-
-_atomictype:
-	  _CHAR
-	| _BYTE
-	| _INT8
-	| _UINT8
-	| _INT16
-	| _UINT16
-	| _INT32
-	| _UINT32
-	| _INT64
-	| _UINT64
-	| _FLOAT32
-	| _FLOAT64
-	| _STRING
-	| _URL
-	| _OPAQUE
-	| _ENUM
+	| ENUM_
 	;
 
 variabledef:
@@ -182,11 +196,11 @@ variabledef:
 	;
 
 mapref:
-	MAP_ ATTR_NAME _MAP
+	MAP ATTR_NAME MAP_
 	;
 
 structurevariable:
-	STRUCTURE_ ATTR_NAME structuredef _STRUCTURE
+	STRUCTURE ATTR_NAME structuredef STRUCTURE_
 	;
 
 structuredef:
@@ -206,10 +220,10 @@ metadata:
 	;
 
 attribute:
-	ATTRIBUTE_ attribute_attr_list
+	ATTRIBUTE attribute_attr_list
                    namespace_list
                    value_list
-		   _ATTRIBUTE
+		   ATTRIBUTE_
 	;
 
 attribute_attr_list:
@@ -225,8 +239,8 @@ value_list:
 	;
 
 value:
-	  VALUE_ ATTR_VALUE _VALUE
-	| VALUE_ text_list _VALUE
+	  VALUE ATTR_VALUE VALUE_
+	| VALUE text_list VALUE_
 	;
 
 text_list:

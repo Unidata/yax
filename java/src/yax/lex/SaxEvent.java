@@ -10,7 +10,6 @@ Define a class to hold information provided to each kind of event
 */
 public class SaxEvent
 {
-    public Type type = null;
     public SaxEventType event = null;
     public String name = null;
     public String fullname = null;
@@ -28,7 +27,6 @@ public class SaxEvent
     {
 	this.event = event;
 	this.locator = locator;
-	this.type = event.getType();
     }
 
     public SaxEvent(SaxEventType event, Locator locator, String name)
@@ -47,7 +45,7 @@ public class SaxEvent
 
     public String toString()
     {
-	String text = (type == null ? "undefined" : type.toString());
+	String text = (event == null ? "undefined" : event.toString());
 	return text;
     }
 

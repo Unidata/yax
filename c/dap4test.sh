@@ -8,8 +8,9 @@ DATA="./data"
 
 CASES="dap4"
 
-rm -fr ${DATA}/testoutput
-mkdir -p ${DATA}/testoutput
+if ! test -f ${DATA}/testoutput ; then
+  mkdir -p ${DATA}/testoutput
+fi
 
 for f in $CASES ; do
   echo "*** Testing dap4_test: ${f}.dap4"
@@ -21,6 +22,7 @@ for f in $CASES ; do
   if test "x${INIT}" = x1 ; then
     cp ${DATA}/testoutput/${f}.dap4 ${DATA}/baseline/${f}.dap4 
   else
+    echo diff ${DATA}/baseline/${f}.dap4 ${DATA}/testoutput/${f}.dap4
     if ! diff -w ${DATA}/baseline/${f}.dap4 ${DATA}/testoutput/${f}.dap4; then echo "*** FAIL: ${f}.dap4";  fi
   fi
 done

@@ -56,10 +56,15 @@ h6 {font-size: 16pt; margin-bottom: 0pt; padding: 0pt; } /* For TOC */
 </ol>
 <li><a href="#java">Java Language Version</a>
 <ol>
-<li><a href="#DOM">The DOM-Based Lexer</a>
-<li><a href="#SAX">The SAX-Based Lexer</a>
-<li><a href="#dap4dom">Example: DAP4 DDX Using a DOM Tree</a>
-<li><a href="#dap4sax">Example: DAP4 DDX Using SAX</a>
+<li><a href="#java-DOM">The DOM-Based Lexer</a>
+<li><a href="#java-SAX">The SAX-Based Lexer</a>
+<li><a href="#java-dap4dom">Example: DAP4 DDX Using a DOM Tree</a>
+<li><a href="#java-dap4sax">Example: DAP4 DDX Using SAX</a>
+</ol>
+<li><a href="#python">Python Language Version</a>
+<ol>
+<li><a href="#python-SAX">The SAX-Based Lexer</a>
+<li><a href="#python-dap4sax">Example: DAP4 DDX Using SAX</a>
 </ol>
 <li><a href="#yax">Appendix: The yax C-Language library API</a>
 <li><a href="#perfecthash">Appendix: Perfect Hashing</a>
@@ -819,7 +824,7 @@ if we have a YAX_OPEN token, we can return keyword->opentag.
 If we have a YAX_CLOSE or YAX_EMPTYCLOSE token, we can return keyword->closetag.
 If we have a YAX_ATTRIBUTE token, we can return keyword->attributetag.
 
-<h2 class="break"><a name="java"><u>Java Language Version</u></a></h2>
+<h2 class="break"><a name="java""><u>Java Language Version</u></a></h2>
 There are actually two different java implementations.
 <ul>
 <li> A DOM based version that generates tokens by walking
@@ -830,42 +835,43 @@ to Bison tokens, and invokes a Java Bison push parser.
 </ul>
 There is no direct equivalent of <i>yax.c</i> because
 standard Java includes support for DOM trees and Sax parsers.
-
-<h3><a name="DOM">The DOM-Based Lexer</a></h3>
 <p>
-The basic idea is that we have a single class, <i>DomLexer</i>,
+Is is assumed that the reader is familiar with the
+the Java parser section of the bison documentation.
+
+<h3><a name="java-DOM">The DOM-Based Lexer</a></h3>
+<p>
+The basic idea is that one has a single class, <i>DomLexer</i>,
 that is given an org.w3c.dom.Document object as the root of a
-DOM tree. It walks that tree in prefix order, left-to-right for
-attributes and children, and depth first.
-Then for each type of DOM node, we map it to a token type
+DOM tree. The <i>Domlexer</i> class walks that tree in
+prefix order, left-to-right, depth-first for
+attributes and children.
+<p>
+For each type of DOM node, it is mapped to a token type
 that matches those defined in the C yax_tokentype.
 The Bison "yylex" lval for the token is the DOM tree node.
 <p>
-The net result is that it is generally possible to have
-the same core grammar for both C and Java, to have similar,
-but not identical, versions of yylex and similar, and to have
-similar, but not identical, action procedures.
-<p>
-The mapping of the DOM node to a Bison token integer is
-somewhat convoluted, but the basic idea is similar to the
-<i>struct dap4_keyword</i> in the
-<a href="#dap4">DAP4 DDX Example</a>.
-That is, a class <i>Lexeme</i> is defined as follows.
+The net result is that it is generally possible to have the
+same core grammar for both C and Java, to have similar, but
+not identical, versions of yylex and similar, but not
+identical, action procedures.
+
+<h4><a name="java-lexeme">Java Lexeme Class</a></h4>
+A class called <i>Lexeme</i> is defined. Its purpose
+is to hold relevant information about
+either a legal XML element or a legal XML attribute.
+The class <i>Lexeme</i> is defined as follows.
 <pre>
 01 public class Lexeme
 02 {
 03     public String name; // element or attribute name
-04     public int open; // Bison token for element open
-05     public int close; // Bison token for element close
-06     public int atoken; // Bison token if this is an attribute
+04     public int open;    // Bison token for element open
+05     public int close;   // Bison token for element close
+06     public int atoken;  // Bison token if this is an attribute
 07     public String[] legalAttributes;
-08 }
+08     ...
+09 }
 </pre>
-An instance is created for each possible legal element name
-or attribute name. For elements the corresponding Bison
-open token and close token are defined. For attributes,
-the single attribute atoken is defined.
-<p>
 Optionally, a list of legal attributes can be stored
 and the developers subclass of SaxEventHandler can
 reference it to quickly detect illegal/unknown attributes
@@ -873,14 +879,41 @@ before they are passed to the parser. This is mostly
 unnecessary as the parser will detect unexpected attributes
 anyway.
 <p>
+An instance is created for each possible legal element name
+or attribute name. For elements, the corresponding Bison
+open token and close token are defined. For attributes,
+the single attribute atoken is defined.
+<p>
+Optionally, a list of legal attributes can be stored
+and the developers subclass of SaxEventHandler can
+reference it to quickly detect illegal/unknown attributes
+before they are passed to the parser. This is technically
+unnecessary as the parser will detect unexpected attributes
+anyway.
+<p>
+The <i>Lexeme</i> class is used in conjunction with two
+maps of type <i>Map&lt;String,Lexeme&gt;</i>.
+The two maps are the elementmap and the attributemap.
+<p>
+The reason for this seeming complexity of using the class <i>Lexeme</i>
+is that it makes the Bison lexer very generic. By changing the lexemes
+in the element and attribute map, the bison level lexer can
+be reused for a wide variety of xml-based grammars.
+
+<h4><a name="java-DOMMAP">Mapping DOM nodes</a></h4>
+
+The mapping of the DOM node to a Bison token integer and
+yylvalue is somewhat convoluted, but the basic idea is
+similar to the <i>struct dap4_keyword</i> in the
+<a href="#dap4">DAP4 DDX Example</a>.
+<p>
 The bison level token integer is determined as follows.
 <ol>
 <li> Get the string name from the Node (assuming it is an element
 or attribute).
 <p>
 <li> Probe the <i>elementmap</i> or <i>attributemap</i>
-to obtain a matching lexeme. These maps are defines as of type
-<i>Map&lt;String,Lexeme&gt;</i>.
+to obtain a matching lexeme.
 <p>
 <li> If the map probe returns null, then generate a token
 indicating unknown element or attribute.
@@ -888,125 +921,13 @@ indicating unknown element or attribute.
 <li> Otherwise, if we are processing a a DOM element node,
 then process the node to return, in order,
   <ol>
-  <li> An OPEN token,
+  <li> An OPEN token corresponding to the node's name,
   <li> A sequence of ATTRIBUTE tokens, and finally
-  <li> A CLOSE token.
+  <li> A CLOSE token corresponding to the node's name.
   </ol>
 </ol> 
-The reason for this seeming complexity of using the class <i>Lexeme</i>
-is that it makes the Bison lexer very generic. By changing the lexemes
-in the element and attribute map, the bison level lexer can
-be reused for a wide variety of xml-based grammars.
 
-<h3><a name="SAX">The SAX-Based Lexer</a></h3>
-Using a Sax parser has the advantage over the DOM-based parser
-in that it is not necessary to build the explicit DOM tree.
-<p>
-A Sax parser operates by producing a series of "events"
-representing elements in the xml document: start element, 
-close element, etc.
-A subset of the possible events is given to the user-defined
-handler to process the events.
-<p>
-Gnu Bison has a notion called "push-parsing" where the
-parser is fed lexemes one by one. This is essentially
-the same model as a Sax parser where the Sax events serve
-the role of tokens and the Sax parser is a push-parser in Bison
-terms.
-<p>
-The current Bison parsers (versions 2.6.3 and earlier)
-do not support Java push parsing. However, the author
-has contributed a Java push parser skeleton to the Bison
-project that supports Java push parsing. This skeleton
-is not yet in any distributed release, but will appear at
-some point.
-<p>
-In the meantime, the required skeleton is provided as part of the
-yax distribution and can be used with Bison version 2.6.4
-using the "bison -S" flag.
-The primary interface to the Bison generated push-parser
-uses this method call.
-<pre>
-public int push_parse(int yylextoken, Object yylexval)
-</pre>
-<p>
-The yax Sax parser operates by setting up a Sax event callback
-object of class org.xml.sax.helpers.DefaultHandler.
-The callback takes each event and converts it to a instance
-of the class <i>SaxEvent</i>. This token captures all of the
-relevant information from the event.
-<p>
-As each SaxEvent is generated it is fed to the Bison
-push-parser as the <i>yylextoken</i> and <i>yylexval</i>
-arguments to <i>push_parse</i>.
-<p>
-The notional architecture stack for this kind of parsing
-looks like the following.
-<pre>
-     -------------------
-    |      Main         |
-     -------------------
-    |    Sax Parser     |
-     -------------------
-    | Sax Event Handler |
-     -------------------
-    | Bison push-parser |
-     -------------------
-</pre>
-The corresponding processing flow is as follows.
-<ol>
-<li> The main program invokes the Sax parser
-<li> The Sax parser parses the xml document and generates
-a series of Sax events.
-<li> As it is generated, each Sax event is passed to the Sax
-event handler.
-<li> The event handler translates the event into a token plus lval
-suitable for use by a Bison parser. It then sends that token to the
-Bison push parser. 
-</ol>
-Any exceptions generated by either the Sax event handler or the Bison
-push parser should be rewrapped as a SAXException or an IOException
-so that they propagate up the stack correctly.
-<p>
-In practice and in order to make the architecture look 
-more standard, the stack above is internalized into the Bison parser.
-The stack above is created by the parser constructor and the
-parser's parse method is overridden to properly invoke the sax parser
-first.
-<p>
-For the purposes of invoking the <i>push_parse</i> method of the Bison
-parser, the yylexval argument is the current instance of
-a <i>SaxEvent</i> and the yylextoken argument is an integer
-derived from the <i>SaxEvent</i> instance.
-<p>
-The mapping of the Sax token to a Bison token integer is
-similar to that of the DOM parser, with events being
-substituted for tree nodes.
-<p>
-The bison level token integer is determined as follows.
-<ol>
-<li> Get the string name from the Sax token (assuming it is an element
-or attribute).
-<p>
-<li> Probe the <i>elementmap</i> or <i>attributemap</i>
-to obtain a matching lexeme. These maps are defines as of type
-<i>Map&lt;String,Lexeme&gt;</i>.
-<p>
-<li> If the map probe returns null, then throw an exception
-indicating unknown element or attribute.
-<p>
-<li> Otherwise, if we are processing an <i>OPEN</i>
-event (equivalent to a Sax <i>startElement</i> event)
-token, then return the <i>open</i> field as the Bison-level token integer.
-<p>
-<li> If we are processing a  <i>CLOSE</i>
-token, then return the <i>close</i> field as the Bison-level token integer.
-<p>
-<li> If we are processing an <i>ATTRIBUTE</i> token, then return
-the <i>atoken</i> field.
-</ol> 
-
-<h3><a name="dap4dom">Example: DAP4 DDX Using a DOM Tree</a></h3>
+<h3><a name="java-dap4dom">Example: DAP4 DDX Using a DOM Tree</a></h3>
 This example does the DAP4 DDX in Java. It is instructive
 to compare it with the <a href="#dap4">C version</a>.
 As with the C version, only validation is performed;
@@ -1015,7 +936,7 @@ no data structure is constructed.
 <h4>The DAP4 Grammar File</h4>
 The Bison grammar file ("dap4.dom.y") is used mostly unchanged
 from the C version. The prefix part, the part before the
-token declarations, differs, but the rest is the same.
+token declarations, differs, but the rest can be the same.
 <p>
 The Java parser generated by Bison does not support the
 %union{...} construct. Rather, YYSTYPE is defined always
@@ -1024,8 +945,8 @@ to be an instance of the Java <i>Object</i> class.
 <h4>The Java DAP4 yylex()</h4>
 The .y file header specifies the generated parser class name
 using the "%define parser_class_name" directive:
-<i>Dap4DomParser</i> in this case.  All
-other names are fixed, so, the lexer is always of the type
+<i>Dap4DomParser</i> in this case.
+All other names are fixed, so, the lexer is always of the type
 of the inner interface <i>Lexer</i> within Dap4DomParser.
 <p>
 The Lexer interface has three defined methods.
@@ -1034,7 +955,8 @@ The Lexer interface has three defined methods.
 <dd>Method to retrieve the semantic value of the last scanned token.
 For yax, this will always be an instance of <i>org.w3c.Dom.Node</i>
 coming from the underlying DOM tree that is being walked as described
-previously.
+previously. Note that the same node may be returned twice: once
+as the open element lval and once as the close element lval.
 <p>
 <dt><i>int yylex() throws Exception</i>
 <dd> Entry point for the scanner.
@@ -1114,7 +1036,7 @@ The constructor creates a DomLexer instance (line 4).
 04 {
 05     int yytoken = UNKNOWN;
 06     String name;
-07     Type yaxtoken = Type.UNDEFINED;
+07     DomEventType yaxtoken = DomEventType.UNDEFINED;
 08     
 09     while(yytoken == UNKNOWN) {
 10         yaxtoken = domlexer.nextToken(nodep);
@@ -1125,16 +1047,15 @@ The constructor creates a DomLexer instance (line 4).
 15         name = lval.getNodeName();
 16         Lexeme element = elementmap.get(name);
 </pre>
-The nodep variable is a one element array to provide a poor-man's
+The nodep variable is a one element array to provide a pseudo
 call by reference in Java. The DOM tree domlexer needs to return two
 things: a yax token type (defined in the class yax.lex.Type)
 and the org.w3c.dom.Node instance. It returns the former
 as its value and the latter is obtained by immediately calling
-the <i>nextNode()</i> method.
+the <i>nextNode()</i> method (line 11).
 <p>
-The DOM node name is used with the
-element map to obtain a Lexeme instance for mapping to
-specific Bison level tokens.
+The DOM node name is used with the element map to obtain a
+Lexeme instance for mapping to specific Bison level tokens.
 <p>
 If the element map does not contain the requested name,
 then we have an unknown/unexpected
@@ -1143,12 +1064,12 @@ if desired, or an exception could be thrown.
 
 <h5>The yylex() Procedure Part 2</h5>
 <pre>
-            switch(yaxtoken) {
-    
-            case OPEN: 
-            ...
-            case CLOSE:
-            ...
+01          switch(yaxtoken) {
+02  
+03          case OPEN: 
+04          ...
+05          case CLOSE:
+06          ...
 </pre>
 The switch here is similar to that in the C code.
 It switches on the yax token value returned from the
@@ -1168,8 +1089,117 @@ This flag will be acted on in the TEXT
 switch arm and cause it to pass a Bison TEXT token to the Bison push
 parser.
 
-<h3><a name="dap4sax">Example: DAP4 DDX Using SAX</a></h3>
-This is the same example as the <a href="dap4dom">previous
+<h3><a name="java-SAX">The SAX-Based Lexer</a></h3>
+Using a Sax parser has the advantage over the DOM-based parser
+in that it is not necessary to build the explicit DOM tree.
+<p>
+The Sax parser operates by producing a series of "events"
+representing elements in the xml document: start element, 
+end element, etc.
+A subset of the possible events is given to the user-defined
+handler to process the events.
+<p>
+Gnu Bison has a notion called "push-parsing" where the
+parser is fed lexemes one by one. This is essentially
+the same model as a Sax parser where the Sax events serve
+the role of tokens and the Sax parser is a push-parser in Bison
+terms.
+As of Bison version 3.0, Java push parsing support is standard.
+<p>
+The primary interface to the Bison generated push-parser
+uses this method call.
+<pre>
+public int push_parse(int yylextoken, Object yylexval)
+</pre>
+<p>
+The yax Sax parser operates by setting up a Sax event handler
+object of class <i>SaxEventHandler</i>.
+The <i>SaxEventHandler</i> class
+contains a collection of callback methods invoked to process
+each kind of Sax event.
+Each callback method takes each event and converts it to a instance
+of the class <i>SaxEvent</i>.
+This token captures all of the
+relevant information from the event.
+<p>
+In practice, the developer defines a subclass
+of <i>SaxEventHandler</i> to actually process
+the <i>SaxEvent</i> object and convert it to a
+<i>yylexval</i> and <i>yytoken</i> arguments
+to the Bison push-parser.
+<p>
+The notional architecture stack for this kind of parsing
+looks like the following.
+<pre>
+     -------------------
+    |      Main         |
+     -------------------
+    |    Sax Parser     |
+     -------------------
+    | Sax Event Handler |
+     -------------------
+    | Sax Event Handler |
+    |     subclass      |
+     -------------------
+    | Bison push-parser |
+     -------------------
+</pre>
+The corresponding processing flow is as follows.
+<ol>
+<li> The main program invokes the Sax parser.
+<li> The Sax parser parses the xml document and generates
+a series of callbacks into the <i>SaxEventHandler</i> class.
+<li> That class in turn creates an instance of <i>SaxEvent</i>
+and calls the subclass defined <i>yyevent</i>() method.
+<li> The subclass defined <i>yyevent</i> method
+translates the event into a token plus yylval
+suitable for use by a Bison parser. It then sends that token 
+and lval to the Bison push parser. 
+</ol>
+Any exceptions generated by either the Sax event handler or the Bison
+push parser should be rewrapped as a SAXException
+so that they propagate up the stack correctly.
+<p>
+In practice the stack above is internalized into the
+user defined subclass of <i>SaxEventHandler</i>.
+The stack above is created by the event handler's 
+<i>parse()</i>method.
+<p>
+For the purposes of invoking the <i>push_parse</i> method of the Bison
+parser, the yylexval argument is the current instance of
+ <i>SaxEvent</i> and the yylextoken argument is an integer
+derived from the <i>SaxEvent</i> instance.
+<p>
+The bison level token integer is generically
+determined as follows.
+<ol>
+<li> Get the string name from the Sax token (assuming it is an element
+or attribute).
+<p>
+<li> Probe the <i>elementmap</i> or <i>attributemap</i>
+to obtain a matching lexeme.
+<p>
+<li> If the map probe fails, then throw an exception
+indicating unknown element or attribute. Alternatively,
+generate a special token called, say, UNKNOWN_ELEMENT
+or UNKNOWN_ATTRIBUTE, and pass it to the parser.
+<p>
+<li> Otherwise, if we are processing a <i>STARTELEMENT</i>
+event (equivalent to the Sax <i>startElement</i> callback)
+then return the <i>open</i> field of the lexeme
+as the Bison-level token integer.
+<p>
+This event also processes the attributes of the element
+and passes them one by one to the parser using a synthetic
+<i>ATTRIBUTE</i> event.
+<p>
+<li> If we are processing an <i>ENDELEMENT</i> event,
+then return the <i>close</i> field of the lexeme
+as the Bison-level token integer.
+</ol> 
+
+<h3><a name="java-dap4sax">Example: DAP4 DDX Using SAX</a></h3>
+This is the same example as the <a href="#java-dap4dom">previous
 example</a>, but using the class <i>SaxLexer</i> instead of
 <i>DomLexer</i>.
 
@@ -1181,7 +1211,7 @@ exceptions.
 <li> The parser class name is different,
 <li> A push parser is specified using the "%define api.push-pull push"
 directive.
-<li> The lexer is built-in using "%code lexer {...}"; see below.
+<li> The lexer uses "%code lexer {...}"; see below.
 </ol>
 
 <h4>The Bison Grammar API for Sax</h4>
@@ -1192,7 +1222,7 @@ method arguments. However, the parser does need access
 to the lexer's <i>yyerror</i> procedure, so we do need 
 at least a stub lexer to the parser.
 This is handled by defining the lexer using the Bison
-<pre>%code lexer { ... }</pre>
+<i>%code lexer</i>
 construct. It is generically defined like this.
 <pre>
 %code lexer {
@@ -1204,7 +1234,7 @@ construct. It is generically defined like this.
 The only
 method in the lexer interface that will be called is
 <i>yyerror</i>, so the others are stubs. The actual
-action of <i>yyerror</i> can, of course, be changed
+aaction of <i>yyerror</i> can, of course, be changed
 as desired.
 
 <h4>SaxEventHandler Class</h4>
@@ -1216,22 +1246,27 @@ specific event handler.
 The SaxEventHandler constructor takes a String as its argument.
 The argument is the document to be parsed.
 <p>
-Subclasses of SaxEventHandler must implement the following method.
+A selected subset of the events received by SaxEventHandler
+are passed to the subclass by funneling them into a 
+single, subclass defined, method <i>yyevent</i> with the
+following signature.
 <pre>
 abstract public void yyevent(SaxEvent event) throws SAXException;
 </pre>
+<p>
 The <i>yyevent</i> method is the primary interface
-for event handling by the developer. As SaxEventHandler gets an event
-callback invocation from the
+for event handling by the developer. As SaxEventHandler gets an event,
+via callback invocation, from the
 Sax parser, it transforms the callback arguments
 into an instance of <i>SaxEvent</i>
 and sends it to the subclass for handling using this method.
+<p>
 <i>SaxEvent</i> is defined as follows.
 <pre>
 01 public class SaxEvent
 02 {
-03     public Type type = null;
-04     public SaxEventType event = null;
+03     public SaxEventType event = null;
+04     public Type type = null;
 05     public String name = null;
 06     public String fullname = null;
 07     public String namespace = null;
@@ -1243,8 +1278,8 @@ and sends it to the subclass for handling using this method.
 13     ... constructors ...
 14 }
 </pre>
-The event's <i>event</i> field records
-the type of SAX event (effectively the callback)
+The event's <i>event</i> field (of type SaxEventType)
+records the type of SAX event (effectively the callback)
 that was used to generate this instance.
 The <i>type</i> field is the result of mapping
 the SaxEventType enumeration to the yax.lex.Type enumeration.
@@ -1291,18 +1326,20 @@ and then it must generate events for each attribute in turn (lines 8-16).
 Most other events are handled in a fashion similar to the endElement
 event. In this example, a SaxEvent is created to contain the arguments of the
 endElement method and the SaxEvent instance is sent to the subclass's
-yyevent method.
-
-
-
+<i>yyevent</i> method.
 
 <h5>Parsing Invocation</h5>
+The signature for the primary parse invocation method
+in the <i>SaxEventHandler</i> is as follows.
 <pre>
-01 public boolean parse() throws Exception
+public boolean parse() throws Exception
 </pre>
 Parsing is initiated by calling the SaxEventHandler's <i>parse</i> method
-in the SaxEventHandler class (possibly via <i>super()</i> from a method in
-the developer-defined subclass. The <i>parse</i> methods takes the following
+in the SaxEventHandler class.
+The default version in SaxEventHandler is generally ok to use, but
+the subclass can override it to do extra processing.
+<p>
+The <i>parse</i> methods takes the following
 steps.
 <ol>
 <li> Create an instance of <i>javax.xml.parsers.SAXParser</i> via the
@@ -1313,12 +1350,15 @@ steps.
 </ol>
 
 <h4>Dap4SaxHandler Class</h4>
-This class is a subclass of the SaxEventHandler class
-and is created by the developer.
+This example defines a class as a subclass of the
+<i>SaxEventHandler</i> class;
+this example class would be created by the developer.
 <p>
-There are two parts of most interest: element plus map creation,
-and event processing. Map creation is the same as is described
+There are two parts of most interest: element plus map
+creation, and event processing.
+Map creation is the same as is described
 for <i>Dap4DomLexer</i>.
+
 
 <h5>The yyevent() Method Part 1</h5>
 The most important part of the Dap4SaxEventHandler class
@@ -1329,7 +1369,7 @@ push parser, and invokes the push parser.
 <pre>
 01     if(accepted)
 02         throw new SAXException("yyevent called after parser has accepted");
-03     Type yaxtoken = saxevent.type;
+03     DomEventType yaxtoken = saxevent.type;
 04     String name = saxevent.name;
 05     element = elementmap.get(name);
 06     attr = attributemap.get(name);
@@ -1338,9 +1378,10 @@ push parser, and invokes the push parser.
 09     }
 </pre>
 To begin with, a check is made to ensure that the event processor it not
-invoked after the parser accepts (lines 1-2). Next, yyevent probes the
-element and attribute maps to see if the SaxEvent name field is known
-(lines 5-6). It then switches on the SaxEvent type field to process each
+invoked after the parser has entered an accept state (lines 1-2).
+Next, yyevent probes the element map to see if the
+<i>SaxEvent</i> name field is known (lines 5-6).
+It then switches on the SaxEvent type field to process each
 kind of event (line 7).
 <p>
 It is important to note that the SaxEvent type
@@ -1362,10 +1403,13 @@ passed to the subclass.
 09     }
 10     break;
 </pre>
-The OPEN case (corresponding to the startElement event) checks to see if
-the element name was in the element map (line 2). If it is undefined,
-then use the Bison token integer <i>UNKNOWN_ELEMENT_</i>. Otherwise, use the
-token specified by the element's lexeme open field (line 5).
+The OPEN case (corresponding to the STARTELEMENT event) checks to see if
+the element name was
+in the element map (line 2). If it is undefined, then use
+the Bison token integer <i>UNKNOWN_ELEMENT_</i>. Otherwise,
+use the token specified by the element's lexeme open field
+(line 5).
+<p>
 <p>
 As with the DOM lexer, we handle the special case of &lt;value&gt;
 with the textok flag.
@@ -1392,6 +1436,433 @@ SAXException (line 4).
 If the parser aborts, a corresponding abort exception is thrown (line 6).
 If the parser accepts, then this is noted so that the code can
 complain if an attempt is made to continue parsing (lines 7-8).
+
+<h2 class="break"><a name="python""><u>Python Language Version</u></a></h2>
+Unlike Java, only a Sax-based parser is supported.
+The Sax based version runs a Sax parser, converts events
+to Bison tokens, and invokes a Python Bison push parser.
+There is no direct equivalent of <i>yax.c</i> because
+standard Python includes support for Sax parsers.
+<p>
+Is is assumed that the reader is familiar with both the
+Java section of this document and the Python parser
+section of the bison documentation.
+
+<h3><a name="python-SAX">The SAX-Based Lexer</a></h3>
+The Sax parser operates by producing a series of "events"
+representing elements in the xml document: start element, 
+end element, etc.
+A subset of the possible events is given to the user-defined
+handler to process the events.
+<p>
+Gnu Bison has a notion called "push-parsing" where the
+parser is fed lexemes one by one. This is essentially
+the same model as a Sax parser where the Sax events serve
+the role of tokens and the Sax parser is a push-parser in Bison
+terms.
+Bison parsers do not yet support
+Python push parsing. However, the author
+has contributed a Python push parser skeleton to the Bison
+project that supports Python push parsing. That skeleton
+will be in the standard bison release at some point.
+<p>
+The primary interface to the Bison generated push-parser
+uses this method call.
+<pre>
+def push_parse(yylextoken, yylexval):
+</pre>
+<p>
+The yax Sax parser operates by setting up a Sax event callback
+object of class <i>SaxEventHandler</i>
+(in module saxeventhandler.py).
+<i>SaxEventHandler</i> class is derived (mainly) from the
+xml.sax.handler.ContentHandler class.
+The callback takes each event and converts it to a instance
+of the class <i>SaxEvent</i> (in module saxevent.py).
+This token captures all of the
+relevant information from the event.
+<p>
+In practice, the developer defines a subclass
+of <i>SaxEventHandler</i> to actually process
+the <i>SaxEvent</i> object and convert it to a
+<i>yylexval</i> and <i>yytoken</i> arguments
+to the Bison push-parser.
+<p>
+The notional architecture stack for this kind of parsing
+looks like the following.
+<pre>
+     -------------------
+    |      Main         |
+     -------------------
+    |    Sax Parser     |
+     -------------------
+    | Sax Event Handler |
+     -------------------
+    | Sax Event Handler |
+    |     subclass      |
+     -------------------
+    | Bison push-parser |
+     -------------------
+</pre>
+The corresponding processing flow is as follows.
+<ol>
+<li> The main program invokes the Sax parser
+<li> The Sax parser parses the xml document and generates
+a series of callbacks into the <i>SaxEventHandler</i> class.
+<li> That class in turn creates an instance of <i>SaxEvent</i>
+and calls the subclass defined <i>yyevent</i>() method.
+<li> The subclass <i>yyevent</i> method
+translates the event into a token plus lval
+suitable for use by a Bison parser. It then sends that token to the
+Bison push parser. 
+</ol>
+Any exceptions generated by either the Sax event handler or the Bison
+push parser should be rewrapped as a SAXException
+so that they propagate up the stack correctly.
+<p>
+In practice the stack above is internalized into the
+user defined subclass of <i>SaxEventHandler</i>.
+The stack above is created by the event handler's 
+<i>parser()</i>method.
+<p>
+For the purposes of invoking the <i>push_parse</i> method of the Bison
+parser, the yylexval argument is the current instance of
+a <i>SaxEvent</i> and the yylextoken argument is an integer
+derived from the <i>SaxEvent</i> instance.
+<p>
+The bison level token integer is generically
+determined as follows.
+<ol>
+<li> Get the string name from the Sax token (assuming it is an element
+or attribute).
+<p>
+<li> Probe the <i>elementmap</i> or <i>attributemap</i>
+to obtain a matching lexeme. These maps are defined
+as python dictionary objects mapping strings to instances
+of class <a href="#python-lexeme"><i>Lexeme</i></a>.
+<p>
+<li> If the map probe fails, then throw an exception
+indicating unknown element or attribute. Alternatively,
+generate a special token called, say, UNKNOWN_ELEMENT
+or UNKNOWN_ATTRIBUTE, and pass it to the parser.
+<p>
+<li> Otherwise, if we are processing a <i>STARTELEMENT</i>
+event (equivalent to the Sax <i>startElement</i> callback)
+then return the <i>open</i> field of the lexeme
+as the Bison-level token integer.
+<p>
+This event also processes the attributes of the element
+and passes them one by one to the parser using a synthetic
+<i>ATTRIBUTE</i> event.
+<p>
+<li> If we are processing an <i>ENDELEMENT</i> event,
+then return the <i>close</i> field of the lexeme
+as the Bison-level token integer.
+</ol> 
+
+<h3><a name="python-lexeme">Python Lexeme Class</a></h3>
+In order to make it easy to define the user defined
+subclass of <i>SaxEventHandler</i>, a class called <i>Lexeme</i>
+is defined. Its purpose is to hold relevant information about
+either a legal XML element or a legal XML attribute.
+The class <i>Lexeme</i> is defined as follows.
+<pre>
+01 class Lexeme:
+02   def __init__() :
+03     self.name = None # element or attribute name
+04     self.open = 0    # Bison token for element open
+05     self.close = 0   # Bison token for element close
+06     self.atoken = 0  # Bison token if this is an attribute
+07     self.legalAttributes = ()
+</pre>
+An instance is created for each possible legal element name
+or attribute name. For elements the corresponding Bison
+open token and close token are defined. For attributes,
+the single attribute atoken is defined.
+<p>
+Optionally, a list of legal attributes can be stored
+and the developers subclass of SaxEventHandler can
+reference it to quickly detect illegal/unknown attributes
+before they are passed to the parser. This is technically
+unnecessary as the parser will detect unexpected attributes
+anyway.
+
+<h3><a name="python-dap4sax">Example: DAP4 DDX Using SAX</a></h3>
+
+<h4>The DAP4 Grammar File</h4>
+The Bison grammar file ("dap4.y") is essentially the same as
+the <a href="#dap4sax">Java SAX version</a> except that, of course,
+the language is specified as "Python".
+
+<h4>The Bison Grammar API for Sax</h4>
+As with the Java version, the python
+Bison parser has no need for access
+to a lexer because any output from the lexer
+is passed into the Bison parser through the <i>push_parser</i>
+method arguments. However, the parser does need access
+to the lexer's <i>yyerror</i> procedure, so we do need 
+at least a stub lexer to the parser.
+This is handled by defining the lexer using the Bison
+<i>%code lexer</i> construct. It is generically defined like this.
+<pre>
+%code lexer {
+  def yylex() : return (0,None)
+  def yyerror(s) : sys.stderr.write(s+'\n')
+}
+</pre>
+The only
+method in the lexer interface that will be called is
+<i>yyerror</i>, so the other is a stub. The actual
+action of <i>yyerror</i> can, of course, be changed
+as desired.
+
+<h4>SaxEventHandler Class</h4>
+The <i>SaxEventHandler</i> class is the primary
+class for the Sax-based parser.
+The developer will subclass it to create a grammar
+specific event handler.
+<p>
+The SaxEventHandler constructor takes either a String as its argument
+or an instance of the <i>xml.sax.xmlreader.InputSource</i> class.
+If the argument is a string then it is assumed to be
+the document to be parsed. If it is an instance of <i>InputSource</i>,
+then it is passed directly to the Sax parser.
+<p>
+A selected subset of the events received by SaxEventHandler
+are passed to the subclass by funneling them into a 
+single, subclass defined, method <i>yyevent</i> with the
+following signature.
+<pre>
+def yyevent(event):
+</pre>
+where the event argument is an instance of <i>Saxevent</i>.
+<p>
+The <i>yyevent</i> method is the primary interface
+for event handling by the developer. As SaxEventHandler gets an event,
+via callback invocation, from the
+Sax parser, it transforms the callback arguments
+into an instance of <i>SaxEvent</i>
+and sends it to the subclass for handling using this method.
+<i>SaxEvent</i> is defined as follows.
+<pre>
+01 class SaxEvent:
+02
+03   def __init__(self) :
+04     self.event = None     # of type SaxEventType
+05     self.name = None      # of type String
+06     self.fullname = None  # of type String
+07     self.namespace = None # of type String
+08     self.value = None     # for attributes; of type String
+09     self.text = None      # for text ; of type String
+10     self.publicid = None  # of type String
+11     self.systemid = None  # of type String
+12     self.locator = None   # of type Locator
+</pre>
+The event's <i>event</i> field (of type SaxEventType)
+records the type of SAX event (effectively the callback)
+that was used to generate this instance.
+The other fields are, hopefully, obvious.
+The callbacks in <i>SaxEventHandler</i> may be consulted
+to see how the arguments to the callback are stored in the
+<i>SaxEvent</i> instance. 
+
+<h5>StartElement Event Processing</h5>
+The code for the "startElement" event is the most complicated.
+<pre>
+01   def startElement(self, name, attributes) :
+02     event = new SaxEvent(SaxEventType.STARTELEMENT,self.locator,name)
+03     yyevent(event);
+04     # Now pass the attributes as tokens
+05     nattr = attributes.getLength()
+06     names = attributes.getNames()
+07     for i in range(0,nattr) :
+08       aname = names[i]
+09       value = attributes.getValue(aname)
+10       token = SaxEvent(saxeventtype.ATTRIBUTE,self.locator,aname)
+11       token.value = value
+12       self.yyevent(token)
+</pre>
+This event handler must generate a STARTELEMENT event first (line 2)
+and then it must generate events for each attribute in turn (lines 7-12).
+
+<h5>Other Event Processing</h5>
+<pre>
+01   def endElement(name) :
+02     event = new SaxEvent(SaxEventType.ENDELEMENT,self.locator,name)
+03     self.yyevent(event);
+</pre>
+Most other events are handled in a fashion similar to the endElement
+event. In this example, a SaxEvent is created to contain the arguments of the
+endElement method and the SaxEvent instance is sent to the subclass's
+<i>yyevent</i> method.
+
+<h5>Parsing Invocation</h5>
+The signature for the primary parse invocation method
+in the <i>SaxEventHandler</i> is as follows.
+<pre>
+def parse(self):
+</pre>
+Parsing is initiated by calling the SaxEventHandler's <i>parse</i> method
+in the SaxEventHandler class.
+The default version in SaxEventHandler is generally ok to use, but
+the subclass can override it to do extra processing.
+<p>
+The <i>parse</i> methods takes the following
+steps.
+<ol>
+<li> Obtain an instance of <i>xml.sax.xmlreader.InputSource</i>.
+     This can be done in one of two ways.
+     <ol>
+     <li> If the original source is a string, then
+          create an InputSource instance capable of reading
+          from that string.
+     <li> If the original source is already an <i>InputSource</i>,
+          then use it unchanged.
+     </ol>
+<li> Create a parser (an instance of XMLReader)
+     using <i>xml.sax.make_parser()</i>.
+<li> Set the content handler of the parser to be
+     self (i.e. the event handler).
+<li> Invoke the <i>parse</i> method of the parser and providing the
+     <i>InputSource</i> created in step 1 as its argument.
+</ol>
+
+<h4>Dap4SaxHandler Class</h4>
+This example defines a class as a subclass of the
+<i>SaxEventHandler</i> class;
+this example class would be created by the developer.
+<p>
+There are two parts of most interest: element plus map
+creation, and event processing.
+
+<h5>Map Creation</h5>
+The construction of the <i>elementmap</i> and
+<i>attributemap</i> maps is done once at the module level.
+<pre>
+01 def static() :
+02   global elementmap, attributemap
+03   elementmap = {}
+04   attributemap = {}
+05   elementmap["Group"] = Lexeme("Group",DATASET_,_DATASET,
+07                           ("name","dapversion","ddxversion",
+08                            "ns","base","xmlns"))
+09     ...
+10   attributemap["base"] = Lexeme("base",ATTR_BASE)
+11     ...
+12 # end def static
+13 
+14 static() # Invoke static construction
+</pre>
+The maps are populated with dictionary insertions (lines 5 and 10).
+Note the ordered list of attribute names
+that is the last argument of the <i>Lexeme("Dataset"...)</i>
+constructor (line 6-8). Note also that the attribute map insertion names
+(the key of the attributemap entry) should be lower case.
+<p>
+This example uses a java-like cliche for defining static
+data, where "static" means defining module level data that
+will never change.  A module level <i>static</i> function is
+defined to create the maps as module level objects (lines
+2-4). Then it inserts dictionary entries into the elementmap
+and attributemap.  In each case, the entry maps
+string->Lexeme, where the string is the element or attribute
+name and the Lexeme hold information about the element or
+attribute. finally, the <i>static</i>() method is invoked to
+do static initialization.
+
+<h5>Constructor</h5>
+<pre>
+01   def __init__(self, document, pushparser) :
+02     SaxEventHandler.__init__(self,document)
+03     self.pushparser = pushparser
+04     self.accepted = False
+05     self.textok = False
+</pre>
+The constructor initializes its superclass (line 2).
+It then saves the passed in instance of the push parser (line 3).
+It also sets some flags for later use (lines 4-5).
+
+<h5>The yyevent() Method Part 1</h5>
+The most important part of the Dap4SaxEventHandler class
+is the <i>yyevent</i> method. It takes
+a SaxEvent, converts it to a form usable by by the Bison
+push parser, and invokes the push parser.
+<p>
+<pre>
+01   def yyevent(self,saxtoken) :
+02     if(accepted)
+03       raise SAXException("yyevent called after parser has accepted");
+04     event = saxevent.event
+05     name = saxevent.name;
+06     yytoken = 0
+07     attr = None
+08     element = None
+09     if name in elementmap : element = elementmap[name]
+10         ...
+</pre>
+To begin with, a check is made to ensure that the event processor it not
+invoked after the parser has entered an accept state (lines 2-3).
+Next, yyevent probes the element map to see if the
+<i>SaxEvent</i> name field is known (line 9).
+
+<h5>The yyevent() Method Part 2</h5>
+<pre>
+01     if (event == STARTELEMENT) :
+02       if(element == None) : # undefined
+03         yytoken = UNKNOWN_ELEMENT_
+04       else:
+05         yytoken = element.open
+06         # Check for the special case of <Value>
+07         if(yytoken == VALUE_) :
+08           textok = True
+09 
+10     elif (event == ATTRIBUTE) :
+11       attr = None
+12       if tolowercase(name) in attributemap:
+13         attr = attributemap[tolowercase(name)]
+14       if(attr == None) :
+15         yytoken = UNKNOWN_ATTR
+16       else :
+17         yytoken = attr.atoken
+</pre>
+The STARTELEMENT case checks to see if the element name was
+in the element map (line 2). If it is undefined, then use
+the Bison token integer <i>UNKNOWN_ELEMENT_</i>. Otherwise,
+use the token specified by the element's lexeme open field
+(line 5).
+<p>
+When the special case of the &lt;VALUE_&gt; 
+element is found, set the textok flag (lines 7-8).
+<p>
+For the ATTRIBUTE event case (line 10), the attributemap
+is probed to see if the attribute name is known.
+If not, then the special token UNKNOWN_ATTR is used as the token
+for the parser. Otherwise, the <i>atoken</i> field is used
+as the parser token.
+<p>
+Most of the other switch arms are obvious; they just map to a Bison
+token integer and exit the switch.
+
+<h5>The yyevent() Method Part 3</h5>
+<pre>
+01     status = 0
+02     try :
+03       status = pushparser.push_parse(yytoken,saxevent)
+04     except Exception as e:
+05       raise SAXException(str(e))
+06     if(status == YYABORT):
+07        raise SAXException("YYABORT")
+08     elif(status == YYACCEPT):
+09       accepted = true;
+</pre>
+The Bison push parser's push_parse method is invoked with the Bison
+integer token computed in the prior switch and with the <i>SaxEvent</i>
+as the lval (line 3). Exceptions from the parser are just rethrown as a
+SAXException (line 5).
+<p>
+If the parser aborts, a corresponding abort exception is thrown (lines 6-7).
+If the parser accepts, then this is noted so that the code can
+complain if an attempt is made to continue parsing (lines 8-9).
 
 <h2 class="break"><a name="yax"><u>Appendix: The yax C Language library API</u></a></h2>
 The yax library is a support library used by the Bison-level
@@ -1640,7 +2111,7 @@ For attributes, it gives the specific Bison attribute token.
 
 <h2><a name="changelog"><u>Change Log</u></a></h2>
 <b>Version 1.0:</b>
-<ol>
+<ul>
 <li>10/31/2012 &ndash; (1) Get rid of the sorted attributes,
 (2) use element and attribute maps in Java Dom lexer (3) revise the DomLexer
 interface.
@@ -1651,7 +2122,7 @@ in favor the Bison push-parse model.
 <li>7/23/2012 &ndash; Added the Java implementation
 <li>7/15/2012 &ndash; Added a detailed discussion of xml.y
 <li>7/9/2012 &ndash; Initial draft.
-</ol
+</ul>
 
 </body>
 </html>

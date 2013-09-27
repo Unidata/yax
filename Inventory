@@ -60,14 +60,13 @@ c/data/testinput/lextest.xml
 java/build.xml
 java/libs/commons-cli-1.2.jar
 
+java/src/yax/lex/DomEventType.java
 java/src/yax/lex/DomLexer.java
 java/src/yax/lex/Lexeme.java
 java/src/yax/lex/LexException.java
 java/src/yax/lex/SaxEvent.java
 java/src/yax/lex/SaxEventHandler.java
-java/src/yax/lex/SaxToken.java
-java/src/yax/lex/Token.java
-java/src/yax/lex/Type.java
+java/src/yax/lex/SaxEventType.java
 java/src/yax/lex/Util.java
 
 java/src/yax/test/Dap4DomLexer.java
@@ -80,7 +79,6 @@ java/src/yax/test/Dap4SaxTest.java
 java/src/yax/test/dap4.dom.y
 java/src/yax/test/dap4.sax.y
 java/src/yax/test/compare.sh
-java/src/yax/test/lalr1.push
 
 java/data/baseline/dap4dom.txt
 java/data/baseline/dap4sax.txt
@@ -93,3 +91,27 @@ java/data/testinput/d.xml
 java/data/testinput/dap4.xml
 java/data/testinput/expr.xml
 java/data/testinput/lextest.xml
+
+python/COPYRIGHT
+python/README
+python/MANIFEST.in
+python/setup.py
+python/Makefile
+python/yax/__init__.py
+python/yax/keywordmap.py
+python/yax/lexeme.py
+python/yax/saxevent.py
+python/yax/saxeventhandler.py
+python/yax/saxeventtype.py
+python/yax/saxparser.py
+python/yax/util.py
+python/yax/python.skel
+python/yax/test/Dap4SaxParser.py
+python/yax/test/__init__.py
+python/yax/test/dap4.sax.y
+python/yax/test/dap4saxeventhandler.py
+python/yax/test/dap4saxtest.py
+python/yax/test/saxtest.py
+python/yax/test/data/baseline/saxtest.txt
+python/yax/test/data/baseline/dap4saxtest.txt
+python/yax/test/data/testinput/dap4.xml

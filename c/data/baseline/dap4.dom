@@ -1,4 +1,4 @@
-[00] <Group name="example" dapVersion="4.0" xmlns="http://xml.opend...">
+[00] <Dataset name="example" dapVersion="4.0" xmlns="http://xml.opend...">
 [01] text=||
 [01] <Enumeration name="e1" basetype="UInt8">
 [02] text=||

@@ -1,18 +1,21 @@
 EXPORT=f:/git/export
 
-.PHONEY: test tests check clean install all
+.PHONEY: check clean install all
 
 all::
 	cd c; ${MAKE} all
 	cd java; ant all
+	cd python; ${MAKE} all
 
-test tests check::
-	cd c; ${MAKE} tests
-	cd java; ant tests
+check::
+	cd c; ${MAKE} check
+	cd java; ant check
+	cd python; ${MAKE} check
 
 clean::
 	cd c; ${MAKE} clean	
 	cd java; ant clean
+	cd python; ${MAKE} clean
 	rm -fr ./git
 
 git::

@@ -1,0 +1,23 @@
+# Copyright 2009, UCAR/Unidata
+
+# Enumerate the kinds of Sax Events received by the SaxEventHandler
+STARTDOCUMENT = 1
+ENDDOCUMENT = 2
+STARTELEMENT = 3
+ENDELEMENT = 4
+ATTRIBUTE = 5
+CHARACTERS = 6
+
+# Define printable output
+
+MAP = {
+STARTDOCUMENT: "STARTDOCUMENT",
+ENDDOCUMENT: "ENDDOCUMENT",
+STARTELEMENT: "STARTELEMENT",
+ENDELEMENT: "ENDELEMENT",
+ATTRIBUTE: "ATTRIBUTE",
+CHARACTERS: "CHARACTERS"
+}
+
+def tostring(t) :
+  return MAP[t]

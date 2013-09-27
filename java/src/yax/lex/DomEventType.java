@@ -4,7 +4,8 @@
 package yax.lex;
 
 // The order here is such that the ordinal value matches that of the C code
-public enum Type {
+public enum DomEventType
+{
 	UNDEFINED,
 	EOF,
 	OPEN,
@@ -16,6 +17,6 @@ public enum Type {
 	PROLOG,
 	DOCTYPE,
 	COMMENT;
-} // enum Type
+} // enum DomEventType
 
 

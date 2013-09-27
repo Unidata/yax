@@ -15,7 +15,7 @@ public class DomTest
     {
         DomLexer lexer;
         int flags = Util.FLAG_NONE;
-        Type tokentype = null;
+        DomEventType tokentype = null;
 	Node node = null;
 	
         String input;
@@ -58,7 +58,7 @@ public class DomTest
                 trace = Util.trace(tokentype,node);
                 System.out.printf("domtest: %s\n",trace);
                 System.out.flush();
-                if(tokentype == Type.EOF)
+                if(tokentype == DomEventType.EOF)
                     break;
             }
 

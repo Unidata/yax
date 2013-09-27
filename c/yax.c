@@ -144,6 +144,16 @@ fprintf(stderr,"Moving to context: %s ; @ |%s...|\n",
 fflush(stderr);
 }
 #endif
+
+static char* stdtranstable[] = {
+"amp","&",
+"lt","<",
+"gt",">",
+"quot","\"",
+"apos","'",
+NULL
+};
+
 /**************************************************/
 /* Input management */
 
@@ -819,6 +829,8 @@ yax_unescape(char* s, char** translations)
     char* stop;
     char entity[16];
 
+    if(translations == NULL)
+	translations = stdtranstable;
     if(s == NULL) len = 0;
     else len = strlen(s);
     u = (char*)malloc(len+1);
@@ -889,15 +901,6 @@ static char* tokennames[] = {
 "PROLOG",
 "DOCTYPE",
 "COMMENT",
-};
-
-static char* tracetranstable[] = {
-"amp","&",
-"lt","<",
-"gt",">",
-"quot","\"",
-"apos","'",
-NULL
 };
 
 static const char*
@@ -999,7 +1002,7 @@ yax_trace(yax_lexer* lexer, yax_token* token)
 	trans = NULL;
 	strcat(result," text=");
 	addtext(result,token->text,lexer->flags);
-	trans = yax_unescape(token->text,tracetranstable);
+	trans = yax_unescape(token->text,stdtranstable);
 	strcat(result," translation=");
 	addtext(result,trans,lexer->flags);
 	if(trans) free(trans);

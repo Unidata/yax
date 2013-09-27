@@ -13,7 +13,7 @@ TESTOUTPUTS=./testdata/testoutput
 CFLAGS=-g -O0 -Wall -Wdeclaration-after-statement
 CC=gcc
 
-.PHONEY: tests xtests
+.PHONEY: check
 
 all: libyax.a
 
@@ -30,7 +30,7 @@ testclean::
 	rm -fr data/testoutput
 
 OPTS=-te
-tests test:: lextest${X} domtest${X} dap4test${X}
+check:: lextest${X} domtest${X} dap4test${X}
 	./lextest.sh ${INIT}
 	./domtest.sh ${INIT}
 	./dap4test.sh ${INIT}

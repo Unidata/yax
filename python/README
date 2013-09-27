@@ -3,18 +3,9 @@ The goal of the **yax** project is to allow
 the use of _YACC_ (Gnu _Bison_ actually)
 to parse/process XML documents.
 
-Support is provided for doing this in the following languages.
-1. C
-2. Java
-3. Python
-
-Each operates a little differently due to language specific
-quirks and available XML libraries.
-
-# C Language Version
-
-For C, it is necessary to provide a library that can produce
-an XML lexical token stream from an XML document.
+The key piece of software for achieving the above goal is to
+provide a library that can produce an XML lexical token
+stream from an XML document.
 
 This stream can be wrapped to create an instance
 of _yylex()_ to feed tokens to a Bison grammar to

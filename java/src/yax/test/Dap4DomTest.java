@@ -5,7 +5,7 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.PosixParser;
 import org.w3c.dom.Node;
-import yax.lex.Type;
+import yax.lex.DomEventType;
 import yax.lex.Util;
 
 import java.io.FileReader;
@@ -18,7 +18,7 @@ public abstract class Dap4DomTest
     main(String[] argv)
     {
         int flags = Util.FLAG_NONE;
-        Type tokentype = null;
+        DomEventType tokentype = null;
 	Node[] nodep = new Node[]{null};
 
         String input;

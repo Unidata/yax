@@ -1,0 +1,10 @@
+include COPYRIGHT
+include Makefile
+include yax/python.skel
+include yax/test/dap4.sax.y
+include yax/test/data/testinput/dap4.xml
+include yax/test/data/baseline/saxtest.txt
+include yax/test/data/testinput/dap4.xml
+include yax/test/data/baseline/dap4saxtest.txt
+
+

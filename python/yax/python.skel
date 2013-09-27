@@ -1,0 +1,1387 @@
+# -*- autoconf -*-
+# Python skeleton for Bison
+# Derived from existing Java skeleton
+#
+# Copyright (C) 2013 University Corporation for Atmospheric Research.
+# 
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# WARNING: In Python, line breaks
+# and indentation have syntactic significance
+# so be very careful to verify that any
+# changes are correct under any set of options.
+# An important rule is to never use tabs in this code.
+# Also note that because the python comment character (#)
+# is the same as the m4 comment character, so comments
+# only intended to appear in the skeleton leak through
+# to the final parse code.
+# Fixing this is tricky: using m4_changecom still leaves
+# comments inside quotes. So currently, the comment leaks
+# are left in place.
+
+# Under normal circumstances, lalr1.py and python.m4 would be
+# part of the bison installation. However, maintainence costs
+# prevent the bison team from including this skeleton.
+# So, python.m4 is included directly here.
+
+##################################################
+#m4_include(b4_pkgdatadir/[python.m4])
+
+##################################################
+# WARNING:
+# In Python, line breaks
+# and indentation have syntactic significance
+# so be very careful to verify that any
+# changes are correct under any set of options.
+# Also, it is a very bad idea to use tabs in any
+# python code that you write.
+##################################################
+
+m4_define([b4_remove_comma],
+  [m4_ifval(m4_quote($1), [$1, ], [])m4_shift2($@)])
+
+# b4_comment_(TEXT, OPEN, CONTINUE, END)
+# --------------------------------------
+# Put TEXT in comment.  Avoid trailing spaces: don't indent empty lines.
+# Avoid adding indentation to the first line, as the indentation comes
+# from OPEN.  That's why we don't patsubst([$1], [^\(.\)], [   \1]).
+#
+# Prefix all the output lines with PREFIX.
+m4_define([b4_comment_],
+[$2[]m4_bpatsubst(m4_expand([[$1]]), [
+\(.\)], [
+$3\1])$4])
+
+# b4_comment(TEXT, [PREFIX])
+# --------------------------
+# Put TEXT in comment. Prefix all the output lines with PREFIX.
+m4_define([b4_comment],
+[b4_comment_([$1], [$2# ], [$2# ])])
+
+# %name-prefix
+m4_define_default([b4_prefix], [[YY]])
+
+b4_percent_define_default([[parser_class_name]], [b4_prefix[]Parser])
+m4_define([b4_parser_class_name],
+  [b4_percent_define_get([[parser_class_name]])])
+
+b4_percent_define_default([[api.location.type]], [Location])
+m4_define([b4_location_type],
+  [b4_percent_define_get([[api.location.type]])])
+
+b4_percent_define_default([[api.position.type]], [Position])
+m4_define([b4_position_type],
+  [b4_percent_define_get([[api.position.type]])])
+
+# b4_percent_define_get3(DEF, PRE, POST, NOT)
+# -------------------------------------------
+# Expand to the value of DEF surrounded by PRE and POST if it's %define'ed,
+# otherwise NOT.
+m4_define([b4_percent_define_get3],
+          [m4_ifval(m4_quote(b4_percent_define_get([$1])),
+                [$2[]b4_percent_define_get([$1])[]$3], [$4])])
+
+# Override table declaring macros because of indentation issues
+
+# b4_integral_python_parser_table_define(TABLE-NAME, CONTENT, COMMENT)
+# -------------------------------------------------------------
+# Define "parser::yy<TABLE-NAME>_" whose contents is CONTENT.
+m4_define([b4_integral_python_parser_table_define],
+[yy$1_ = (
+  $2
+  )dnl
+])
+
+
+m4_define([b4_python_parser_tables_define],
+[b4_integral_parser_tables_map([b4_integral_python_parser_table_define])])
+
+
+# -----------------
+# Utility macros
+
+m4_define([b4_param_decls],
+          [m4_map([b4_param_decl], [$@])])
+m4_define([b4_param_decl], [, $1])
+
+m4_define([b4_param_calls],
+          [m4_map([b4_param_call], [$@])])
+m4_define([b4_param_call], [, $1])
+
+m4_define([b4_constructor_calls],
+          [m4_map([b4_constructor_call], [$@])])
+m4_define([b4_constructor_call],
+          [    self.$1 = $1
+])
+
+#-------------------------
+
+# b4_lex_param
+# b4_parse_param
+# --------------
+# If defined, b4_lex_param arrives double quoted, but below we prefer
+# it to be single quoted.  Same for b4_parse_param.
+
+# TODO: should be in bison.m4
+m4_define_default([b4_lex_param], [[]])
+m4_define([b4_lex_param], b4_lex_param)
+m4_define([b4_parse_param], b4_parse_param)
+
+########################
+# b4_lex_param_decl
+# -----------------
+# Extra formal arguments of the Lexer constructor.
+m4_define([b4_lex_param_decl],
+[m4_ifset([b4_lex_param],
+          [b4_remove_comma([$1],
+                           b4_param_decls(b4_lex_param))],
+          [$1])])
+
+# b4_parse_param_decl
+# -------------------
+# Extra formal arguments of the constructor.
+m4_define([b4_parse_param_decl],
+[m4_ifset([b4_parse_param],
+          [b4_remove_comma([$1],
+                           b4_param_decls(b4_parse_param))],
+          [$1])])
+
+# b4_lex_param_call
+# -----------------
+# Delegating the lexer parameters to the lexer constructor.
+m4_define([b4_lex_param_call],
+          [m4_ifset([b4_lex_param],
+                    [b4_remove_comma([$1],
+                                     b4_param_calls(b4_lex_param))],
+                    [$1])])
+
+
+# b4_parse_param_cons
+# -------------------
+# Extra initialisations of the constructor.
+m4_define([b4_parse_param_cons],
+          [m4_ifset([b4_parse_param],
+                    [b4_constructor_calls(b4_parse_param)])])
+
+# b4_token_define(TOKEN-NUM)
+# --------------------------
+# Output the definition of this token as #define.
+m4_define([b4_token_define],
+[b4_token_format([%s = %s], [$1])])
+
+# b4_token_defines
+# ----------------
+# Output the definition of the tokens.
+m4_define([b4_token_defines],
+[b4_any_token_visible_if([# Tokens.
+m4_join([
+], b4_symbol_map([b4_token_define]))
+])])
+
+# b4_flag_value(BOOLEAN-FLAG)
+# ---------------------------
+m4_define([b4_flag_value], [b4_flag_if([$1], [True], [False])])
+
+# b4_identification
+# -----------------
+m4_define([b4_identification],
+[  # Version number for the Bison executable that generated this parser.
+  bisonVersion = "b4_version"
+
+  # Name of the skeleton that generated this parser.
+  bisonSkeleton = b4_skeleton
+])
+
+# b4_null
+# -------
+m4_define([b4_null], [None])
+
+# b4_typed_parser_table_define(TYPE, NAME, DATA, COMMENT)
+# -------------------------------------------------------
+m4_define([b4_typed_parser_table_define],
+[m4_ifval([$4], [  b4_comment([$4])
+])dnl
+  [yy$2_ = (]$3[)]
+])
+
+
+# b4_debrace([CODE])
+#-----------------------------------------------------
+# Sometimes, the code has the surrounding {...}
+# left in. For python, remove these.
+m4_define([b4_debrace],[m4_translit($1,[{}])])
+
+# b4_python_indent([TEXT],[N])
+#-------------------------
+# Prefix each line in text by N blanks (0<N<=8).
+# Used to make sure %code blocks have necessary
+# minimum indentation.
+
+m4_define([b4_python_indent],
+[b4_python_nblanks([$2])m4_bpatsubst([$1],[
+],[
+b4_python_nblanks([$2])])])
+
+# b4_python_nblanks([N])
+#-------------------------
+# Helper for b4_python_indent
+m4_define([b4_python_nblanks],[m4_substr([         ],1,$1)])
+
+# b4_integral_parser_table_define(NAME, DATA, COMMENT)
+#-----------------------------------------------------
+m4_define([b4_integral_parser_table_define],
+[b4_typed_parser_table_define(None, [$1], [$2], [$3])])
+
+# b4_case(ID, CODE)
+# -----------------
+# This is complicated for python because
+# each line of the body of the action 
+# must be indented more than the 2 blanks
+# because it is now inside a try statement.
+# Before that, however, any braces must be
+# elided.
+
+m4_define([b4_case],
+[[def yycase_$1 (yyvalp, yyn, yystack, yylen, yyerror]b4_locations_if(
+[, yyloc])[):
+  yyval = yyvalp.yyval
+  try :
+]b4_python_indent(b4_debrace($2),4)[
+  finally :
+    yyvalp.yyval = yyval
+#end yycase_$1
+
+yyswitch[$1] = yycase_$1]])
+
+## ------------------------- ##
+## Assigning token numbers.  ##
+## ------------------------- ##
+
+# b4_token_enum(TOKEN-NUM)
+# ------------------------
+# Output the definition of this token as an enum.
+m4_define([b4_token_enum],
+[b4_token_format([    [#]Token number, to be returned by the scanner
+    %s = %s
+], [$1])])
+
+# b4_token_enums
+# --------------
+# Output the definition of the tokens (if there are) as enums.
+m4_define([b4_token_enums],
+[b4_any_token_visible_if([[#] Tokens.
+b4_symbol_foreach([b4_token_enum])])])
+
+# b4_lhs_value([TYPE])
+# --------------------
+# Expansion of $<TYPE>$.
+m4_define([b4_lhs_value], [yyval])
+
+
+# b4_rhs_value(RULE-LENGTH, NUM, [TYPE])
+# --------------------------------------
+# Expansion of $<TYPE>NUM, where the current rule has RULE-LENGTH
+# symbols on RHS.
+#
+# In this simple implementation, %token and %type have class names
+# between the angle brackets. For python, the type is ignored
+m4_define([b4_rhs_value],[(yystack.valueAt ($1-($2)))])
+
+# b4_lhs_location()
+# -----------------
+# Expansion of @$.
+m4_define([b4_lhs_location],
+[(yyloc)])
+
+
+# b4_rhs_location(RULE-LENGTH, NUM)
+# ---------------------------------
+# Expansion of @NUM, where the current rule has RULE-LENGTH symbols
+# on RHS.
+m4_define([b4_rhs_location],
+[yystack.locationAt ($1-($2))])
+
+m4_define([b4_yystype], [b4_percent_define_get([[api.value.type]])])
+b4_percent_define_default([[api.value.type]], [[object]])
+
+## -------------------------- ##
+## Push/Pull/Both interfaces. ##
+## -------------------------- ##
+
+# Setup some macros for api.push-pull.
+b4_percent_define_default([[api.push-pull]], [[pull]])
+b4_percent_define_check_values([[[[api.push-pull]],
+                                 [[pull]], [[push]], [[both]]]])
+
+# Define m4 conditional macros that encode the value
+# of the api.push-pull flag.
+b4_define_flag_if([pull]) m4_define([b4_pull_flag], [[1]])
+b4_define_flag_if([push]) m4_define([b4_push_flag], [[1]])
+m4_case(b4_percent_define_get([[api.push-pull]]),
+        [pull], [m4_define([b4_push_flag], [[0]])],
+        [push], [m4_define([b4_pull_flag], [[0]])])
+
+# Define a macro to be true when api.push-pull has the value 'both'.
+m4_define([b4_both_if],[b4_push_if([b4_pull_if([$1],[$2])],[$2])])
+
+# Handle BISON_USE_PUSH_FOR_PULL for the test suite.  So that push parsing
+# tests function as written, do not let BISON_USE_PUSH_FOR_PULL modify the
+# behavior of Bison at all when push parsing is already requested.
+b4_define_flag_if([use_push_for_pull])
+b4_use_push_for_pull_if([
+  b4_push_if([m4_define([b4_use_push_for_pull_flag], [[0]])],
+             [m4_define([b4_push_flag], [[1]])])])
+
+# For python, when doing push parsing, we need to use self.
+b4_push_if([m4_define([b4_self],[[self.]])],[m4_define([b4_self],[])])
+
+##################################################
+# lalr1.py
+
+b4_defines_if([b4_fatal([%s: %%defines does not make sense in Python],
+              [b4_skeleton])])
+
+# Define test macros for lex-param and parse-param
+m4_define([b4_lex_param_if],[m4_ifset([b4_lex_param],[$1],[$2])])
+
+m4_define([b4_parse_param_if],[m4_ifset([b4_parse_param],[$1],[$2])])
+
+# We do not depend on %debug in Python, but pacify warnings about
+# non-used flags.
+b4_parse_trace_if([0], [0])
+
+# Destructors are not supported (yet)
+m4_define([b4_symbol_no_destructor_assert],
+[b4_symbol_if([$1], [has_destructor],
+          [b4_fatal([%s: %s: %%destructor not supported in Python (yet)],
+                    [b4_skeleton],
+                    [b4_symbol_action_location([$1], [destructor])])])])
+b4_symbol_foreach([b4_symbol_no_destructor_assert])
+
+# Define a macro to encapsulate the parse state variables.
+# This allows them to be defined either in parse
+# pull parsing, or as class instance variable when doing push parsing.
+
+m4_define([b4_define_state],[[
+    # Lookahead and lookahead in internal form.
+    ]b4_self[yychar = yyempty_
+    ]b4_self[yytoken = 0
+
+    # State.
+    ]b4_self[yyn = 0
+    ]b4_self[yylen = 0
+    ]b4_self[yystate = 0
+    ]b4_self[yystack = YYStack ()
+    ]b4_self[label = YYNEWSTATE
+
+    # Error handling.
+    ]b4_self[yynerrs_ = 0
+    ]b4_locations_if([[# The location where the error started.
+    # Location.
+    ]b4_self[yylloc = ]b4_location_type[ (
+                                          ]b4_position_type[ (0,0),
+                                          ]b4_position_type[ (0,0))]])[
+    # Semantic value of the lookahead.
+    ]b4_self[yylval = None
+]])
+
+b4_output_begin([b4_parser_file_name])
+b4_copyright([Skeleton implementation for Bison LALR(1) parsers in Python],
+             [2013])
+
+[# A Bison parser, automatically generated from
+#  <tt>]m4_bpatsubst(b4_file_name, [^"\(.*\)"$], [\1])[</tt>.
+#
+# @@author LALR (1) parser skeleton written by Dennis Heimbigner,
+#          derived from the Java parser skeleton.
+
+# Parser skeleton starts here
+
+# First part of user declarations.
+]b4_user_pre_prologue
+b4_user_post_prologue[
+
+# Import modules required for parser operation
+import sys
+import traceback
+# Additional, user specified, imports
+]b4_percent_code_get([[imports]])[
+
+# %code top
+]b4_percent_code_get([[top]])[
+
+##################################################
+# Module Level Declarations
+##################################################
+
+# Returned by a Bison action in order to stop the parsing process and
+# return success (<tt>true</tt>).
+YYACCEPT = 0
+
+# Returned by a Bison action in order to stop the parsing process and
+# return failure (<tt>false</tt>).
+YYABORT = 1
+# Returned by a Bison action in order to start error recovery without
+# printing an error message.
+YYERROR = 2
+
+]b4_push_if([[
+# Returned by a Bison action in order to request a new token.
+YYPUSH_MORE = 4]])[
+
+# Internal return codes that are not supported for user semantic
+# actions.
+
+YYERRLAB = 3
+YYNEWSTATE = 4
+YYDEFAULT = 5
+YYREDUCE = 6
+YYERRLAB1 = 7
+YYRETURN = 8
+
+]b4_push_if([[YYGETTOKEN = 9 # Signify that a new token
+               # is expected when doing push-parsing.
+]])[
+
+# Define a symbol for use with our fake switch statement in yyaction ()
+YYACTION = 10
+
+# Map internal labels to strings for those that occur in the "switch".
+LABELNAMES = (
+"YYACCEPT",
+"YYABORT",
+"YYERROR",
+"YYERRLAB",
+"YYNEWSTATE",
+"YYDEFAULT",
+"YYREDUCE",
+"YYERRLAB1",
+"YYRETURN",
+"YYGETTOKEN",
+"YYACTION"
+)
+
+# For Python, the Token identifiers are define
+# at the module level rather than inside
+# the Lexer class. Given python's name scoping,
+# this simplifiesthings.
+
+# Token returned by the scanner to signal the end of its input.
+EOF = 0
+
+
+]b4_token_defines[
+
+# %code requires
+]b4_percent_code_get([[requires]])[
+
+##################################################
+# Table data and methods
+##################################################
+
+# Whether the given <code>yypact_</code> value indicates a defaulted state.
+# @@param yyvalue   the value to check
+
+def yy_pact_value_is_default_ (yyvalue) :
+  return yyvalue == yypact_ninf_
+
+# Whether the given <code>yytable_</code>
+# value indicates a syntax error.
+# @@param yyvalue the value to check
+
+def yy_table_value_is_error_ (yyvalue) :
+  return yyvalue == yytable_ninf_
+
+##################################################
+# Define the parsing tables
+##################################################
+
+]b4_python_parser_tables_define[
+
+]b4_integral_python_parser_table_define([token_number], [b4_toknum],
+[[YYTOKEN_NUMBER[YYLEX-NUM] -- Internal symbol number corresponding
+ to YYLEX-NUM.]])[
+
+# YYTNAME[SYMBOL-NUM] -- String name of the symbol SYMBOL-NUM.
+#   First, the terminals, then, starting at yyntokens_, nonterminals.
+]b4_integral_python_parser_table_define([tname], [b4_tname])[
+
+]b4_integral_python_parser_table_define([rline], [b4_rline],
+[[YYRLINE[YYN] -- Source line where rule number YYN was defined.]])[
+
+# YYTRANSLATE(YYLEX) -- Bison symbol number corresponding to YYLEX.
+]b4_integral_python_parser_table_define([translate_table], [b4_translate])[
+
+def yytranslate_ (t) :
+  if (t >= 0 and t <= yyuser_token_number_max_) :
+    return yytranslate_table_[t]
+  else :
+    return yyundef_token_
+
+  # Return whether error recovery is being done.  In this state, the parser
+  # reads token until it reaches a known state, and then restarts normal
+  # operation.
+  def recovering (self) :
+    return self.yyerrstatus_ == 0
+
+# Table variable related constants
+yylast_ = ]b4_last[
+yynnts_ = ]b4_nterms_number[
+yyempty_ = -2
+yyfinal_ = ]b4_final_state_number[
+yyterror_ = 1
+yyerrcode_ = 256
+yyntokens_ = ]b4_tokens_number[
+
+yyuser_token_number_max_ = ]b4_user_token_number_max[
+yyundef_token_ = ]b4_undef_token_number[
+
+yypact_ninf_ = ]b4_pact_ninf[
+yytable_ninf_ = ]b4_table_ninf[
+
+##################################################
+# Auxilliary Classes
+##################################################
+
+]b4_locations_if([[
+#
+# A class defining a pair of positions.  Positions, defined by the
+# <code>]b4_position_type[</code> class, denote a point in the input.
+# Locations represent a part of the input through the beginning
+# and ending positions.
+
+class ]b4_location_type[ :
+
+  # User varadic init to what in Jave would use multiple constructor
+  def __init__ (self, *argv) :
+    if (len(argv) == 0) :
+      self.begin = None
+      self.end = self.begin
+    elif (len(argv) == 1) :
+      self.begin = argv[0]
+      self.begin = self.begin
+    else :
+      self.begin = argv[0]
+      self.end = argv[1]
+  # end __init__
+
+  # Print a representation of the location.
+
+  def __str__ (self) :
+    if (self.begin == self.end) :
+      return str(self.begin)
+    else :
+      return str(self.begin) + '-' + str(self.end)
+# end class ]b4_location_type[
+]])[
+
+class YYStack :
+
+  def __init__ (self) :
+    self.size = 16
+    self.height = -1
+    self.stateStack=[]
+    self.valueStack=[]
+    ]b4_locations_if([self.locStack=[[]]])[
+
+  def push (self, state, value, ]b4_locations_if([loc])[) :
+    self.height += 1
+    self.stateStack.append(state)
+    self.valueStack.append(value)
+    ]b4_locations_if([self.locStack.append(loc)])[
+
+  def pop (self, num) :
+    if (num > 0) :
+      for i in range(num) :
+        self.valueStack.pop()
+        self.stateStack.pop()
+        ]b4_locations_if([[self.locStack.pop()]])[
+    self.height -= num
+
+  def stateAt (self, i) :
+    return self.stateStack[self.height - i]
+
+  ]b4_locations_if([[def locationAt (self, i) :
+    return self.locStack[self.height - i]
+  ]])[
+  def valueAt (self, i) :
+    return self.valueStack[self.height - i]
+
+  # Print the state stack on the debug stream.
+  # Note: needs to be renamed for Python
+  def yyprint (self, out) :
+    out.write ("Stack now")
+    for x in self.stateStack[:] :
+        out.write (' ')
+        out.write (str(x))
+    out.write ('\n')
+# end class YYStack
+
+##################################################
+# Class Lexer
+##################################################
+
+# This class defines the  Communication interface between the
+# scanner and the Bison-generated parser <tt>]b4_parser_class_name[</tt>.
+#
+# For Python there are some things to note.
+# 1. Lexer is defined as a class because Java-like interfaces
+#    are not supported.
+# 2. The lexer class is defined at module scope.
+# 3. Python allows for the return of multiple values, so
+#    yylex can return the token and lval all at one time.
+#    Location information is still obtained by calling
+#    Lexer methods.
+# 4. The lexer also supports the user's yyerror method,
+#    but see the note at the push_parse method.
+
+class Lexer :
+
+  def __init__ (self]b4_locations_if([, loc])[) :
+    pass
+
+]b4_locations_if([[
+  # Method to retrieve the beginning position of the last scanned token.
+  # @@return the position at which the last scanned token starts.
+
+  def getStartPos (self) :
+    return None
+
+  # Method to retrieve the ending position of the last scanned token.
+  # @@return the first position beyond the last scanned token.
+
+  def getEndPos (self) :
+    return None
+]])[
+  # Entry point for the scanner.
+  # Returns two values: (1) the token identifier corresponding
+  # to the next token, and 2) the semantic value associated with the token.
+  # ]b4_locations_if([Additionally it records the
+  #  beginning/ending positions of the token.])[
+  # @@return the token identifier corresponding to the next token
+  #          and the semantic value.
+
+  def yylex (self) :
+    return (0,None)
+
+  # Entry point for error reporting.  Emits an error
+  # ]b4_locations_if([referring to the given location ])[
+  # in a user-defined way.
+  #
+  # @@param msg The string for the error message.
+  # ]b4_locations_if([[@@param location
+  #        The location of the element to which the
+  #        error message is related]])[
+
+  def yyerror (self, ]b4_locations_if([location, ])[msg) :
+    s = msg
+    ]b4_locations_if([[s = str(location) + ": " + s]])[
+    sys.stderr.write(s+'\n')
+
+
+# If the user specifies %code lexer ...
+# Then insert it here
+]b4_percent_code_ifdef([lexer],
+[[class YYLexer (Lexer) :
+]b4_python_indent(b4_percent_code_get([lexer]),2)[
+]])[
+
+# The yyaction functions now all become global 
+# We also need a class to act as a call by reference
+# return for yyval.
+class YYVAL:
+  def __init__(self,yyval): self.yyval = yyval
+#end YYVAL
+
+yyswitch = {}
+
+]b4_user_actions[
+
+##################################################
+# Primary Parser Class
+##################################################
+
+class ]b4_parser_class_name[]b4_percent_define_get3([extends], [(], [)])[ :
+]b4_identification[
+
+
+  ##################################################
+  # Class ]b4_parser_class_name[ API
+  ##################################################
+
+  # Instance Variables
+
+  # Return whether verbose error messages are enabled.
+  def getErrorVerbose(self) :
+    return self.yyErrorVerbose
+
+  # Set the verbosity of error messages.
+  # @@param verbose True to request verbose error messages.
+  def setErrorVerbose(self, verbose) :
+    self.yyErrorVerbose = verbose
+
+  # Return the <tt>PrintStream</tt> on which the debugging output is
+  # printed.
+
+  def getDebugStream (self) :
+    return self.yyDebugStream
+
+  # Set the <tt>PrintStream</tt> on which the debug output is printed.
+  # @@param s The stream that is used for debugging output.
+  def setDebugStream(self, s) :
+    self.yyDebugStream = s
+
+  # Answer the verbosity of the debugging output 0 means that all kinds of
+  # output from the parser are suppressed.
+  def getDebugLevel (self) :
+    return self.yydebug
+
+  # Set the verbosity of the debugging output 0 means that all kinds of
+  # output from the parser are suppressed.
+  # @@param level The verbosity level for debugging output.
+  def setDebugLevel (self, level) :
+    self.yydebug = level
+
+  ##################################################
+  # Class ]b4_parser_class_name[ Constructor
+  ##################################################
+
+  # Instantiates the Bison-generated parser.
+  # ]b4_percent_code_ifdef([lexer],[],[[@@param yylexer The scanner class
+  # instance that will supply tokens to the parser.]])[
+
+  def __init__  (self]b4_percent_code_ifdef([lexer],[],
+                 [, yylexer])[]b4_lex_param_if(
+                 [, b4_lex_param_decl])[]b4_parse_param_if(
+                 [, b4_parse_param_decl])[):
+]b4_percent_code_get([[init]])[
+]b4_percent_code_ifdef([lexer],[],[    self.yylexer = yylexer])[
+]b4_percent_code_ifdef([lexer],[[    self.yylexer = YYLexer(]b4_lex_param_call[)]])[
+]b4_parse_param_if([[]b4_parse_param_cons[]])[
+    self.yyDebugStream = sys.stderr
+    self.yydebug = 0
+    self.yyerrstatus_ = 0
+]b4_push_if([    self.push_parse_initialized = False])[
+]b4_error_verbose_if([    # True if verbose error messages are enabled.
+    self.yyErrorVerbose = True])[
+  # end __init__
+
+]b4_push_if([b4_define_state])[
+
+  ##################################################
+  # User defined action invocation.
+  ##################################################
+
+  # For python, pass in the yyerror function
+  # to simplify access so the caller does not need to prefix it.
+  def yyaction (self, yyn, yystack, yylen, yyerror) :
+    yylval = None
+    ]b4_locations_if([[yyloc = self.yylocation (yystack, yylen)]])[
+
+    # If YYLEN is nonzero, implement the default value of the action:
+    #   '$$ = $1'.  Otherwise, use the top of the stack.
+    #    Otherwise, the following line sets YYVAL to garbage.
+    #    This behavior is undocumented and Bison
+    #    users should not rely upon it.
+    if (yylen > 0) :
+      yyval = yystack.valueAt (yylen - 1)
+    else :
+      yyval = yystack.valueAt (0)
+
+    self.yy_reduce_print (yyn, yystack)
+
+    # Simulate a switch in python using a dictionary
+    # that maps states to functions defining the user defined
+    # actions. (See just be for the YYParser class definition
+    # above). This depends on the fact that passing mutable objects
+    # into a function allows the function to modify that object.
+    # Note that the action body is indentation sensitive
+
+    if (yyn in yyswitch) :
+      action = yyswitch[yyn]
+      yyvalp = YYVAL(yyval)
+      status = action(yyvalp, yyn, yystack, yylen, yyerror]b4_locations_if(
+[, yyloc])[)
+      yyval = yyvalp.yyval
+      if(status != None) : return status
+    else: # no such action index; ignore
+      pass
+
+    self.yy_symbol_print ("-> $$ =",
+                          yyr1_[yyn], yyval]b4_locations_if([, yyloc])[)
+
+    yystack.pop (yylen)
+    yylen = 0
+
+    # Shift the result of the reduction.
+    yyn = yyr1_[yyn]
+    tmp = yyntokens_ # quote problem
+    yystate = yypgoto_[yyn - tmp] + yystack.stateAt (0)
+    if (0 <= yystate
+        and yystate <= yylast_
+        and yycheck_[yystate] == yystack.stateAt (0)) :
+      yystate = yytable_[yystate]
+    else :
+      yystate = yydefgoto_[yyn - tmp]
+
+    yystack.push (yystate, yyval]b4_locations_if([, yyloc])[)
+    return YYNEWSTATE
+  # end yyaction
+
+  ##################################################
+  # Debug output for rule reduction
+  # Report on the debug stream that the rule yyrule is going to be reduced.
+  ##################################################
+
+  def yy_reduce_print (self, yyrule, yystack) :
+    if (self.yydebug == 0) :
+      return
+
+    yylno = yyrline_[yyrule]
+    yynrhs = yyr2_[yyrule]
+    # Print the symbols being reduced, and their result.
+    self.yycdebug ("Reducing stack by rule " + str(yyrule - 1)
+               + " (line " + str(yylno) + "), ")
+
+    # The symbols being reduced.
+    for yyi in range(yynrhs) :
+      self.yy_symbol_print ("   $" + str(yyi + 1) + " =",
+                       yystos_[yystack.stateAt(yynrhs - (yyi + 1))],
+                       ]b4_rhs_value(yynrhs, yyi + 1)b4_locations_if([,
+                       b4_rhs_location(yynrhs, yyi + 1)])[)
+  # end yy_reduce_print
+
+
+]b4_push_if([],[[
+
+  # Primary push parser API method.
+  # Parse input from the scanner that was specified at object construction
+  # time.  Return whether the end of the input was reached successfully.
+  #
+  # @@return <tt>True</tt> if the parsing succeeds.
+  # Note that this does not imply that there were no syntax errors.
+
+  def  parse (self) :
+    ]b4_locations_if([    # @@$.
+])
+[]b4_define_state[
+]])[
+]b4_push_if([[
+
+  # Primary push parser API method
+  # Push parse given input from an external lexer.
+  # Position provided rather than Location.
+  #
+  # @@param yylextoken current token
+  # @@param yylexval current lval
+  # @@param (Optional) location=None current position;
+  #ignored if location tracking is disabled.
+  #
+  # @@return <tt>YYACCEPT, YYABORT, YYPUSH_MORE</tt>
+
+  def push_parse (self, yylextoken, yylexval]b4_locations_if([
+                  , yylexloc])[) :
+]b4_locations_if([    # @@$.
+])[
+]])[
+]b4_push_if([[
+    if (not self.push_parse_initialized) :
+      self.push_parse_initialize ()
+      self.yycdebug ("Starting parse\n")
+      self.yyerrstatus_ = 0
+      # Initialize the stack.
+      ]b4_self[yystack.push (]b4_self[yystate,
+                             ]b4_self[yylval ]b4_locations_if(
+                             [, ]b4_self[yylloc])[)
+]m4_ifdef([b4_initial_action], [
+b4_dollar_pushdef([b4_self[]yylval], [], [b4_self[]yylloc])dnl
+      # User initialization code.
+      b4_debrace([b4_user_initial_action])
+b4_dollar_popdef[]dnl
+])[
+    else :
+      ]b4_self[label = YYGETTOKEN
+    push_token_consumed = True
+]])[
+]b4_push_if([],[[
+    self.yycdebug ("Starting parse\n")
+    self.yyerrstatus_ = 0
+    # Initialize the stack.
+    ]b4_self[yystack.push (]b4_self[yystate,
+                           ]b4_self[yylval ]b4_locations_if(
+                           [[,]b4_self[yylloc]])[)
+
+]m4_ifdef([b4_initial_action], [
+b4_dollar_pushdef([b4_self[]yylval], [], [b4_self[]yylloc])dnl
+    # User initialization code.
+    b4_debrace([b4_user_initial_action])
+b4_dollar_popdef[]dnl
+])[
+]])[
+
+    ##################################################
+    # Begin code common to push and pull parsing
+    ##################################################
+
+    while True :
+      #sys.stderr.write("label=("+str(self.label)+")="
+      #+LABELNAMES[self.label]+'\n')
+
+      # For python we need to simulate switch using if statements
+      # Because we have the enclosing while loop, we can exit the switch
+      # using continue instead of break (assumes that there is no code
+      # following the switch).
+      # switch label :
+      # New state.  Unlike in the C/C++ skeletons, the state is already
+      # pushed when we come here.
+      if ]b4_self[label == YYNEWSTATE : # case YYNEWSTATE
+        self.yycdebug ("Entering state " + str(]b4_self[yystate) + '\n')
+        if (self.yydebug > 0) :
+          ]b4_self[yystack.yyprint (self.yyDebugStream)
+
+        # Accept?
+        if (]b4_self[yystate == yyfinal_) :
+          ]b4_push_if([]b4_self[label = YYACCEPT
+          continue],
+          [return True])[
+
+        # Take a decision.  First try without lookahead.
+        # Quote problem
+        tmp = ]b4_self[yystate
+        ]b4_self[yyn = yypact_[tmp]
+        if (yy_pact_value_is_default_ (]b4_self[yyn)) :
+            ]b4_self[label = YYDEFAULT
+            continue; # break switch
+]b4_push_if([[
+        ]b4_self[label = YYGETTOKEN # Cheat to simulate fall thru
+      elif ]b4_self[label == YYGETTOKEN : # case YYGETTOKEN
+        # Read a lookahead token.
+        if (]b4_self[yychar == yyempty_) :
+          if ( not push_token_consumed) :
+            return YYPUSH_MORE
+          self.yycdebug ("Reading a token: ")
+          ]b4_self[yychar = yylextoken
+          ]b4_self[yylval = yylexval]b4_locations_if([
+          ]b4_self[yylloc = yylexloc])[
+          push_token_consumed = False]])[
+]b4_push_if([],[[
+        # Read a lookahead token.
+        if (]b4_self[yychar == yyempty_) :
+          self.yycdebug ("Reading a token: ")
+          yychar, yylval = self.yylexer.yylex()
+          ]b4_locations_if([
+          yylloc = ]b4_location_type[ (self.yylexer.getStartPos (),
+                                       self.yylexer.getEndPos ())])[
+]])[
+        # Convert token to internal form.
+        if (]b4_self[yychar <= EOF) :
+          ]b4_self[yychar = EOF
+          ]b4_self[yytoken = EOF
+          self.yycdebug ("Now at end of input.\n")
+        else :
+          ]b4_self[yytoken = yytranslate_ (]b4_self[yychar)
+          self.yy_symbol_print ("Next token is",
+                                ]b4_self[yytoken,
+                                ]b4_self[yylval
+                                ]b4_locations_if([, ]b4_self[yylloc])[
+                                )
+
+        # If the proper action on seeing token YYTOKEN is to reduce or to
+        # detect an error, then take that action.
+        ]b4_self[yyn += ]b4_self[yytoken
+        tmp = ]b4_self[yyn # Quote problem
+        if (]b4_self[yyn < 0 
+            or yylast_ < ]b4_self[yyn
+            or yycheck_[tmp] != ]b4_self[yytoken) :
+          ]b4_self[label = YYDEFAULT
+
+        # <= 0 means reduce or error.
+        elif (yytable_[tmp] <= 0) :
+          ]b4_self[yyn = yytable_[tmp]
+          if (yy_table_value_is_error_ (]b4_self[yyn)) :
+            ]b4_self[label = YYERRLAB
+          else :
+            ]b4_self[yyn = -]b4_self[yyn
+            ]b4_self[label = YYREDUCE
+        else :
+          tmp = ]b4_self[yyn # Quote problem
+          ]b4_self[yyn = yytable_[tmp]
+          # Shift the lookahead token.
+          self.yy_symbol_print ("Shifting",
+                                ]b4_self[yytoken,
+                                ]b4_self[yylval]b4_locations_if(
+                                [, ]b4_self[yylloc])[)
+
+          # Discard the token being shifted.
+          ]b4_self[yychar = yyempty_
+
+          # Count tokens shifted since error after three, turn off error
+          # status.
+          if (self.yyerrstatus_ > 0) :
+              self.yyerrstatus_ -= 1
+
+          ]b4_self[yystate = ]b4_self[yyn
+          ]b4_self[yystack.push (]b4_self[yystate, ]b4_self[]dnl
+            [yylval]b4_locations_if([, ]b4_self[yylloc])[)
+          ]b4_self[label = YYNEWSTATE
+      # end case YYNEWSTATE
+
+      #-----------------------------------------------------------.
+      #| yydefault -- do the default action for the current state.  |
+      #-----------------------------------------------------------
+      elif ]b4_self[label == YYDEFAULT : #case YYDEFAULT
+        tmp = ]b4_self[yystate # Quote problem
+        ]b4_self[yyn = yydefact_[tmp]
+        if (]b4_self[yyn == 0) :
+          ]b4_self[label = YYERRLAB
+        else :
+          ]b4_self[label = YYREDUCE
+      # end case YYDEFAULT
+
+      #-----------------------------.
+      #| yyreduce -- Do a reduction.  |
+      #-----------------------------
+      elif ]b4_self[label == YYREDUCE : #case YYREDUCE
+        tmp = ]b4_self[yyn # Quote problem
+        ]b4_self[yylen = yyr2_[tmp]
+        ]b4_self[label = self.yyaction (]b4_self[yyn, ]dnl
+        b4_self[yystack, ]b4_self[yylen, self.yylexer.yyerror)
+        ]b4_self[yystate = ]b4_self[yystack.stateAt (0)
+      # end case YYDEFAULT
+
+      #------------------------------------.
+      #| yyerrlab -- here on detecting error |
+      #------------------------------------
+      elif ]b4_self[label == YYERRLAB: #case YYERRLAB
+        # If not already recovering from an error, report this error.
+        if (self.yyerrstatus_ == 0) :
+          ]b4_self[yynerrs_ += 1
+          if (]b4_self[yychar == yyempty_) :
+            ]b4_self[yytoken = yyempty_
+          tmp = self.yysyntax_error (]b4_self[yystate, ]b4_self[yytoken)
+          self.yyerror (]b4_locations_if([[]b4_self[yylloc, ]])[tmp)
+
+        ]b4_locations_if([]b4_self[yyerrloc = ]b4_self[yylloc])[
+        if (self.yyerrstatus_ == 3) :
+          # If just tried and failed to reuse lookahead token after an
+          # error, discard it.
+
+          if (]b4_self[yychar <= EOF) :
+            # Return failure if at end of input.
+            if (]b4_self[yychar == EOF) :
+              ]b4_push_if([]b4_self[label = YYABORT
+              continue],
+              [return False])[
+          else :
+            ]b4_self[yychar = yyempty_
+
+        # Else will try to reuse lookahead token after
+        # shifting the error token.
+        ]b4_self[label = YYERRLAB1
+      # end case YYERRLAB
+
+      #-------------------------------------------------.
+      #| errorlab -- error raised explicitly by YYERROR.  |
+      #-------------------------------------------------
+      elif ]b4_self[label == YYERROR : #case YYERROR
+        ]b4_locations_if([]b4_self[yyerrloc = ]b4_self[]dnl
+          [yystack.locationAt (]b4_self[yylen - 1)])[
+        # Do not reclaim the symbols of the rule which action triggered
+        # this YYERROR.
+        ]b4_self[yystack.pop (]b4_self[yylen)
+        ]b4_self[yylen = 0
+        ]b4_self[yystate = ]b4_self[yystack.stateAt (0)
+        ]b4_self[label = YYERRLAB1
+      # end case YYERROR
+
+      #-------------------------------------------------------------.
+      #| yyerrlab1 -- common code for both syntax error and YYERROR.  |
+      #-------------------------------------------------------------
+      elif ]b4_self[label == YYERRLAB1 : #case YYERRLAB1
+        self.yyerrstatus_ = 3 # Each real token shifted decrements this.
+        while True :
+          tmp = ]b4_self[yystate # Quote problem
+          ]b4_self[yyn = yypact_[tmp]
+          if ( not yy_pact_value_is_default_ (]b4_self[yyn)) :
+            ]b4_self[yyn += yyterror_
+            tmp = ]b4_self[yyn # Quote problem
+            if (0 <= ]b4_self[yyn and ]b4_self[yyn <= yylast_ \
+                and yycheck_[tmp] == yyterror_) :
+              ]b4_self[yyn = yytable_[tmp]
+              if (0 < ]b4_self[yyn) :
+                break # leave while loop
+
+            # Pop the current state because it cannot handle the
+            # error token.
+            if (]b4_self[yystack.height == 0) :
+              ]b4_push_if([]b4_self[label = YYABORT
+              continue # Leave the switch],
+              [return False])[
+
+            ]b4_locations_if(
+            []b4_self[yyerrloc = ]b4_self[yystack.locationAt (0)])[
+            ]b4_self[yystack.pop (1)
+            ]b4_self[yystate = ]b4_self[yystack.stateAt (0)
+            if (self.yydebug > 0) :
+              ]b4_self[yystack.yyprint (self.yyDebugStream)
+
+        if (]b4_self[label == YYABORT) :
+          continue # Leave the switch.
+]b4_locations_if([
+        # Muck with the stack to setup for ]b4_self[yylloc.
+        ]b4_self[yystack.push (0, None, ]b4_self[yylloc)
+        ]b4_self[yystack.push (0, None, ]b4_self[yyerrloc)
+        yyloc = self.yylocation (]b4_self[yystack, 2)
+        ]b4_self[yystack.pop (2)])[
+
+        # Shift the error token.
+        tmp = ]b4_self[yyn
+        self.yy_symbol_print ("Shifting", yystos_[tmp],
+                         ]b4_self[yylval]b4_locations_if([, yyloc])[)
+
+        ]b4_self[yystate = ]b4_self[yyn
+        ]b4_self[yystack.push (]b4_self[yyn, ]b4_self[yylval]dnl
+               b4_locations_if([, yyloc])[)
+        ]b4_self[label = YYNEWSTATE
+        continue # leave the switch
+      # end case YYERRLAB1
+
+      # Accept.
+      elif ]b4_self[label == YYACCEPT : # case YYACCEPT
+        ]b4_push_if([self.push_parse_initialized = False
+        return YYACCEPT],
+        [return True])[
+      # end case YYACCEPT
+
+      # Abort.
+      elif ]b4_self[label == YYABORT: # case YYABORT
+        ]b4_push_if([self.push_parse_initialized = False
+        return YYABORT],
+        [return False])[
+      # end case YYABORT
+
+      else :
+        assert False, "Unknown State:" + str(]b4_self[label)
+
+  # end ]b4_push_if([push_parse],[parse])[
+
+
+]b4_push_if([[
+
+  # (Re-)Initialize the state of the push parser.
+
+  def push_parse_initialize(self) :
+]b4_define_state[
+
+    self.push_parse_initialized = True
+
+  # end push_parse_initialize
+]])[
+]b4_both_if([[
+  # Parse input from the scanner that was specified at object construction
+  # time.  Return whether the end of the input was reached successfully.
+  # This version of parse () is defined only when api.push-push=both.
+  #
+  # @@return <tt>true</tt> if the parsing succeeds.
+  #          Note that this does notimply that there were no syntax errors.
+
+  def parse (self) :
+    if (self.yylexer is None) :
+      raise Exception("Null Lexer")
+    while True :
+      yytoken, yylval = self.yylexer.yylex()
+      ]b4_locations_if(
+      [yyloc = ]b4_location_type[ (self.yylexer.getStartPos (),
+                        self.yylexer.getEndPos ())])[
+      status = self.push_parse(yytoken,yylval]b4_locations_if([[,yyloc]])[)
+      if (status  != YYPUSH_MORE) :
+        break
+    return (status == YYACCEPT)
+
+  # end parse
+]])[
+
+  ##################################################
+  # Class ]b4_parser_class_name[ Internal Methods
+  ##################################################
+
+]b4_locations_if([[
+  # Construct a position for a given rhs token
+  # This must be renamed in python to avoid
+  # conflict with the yylloc variable.
+  # Rename from yylloc to yylocation
+  def yylocation (self, rhs, n) :
+    if (n > 0) :
+      return ]b4_location_type[(rhs.locationAt (n-1).begin,
+              rhs.locationAt (0).end)
+    else :
+      return ]b4_location_type[ (rhs.locationAt (0).end)
+]])[
+
+  # Print an error message via the lexer.
+  # @@param msg The error message.
+  # @@param locaction (Optional) The location or position
+  #                associated with the message.
+
+  def yyerror (self, ]b4_locations_if([loc_or_pos, ])[msg) :
+    ]b4_locations_if([[if (loc_or_pos is not None
+         and issubclass(loc_or_pos.__class__, ]b4_position_type[)) :
+      self.yylexer.yyerror (]b4_location_type[(loc_or_pos), msg)
+    else :
+      self.yylexer.yyerror (loc_or_pos, msg)
+  ]],[self.yylexer.yyerror (msg)])[
+  # end yyerror
+
+  def yycdebug (self, s) :
+    if (self.yydebug > 0) :
+      self.yyDebugStream.write (s+'\n')
+  # end self.yycdebug
+
+]b4_error_verbose_if([[
+  # Return YYSTR after stripping away unnecessary quotes and
+  # backslashes, so that it's suitable for yyerror.  The heuristic is
+  # that double-quoting is unnecessary unless the string contains an
+  # apostrophe, a comma, or backslash (other than backslash-backslash).
+  # YYSTR is taken from yytname.
+  def yytnamerr_ (self, yystr) :
+    yyr = ""
+    if (yystr[0] == '"')  :
+      l = len(yystr)
+      i = 1
+      while (True) :
+        if (i >= l) : break
+        c = yystr[i]
+        if(c == "'" or c == ',') :
+          continue
+        if( c == '"'):
+          return yyr
+        if(c == '\\') :
+          i += 1
+          c = yystr[i]
+          if(c != '\\') :
+            break
+        yyr = yyr + c
+        i += 1
+      # end while
+    elif (yystr ==  "$end") :
+      return "end of input"
+    return yystr;
+  # end yytnamerr
+]])[
+
+  #--------------------------------.
+  #| Print this symbol on YYOUTPUT.  |
+  #--------------------------------
+
+  def yy_symbol_print (self, s, yytype, yyvaluep ]b4_locations_if(
+                                                 [, yylocationp])[) :
+    if (self.yydebug > 0) :
+      tag = " nterm "
+      if (yytype < yyntokens_) :
+        tag = " token "
+      if (yyvaluep is None) :
+        vps = "None"
+      else :
+        vps = str(yyvaluep)
+      tname = yytname_[yytype]
+      line = s + tag + tname
+      line += " ("
+      ]b4_locations_if([line += str(yylocationp)
+      line += ": "])[
+      line += vps
+      line += ')'
+      self.yycdebug (line)
+  # end yy_symbol_print
+
+  # Generate an error message.
+  def yysyntax_error (self, yystate, tok) :
+  ]b4_error_verbose_if([[
+    if (self.yyErrorVerbose) :
+      # There are many possibilities here to consider:
+      # - If this state is a consistent state with a default action,
+      #   then the only way this function was invoked is if the
+      #   default action is an error action.  In that case, don't
+      #   check for expected tokens because there are none.
+      # - The only way there can be no lookahead present (in tok) is
+      #   if this state is a consistent state with a default action.
+      #   Thus, detecting the absence of a lookahead is sufficient to
+      #   determine that there is no unexpected or expected token to
+      #   report.  In that case, just report a simple 'syntax error'.
+      # - Don't assume there isn't a lookahead just because this
+      #   state is a consistent state with a default action.  There
+      #   might have been a previous inconsistent state, consistent
+      #   state with a non-default action, or user semantic action
+      #   that manipulated ]b4_self[yychar.  (However, ]b4_self[yychar
+      #   is currently out of scope during semantic actions.)
+      # - Of course, the expected token list depends on states to
+      #   have correct lookahead information, and it depends on the
+      #   parser not to perform extra reductions after fetching a
+      #   lookahead from the scanner and before detecting a syntax
+      #   error.  Thus, state merging (from LALR or IELR) and default
+      #   reductions corrupt the expected token list.  However, the
+      #   list is correct for canonical LR with one exception: it
+      #   will still contain any token that will not be accepted due
+      #   to an error action in a later state.
+
+      if (tok  != yyempty_) :
+        # FIXME: This method of building the message is not compatible
+        # with internationalization.
+        res = "syntax error, unexpected "
+        res += (self.yytnamerr_ (yytname_[tok]))
+        tmp = ]b4_self[yystate
+        ]b4_self[yyn = yypact_[tmp]
+        if ( not yy_pact_value_is_default_ (]b4_self[yyn)) :
+          # Start YYX at -YYN if negative to avoid negative
+          # indexes in YYCHECK.  In other words, skip the first
+          # -YYN actions for this state because they are default actions.
+          yyxbegin = 0
+          if (]b4_self[yyn < 0) :
+            yyxbegin =  - ]b4_self[yyn
+          # Stay within bounds of both yycheck and yytname.
+          yychecklim = yylast_ - ]b4_self[yyn + 1
+          yyxend = yychecklim
+          if (yychecklim >= yyntokens_) :
+            yyxend = yyntokens_
+          count = 0
+          for x in range(yyxbegin,yyxend) :
+            tmp = ]b4_self[yyn
+            if (yycheck_[x + tmp] == x and x != yyterror_
+                and  not yy_table_value_is_error_ (yytable_[x + tmp])) :
+              count += 1
+          if (count < 5) :
+            count = 0
+            for x in range(yyxbegin,yyxend) :
+              tmp = ]b4_self[yyn
+              if (yycheck_[x + tmp] == x and x != yyterror_
+                  and  not yy_table_value_is_error_ (yytable_[x + tmp])) :
+                if (count == 0) :
+                  res += ", expecting "
+                else :
+                  res += " or "
+                count += 1
+                res += (self.yytnamerr_ (yytname_[x]))
+        return str(res)
+]])[
+    return "syntax error"
+  # end yysyntax_error
+
+
+]# %code provides.
+b4_percent_code_get([[provides]])[
+]# User implementation code.
+b4_percent_code_get[]dnl
+
+b4_epilogue[]dnl
+b4_output_end()
+

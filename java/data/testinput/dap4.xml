@@ -1,4 +1,4 @@
-<Group name="example"
+<Dataset name="example"
        dapVersion="4.0"
        xmlns="http://xml.opendap.org/ns/DAP/4.0#">
 
@@ -56,4 +56,4 @@
   <Dim name="/g\.@\/\\$/lon\/2\.\\"/>
 </Int32>
 
-</Group>
+</Dataset>

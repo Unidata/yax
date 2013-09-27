@@ -1,17 +1,11 @@
 package yax.test;
 
 import org.w3c.dom.Node;
-import yax.lex.DomLexer;
-import yax.lex.Type;
-import yax.lex.Util;
-import yax.lex.Lexeme;
+import yax.lex.*;
+import yax.lex.DomEventType;
 
-import java.io.*;
-import java.util.Stack;
 import java.util.Map;
 import java.util.HashMap;
-
-import static yax.test.Dap4DomParser.*;
 
 class Dap4DomLexer implements Dap4DomParser.Lexer
 {
@@ -25,9 +19,12 @@ class Dap4DomLexer implements Dap4DomParser.Lexer
     static {
         elementmap = new HashMap<String,Lexeme>();
         attributemap = new HashMap<String, Lexeme>();
+        elementmap.put("Dataset",
+                        new Lexeme("Dataset",DATASET_,_DATASET,
+                        new String[]{"name","dapversion","ddxversion","ns","base","xmlns"}));
         elementmap.put("Group",
                         new Lexeme("Group",GROUP_,_GROUP,
-                        new String[]{"name","dapversion","ddxversion","ns","base","xmlns"}));
+                        new String[]{"name"}));
         elementmap.put("Enumeration",
                         new Lexeme("Enumeration",ENUMERATION_,_ENUMERATION,
                         new String[]{"name","basetype"}));
@@ -178,7 +175,7 @@ class Dap4DomLexer implements Dap4DomParser.Lexer
     {
 	int yytoken = UNKNOWN;
 	String name;
-        Type yaxtoken = Type.UNDEFINED;
+        DomEventType yaxtoken = DomEventType.UNDEFINED;
 
 	while(yytoken == UNKNOWN) {
 	    yaxtoken = domlexer.nextToken();

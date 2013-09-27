@@ -133,20 +133,20 @@ public class DomLexer
     /**
      * Entry point for the scanner. Returns a Yax token type
      * and sets the value of currentnode.
-     * @return the yax.lex.Type corresponding to the next token
+     * @return the yax.lex.DomEventType corresponding to the next token
      *         and fill in token
      */
-    public Type
+    public DomEventType
     nextToken()
         throws Exception
     {
 	Node node = null;
-        Type tokentype = Type.UNDEFINED;
+        DomEventType tokentype = DomEventType.UNDEFINED;
 
-	while(tokentype == Type.UNDEFINED) {
+	while(tokentype == DomEventType.UNDEFINED) {
 	    if(state == null) {
 		if(path.empty()) {
-		    tokentype = Type.EOF;
+		    tokentype = DomEventType.EOF;
 		    break;
 		}
 		state = path.pop();
@@ -174,8 +174,8 @@ public class DomLexer
                      // element, otherwise try again
 		node = state.node;
                 if(node.getNodeType() == ELEMENT_NODE) {
-		    tokentype = (state.nchild == 0 ? Type.CLOSE
-						    : Type.EMPTYCLOSE);
+		    tokentype = (state.nchild == 0 ? DomEventType.CLOSE
+						    : DomEventType.EMPTYCLOSE);
 		}
 		state = null; // cause path to be popped
 	    }
@@ -257,19 +257,19 @@ public class DomLexer
     }
 
    /**
-     Convert an org.w3c.dom.Node nodetype to a yax.lex.Type enum.
+     Convert an org.w3c.dom.Node nodetype to a yax.lex.DomEventType enum.
      @param nodetype of interest
-     @return yax.lex.Type enu,
+     @return yax.lex.DomEventType enu,
      */
-    static public Type node2token(short nodetype)
+    static public DomEventType node2token(short nodetype)
     {
 	switch (nodetype) {
-	case ATTRIBUTE_NODE: return Type.ATTRIBUTE;
-	case CDATA_SECTION_NODE: return Type.CDATA;
-	case COMMENT_NODE: return Type.COMMENT;
-	case DOCUMENT_NODE: return Type.DOCTYPE;
-	case ELEMENT_NODE: return Type.OPEN;
-	case TEXT_NODE: return Type.TEXT;
+	case ATTRIBUTE_NODE: return DomEventType.ATTRIBUTE;
+	case CDATA_SECTION_NODE: return DomEventType.CDATA;
+	case COMMENT_NODE: return DomEventType.COMMENT;
+	case DOCUMENT_NODE: return DomEventType.DOCTYPE;
+	case ELEMENT_NODE: return DomEventType.OPEN;
+	case TEXT_NODE: return DomEventType.TEXT;
 
 	case DOCUMENT_FRAGMENT_NODE:
 	case DOCUMENT_TYPE_NODE:
@@ -279,7 +279,7 @@ public class DomLexer
 	case PROCESSING_INSTRUCTION_NODE:
 	default : break;
 	}
-        return Type.UNDEFINED;
+        return DomEventType.UNDEFINED;
     }
 
 } // class DomLexer

@@ -4,12 +4,12 @@
 package yax.test;
 
 import yax.lex.*;
-
 import org.xml.sax.*;
-
 import java.util.*;
 
 import static yax.test.Dap4SaxParser.*;
+import static yax.test.Dap4SaxParser.Lexer.*;
+
 
 public class Dap4SaxEventHandler extends SaxEventHandler
 {
@@ -22,109 +22,114 @@ public class Dap4SaxEventHandler extends SaxEventHandler
     //////////////////////////////////////////////////
     // static fields
 
-    static Map<String,Lexeme> elementmap;
-    static Map<String,Lexeme> attributemap;
+    static Map<String, Lexeme> elementmap;
+    static Map<String, Lexeme> attributemap;
 
     static {
-        elementmap = new HashMap<String,Lexeme>();
+        elementmap = new HashMap<String, Lexeme>();
         attributemap = new HashMap<String, Lexeme>();
 
+        elementmap.put("Dataset",
+            new Lexeme("Dataset", DATASET_, _DATASET,
+                new String[]{"name", "dapversion", "ddxversion", "ns", "base", "xmlns"}));
         elementmap.put("Group",
-                        new Lexeme("Group",GROUP_,_GROUP,
-                        new String[]{"name","dapversion","ddxversion","ns","base","xmlns"}));
+            new Lexeme("Group", GROUP_, _GROUP,
+                new String[]{"name"}));
         elementmap.put("Enumeration",
-                        new Lexeme("Enumeration",ENUMERATION_,_ENUMERATION,
-                        new String[]{"name","basetype"}));
+            new Lexeme("Enumeration", ENUMERATION_, _ENUMERATION,
+                new String[]{"name", "basetype"}));
         elementmap.put("EnumConst",
-                        new Lexeme("EnumConst",ENUMCONST_,_ENUMCONST,
-                        new String[]{"name","value"}));
+            new Lexeme("EnumConst", ENUMCONST_, _ENUMCONST,
+                new String[]{"name", "value"}));
         elementmap.put("Namespace",
-                        new Lexeme("Namespace",NAMESPACE_,_NAMESPACE,
-                        new String[]{"href"}));
+            new Lexeme("Namespace", NAMESPACE_, _NAMESPACE,
+                new String[]{"href"}));
         elementmap.put("Dimension",
-                        new Lexeme("Dimension",DIMENSION_,_DIMENSION,
-                        new String[]{"name","size"}));
+            new Lexeme("Dimension", DIMENSION_, _DIMENSION,
+                new String[]{"name", "size"}));
         elementmap.put("Dim",
-                        new Lexeme("Dim",DIM_,_DIM,
-                        new String[]{"name","size"}));
+            new Lexeme("Dim", DIM_, _DIM,
+                new String[]{"name", "size"}));
         elementmap.put("Enum",
-                        new Lexeme("Enum",ENUM_,_ENUM,
-                        new String[]{"enum","name"}));
+            new Lexeme("Enum", ENUM_, _ENUM,
+                new String[]{"enum", "name"}));
         elementmap.put("Map",
-                        new Lexeme("Map",MAP_,_MAP,
-                        new String[]{"name"}));
+            new Lexeme("Map", MAP_, _MAP,
+                new String[]{"name"}));
         elementmap.put("Structure",
-                        new Lexeme("Structure",STRUCTURE_,_STRUCTURE,
-                        new String[]{"name"}));
+            new Lexeme("Structure", STRUCTURE_, _STRUCTURE,
+                new String[]{"name"}));
         elementmap.put("Value",
-                        new Lexeme("Value",VALUE_,_VALUE,
-                        new String[]{"value"}));
+            new Lexeme("Value", VALUE_, _VALUE,
+                new String[]{"value"}));
         elementmap.put("Attribute",
-                        new Lexeme("Attribute",ATTRIBUTE_,_ATTRIBUTE,
-                        new String[]{"name","type","namespace"}));
+            new Lexeme("Attribute", ATTRIBUTE_, _ATTRIBUTE,
+                new String[]{"name", "type", "namespace"}));
 
         elementmap.put("Char",
-                        new Lexeme("Char",CHAR_,_CHAR,
-                        new String[]{"name"}));
+            new Lexeme("Char", CHAR_, _CHAR,
+                new String[]{"name"}));
         elementmap.put("Byte",
-                        new Lexeme("Byte",BYTE_,_BYTE,
-                        new String[]{"name"}));
+            new Lexeme("Byte", BYTE_, _BYTE,
+                new String[]{"name"}));
         elementmap.put("Int8",
-                        new Lexeme("Int8",INT8_,_INT8,
-                        new String[]{"name"}));
+            new Lexeme("Int8", INT8_, _INT8,
+                new String[]{"name"}));
         elementmap.put("UInt8",
-                        new Lexeme("UInt8",UINT8_,_UINT8,
-                        new String[]{"name"}));
+            new Lexeme("UInt8", UINT8_, _UINT8,
+                new String[]{"name"}));
         elementmap.put("Int16",
-                        new Lexeme("Int16",INT16_,_INT16,
-                        new String[]{"name"}));
+            new Lexeme("Int16", INT16_, _INT16,
+                new String[]{"name"}));
         elementmap.put("UInt16",
-                        new Lexeme("UInt16",UINT16_,_UINT16,
-                        new String[]{"name"}));
+            new Lexeme("UInt16", UINT16_, _UINT16,
+                new String[]{"name"}));
         elementmap.put("Int32",
-                        new Lexeme("Int32",INT32_,_INT32,
-                        new String[]{"name"}));
+            new Lexeme("Int32", INT32_, _INT32,
+                new String[]{"name"}));
         elementmap.put("UInt32",
-                        new Lexeme("UInt32",UINT32_,_UINT32,
-                        new String[]{"name"}));
+            new Lexeme("UInt32", UINT32_, _UINT32,
+                new String[]{"name"}));
         elementmap.put("Int64",
-                        new Lexeme("Int64",INT64_,_INT64,
-                        new String[]{"name"}));
+            new Lexeme("Int64", INT64_, _INT64,
+                new String[]{"name"}));
         elementmap.put("UInt64",
-                        new Lexeme("UInt64",UINT64_,_UINT64,
-                        new String[]{"name"}));
+            new Lexeme("UInt64", UINT64_, _UINT64,
+                new String[]{"name"}));
         elementmap.put("Float32",
-                        new Lexeme("Float32",FLOAT32_,_FLOAT32,
-                        new String[]{"name"}));
+            new Lexeme("Float32", FLOAT32_, _FLOAT32,
+                new String[]{"name"}));
         elementmap.put("Float64",
-                        new Lexeme("Float64",FLOAT64_,_FLOAT64,
-                        new String[]{"name"}));
+            new Lexeme("Float64", FLOAT64_, _FLOAT64,
+                new String[]{"name"}));
         elementmap.put("String",
-                        new Lexeme("String",STRING_,_STRING,
-                        new String[]{"name"}));
+            new Lexeme("String", STRING_, _STRING,
+                new String[]{"name"}));
         elementmap.put("URL",
-                        new Lexeme("URL",URL_,_URL,
-                        new String[]{"name"}));
+            new Lexeme("URL", URL_, _URL,
+                new String[]{"name"}));
         elementmap.put("Opaque",
-                        new Lexeme("Opaque",OPAQUE_,_OPAQUE,
-                        new String[]{"name"}));
+            new Lexeme("Opaque", OPAQUE_, _OPAQUE,
+                new String[]{"name"}));
 
-	// Always insert the lowercase name
-        attributemap.put("base",new Lexeme("base",ATTR_BASE));
-        attributemap.put("basetype",new Lexeme("basetype",ATTR_BASETYPE));
-        attributemap.put("dapversion",new Lexeme("dapversion",ATTR_DAPVERSION));
-        attributemap.put("ddxversion",new Lexeme("ddxversion",ATTR_DDXVERSION));
-        attributemap.put("enum",new Lexeme("enum",ATTR_ENUM));
-        attributemap.put("href",new Lexeme("href",ATTR_HREF));
-        attributemap.put("name",new Lexeme("name",ATTR_NAME));
-        attributemap.put("namespace",new Lexeme("namespace",ATTR_NAMESPACE));
-        attributemap.put("size",new Lexeme("size",ATTR_SIZE));
-        attributemap.put("type",new Lexeme("type",ATTR_TYPE));
-        attributemap.put("value",new Lexeme("value",ATTR_VALUE));
-        attributemap.put("ns",new Lexeme("ns",ATTR_NS));
-        attributemap.put("xmlns",new Lexeme("xmlns",ATTR_XMLNS));
+        // Always insert the lowercase name
+        attributemap.put("base", new Lexeme("base", ATTR_BASE));
+        attributemap.put("basetype", new Lexeme("basetype", ATTR_BASETYPE));
+        attributemap.put("dapversion", new Lexeme("dapversion", ATTR_DAPVERSION));
+        attributemap.put("ddxversion", new Lexeme("ddxversion", ATTR_DDXVERSION));
+        attributemap.put("enum", new Lexeme("enum", ATTR_ENUM));
+        attributemap.put("href", new Lexeme("href", ATTR_HREF));
+        attributemap.put("name", new Lexeme("name", ATTR_NAME));
+        attributemap.put("namespace", new Lexeme("namespace", ATTR_NAMESPACE));
+        attributemap.put("size", new Lexeme("size", ATTR_SIZE));
+        attributemap.put("type", new Lexeme("type", ATTR_TYPE));
+        attributemap.put("value", new Lexeme("value", ATTR_VALUE));
+        attributemap.put("ns", new Lexeme("ns", ATTR_NS));
+        attributemap.put("xmlns", new Lexeme("xmlns", ATTR_XMLNS));
 
-    };
+    }
+
+    ;
 
     //////////////////////////////////////////////////
     // Instance variables
@@ -132,7 +137,7 @@ public class Dap4SaxEventHandler extends SaxEventHandler
     Dap4SaxParser pushparser = null;
     boolean textok = false;
     boolean accepted = false;
-    
+
     //////////////////////////////////////////////////
     // Constructor(s)
 
@@ -156,19 +161,19 @@ public class Dap4SaxEventHandler extends SaxEventHandler
             throw new SAXException("yyevent called after parser has accepted");
         }
 
-        Type yaxtoken = saxtoken.type;
+        SaxEventType yaxtoken = saxtoken.event;
         String name = saxtoken.name;
         int yytoken = 0;
-	Lexeme element = null;
-	Lexeme attr = null;
+        Lexeme element = null;
+        Lexeme attr = null;
 
         element = elementmap.get(name);
-    
-        switch(yaxtoken) {
 
-        case OPEN: 
+        switch (yaxtoken) {
+
+        case STARTELEMENT:
             if(element == null) {// undefined
-                yytoken = UNKNOWN_ELEMENT_;             
+                yytoken = UNKNOWN_ELEMENT_;
             } else {
                 yytoken = element.open;
                 // Check for the special case of <Value> */
@@ -178,7 +183,7 @@ public class Dap4SaxEventHandler extends SaxEventHandler
             break;
 
         case ATTRIBUTE:
-	    attr = attributemap.get(name.toLowerCase());
+            attr = attributemap.get(name.toLowerCase());
             if(attr == null) {
                 yytoken = UNKNOWN_ATTR;
             } else {
@@ -186,8 +191,7 @@ public class Dap4SaxEventHandler extends SaxEventHandler
             }
             break;
 
-        case EMPTYCLOSE:
-        case CLOSE:
+        case ENDELEMENT:
             if(element == null) {// undefined
                 yytoken = _UNKNOWN_ELEMENT;
             } else {
@@ -196,31 +200,28 @@ public class Dap4SaxEventHandler extends SaxEventHandler
             }
             break;
 
-        case CDATA:
-        case TEXT:
+        case CHARACTERS:
             if(!textok) return; // ignore
             yytoken = TEXT;
             break;
 
-        case COMMENT:
-        case PROLOG:
-        case DOCTYPE:
+        case STARTDOCUMENT:
             return; // ignore
 
-        case EOF:
+        case ENDDOCUMENT:
             yytoken = EOF;
             break;
 
         default:
             pushparser.yyerror(String.format("unknown token type: %s\n",
-                    yaxtoken.name()));
+                yaxtoken.name()));
             yytoken = ERROR;
             break;
         } // switch
 
         int status = 0;
         try {
-            status = pushparser.push_parse(yytoken,saxtoken);
+            status = pushparser.push_parse(yytoken, saxtoken);
         } catch (Exception e) {
             throw new SAXException(e);
         }

@@ -82,7 +82,7 @@ abstract public class SaxEventHandler extends DefaultHandler
     // DefaultHandler Overrides
 
     // The key thing to note is that we map the Sax Event
-    // into a subset based on yax.lex.Type. This means
+    // into a subset based on yax.lex.DomEventType. This means
     // we feed only a subset of the possible events into
     // the subclass handler. This can be changed by
     // overriding the suppressing event handler below.

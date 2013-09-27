@@ -17,6 +17,7 @@ public void yyerror(String s) {System.err.println(s);}
 %define throws {Exception}
 %define lex_throws {Exception}
 
+%token  DATASET_ _DATASET
 %token  GROUP_ _GROUP
 %token  ENUMERATION_ _ENUMERATION
 %token  ENUMCONST_ _ENUMCONST
@@ -58,9 +59,13 @@ public void yyerror(String s) {System.err.println(s);}
 /* Error cases */
 %token  ERROR UNKNOWN UNEXPECTED
 
-%start group
+%start dataset
 
 %%
+dataset:
+	DATASET_ group_attr_list group_body _DATASET
+	;
+
 group:
 	GROUP_ group_attr_list group_body _GROUP
 	;
