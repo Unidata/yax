@@ -1,8 +1,12 @@
+/**
+ This software is released under the terms of the Apache License version 2.
+ For details of the license, see http://www.apache.org/licenses/LICENSE-2.0.
+ */
+
 package yax.test;
 
-import yax.lex.*;
+import yax.*;
 
-import org.apache.commons.cli.*;
 import org.w3c.dom.*;
 import org.xml.sax.*;
 
@@ -10,6 +14,8 @@ import java.io.*;
 
 public class SaxTest
 {
+
+    static final String EXPECTED_VERSION = "2.00";
 
     // Simple subclass of SaxEventHandler
     static public class SaxTestHandler extends SaxEventHandler
@@ -29,7 +35,7 @@ public class SaxTest
             throws SAXException
         {
             String trace = null;
-            trace = Util.trace(token, 0);
+            trace = Util.trace(token, getFlags());
             System.out.printf("saxtest: %s\n", trace);
             System.out.flush();
         }
@@ -38,43 +44,21 @@ public class SaxTest
     static public void
     main(String[] argv)
     {
-        SaxTestHandler handler;
-        int flags = Util.FLAG_NONE;
-        SaxEventType tokentype = null;
-        Node[] nodep = new Node[]{null};
-
-        String input;
-        int i, c;
-
         try {
-            Options options = new Options();
-            options.addOption("t", false, "trim text");
-            options.addOption("l", false, "Limit size of text printout");
-            options.addOption("e", false, "Escape control characters");
+            SaxTestHandler handler;
+            SaxEventType tokentype = null;
 
-            CommandLineParser parser = new PosixParser();
-            CommandLine cmd = parser.parse(options, argv);
-
-            argv = cmd.getArgs();
-
-            if(argv.length == 0) {
-                System.err.printf("no input\n");
-                System.exit(1);
-            }
-
-            input = getinput(argv[0]);
-
-            flags = Util.FLAG_NOCR; // always
-            if(cmd.hasOption('t'))
-                flags |= Util.FLAG_TRIMTEXT;
-            if(cmd.hasOption('l'))
-                flags |= Util.FLAG_ELIDETEXT;
-            if(cmd.hasOption('e'))
-                flags |= Util.FLAG_ESCAPE;
-
-            handler = new SaxTestHandler(input);
+	    if(!EXPECTED_VERSION.equals(SaxEventHandler.getVersion())) {
+		System.err.printf("Version mismatch: %s :: %s\n",
+			EXPECTED_VERSION, SaxEventHandler.getVersion());
+		System.exit(1);
+	    }
+            TestOptions.getoptions(argv);
+            handler = new SaxTestHandler(TestOptions.document);
+            handler.setFlags(TestOptions.flags);
+            if(TestOptions.saxtrace)
+                handler.setTrace(true);
             handler.parse();
-
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);
@@ -82,20 +66,5 @@ public class SaxTest
         System.out.println("No error");
         System.exit(0);
     }
-
-    static String
-    getinput(String filename)
-        throws IOException
-    {
-        StringBuilder buf = new StringBuilder();
-        FileReader file = new FileReader(filename);
-        int c;
-
-        while((c = file.read()) > 0) {
-            buf.append((char) c);
-        }
-        return buf.toString();
-    }
-
 
 } //SaxTest

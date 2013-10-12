@@ -1,5 +1,6 @@
-/* Copyright 2009, UCAR/Unidata
-   See the COPYRIGHT file for more information.
+/**
+This software is released under the terms of the Apache License version 2.
+For details of the license, see http://www.apache.org/licenses/LICENSE-2.0.
 */
 
 #include <stdlib.h>
@@ -10,40 +11,46 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-#include "dap4.h"
+#include "dap4test.h"
 #include "options.h"
-
-/**************************************************/
-/* dap4.y API */
-extern int dap4debug;
-extern int dap4parse(DAP4parser*);
 
 /**************************************************/
 
 /*Forward*/
 static char* getinput(const char* filename);
 
+/**************************************************/
+
 int
 main(int argc, char** argv)
 {
-    int flags = YXFLAG_NONE;
+    SaxFlags flags = SXFLAG_NONE;
     char* input;
     const char* file;
     int ok = 0;
-    yax_err yaxerr;
-    DAP4parser* parser;
+    Dap4EventHandler* deh;
 
-    if(!options("ted",argc,argv)) {
+    if(!options("t:d",argc,argv)) {
 	fprintf(stderr,"Illegal command line option");
 	exit(1);
     }
 
-    flags = YXFLAG_NONE;
-    if(optionset('t'))
-	flags |= YXFLAG_TRIMTEXT;
-    if(optionset('e'))
-	flags |= YXFLAG_ELIDETEXT;
+    flags = 0;
 
+    if(optionset('t')) {
+	const char* s = soption('t');
+	int c;
+	while((c=*s++)) {
+	    switch (c) {
+	    case 't': flags |= SXFLAG_TRIMTEXT; break;
+	    case 'l': flags |= SXFLAG_ELIDETEXT; break;
+	    case 'e': flags |= SXFLAG_ESCAPE; break;
+	    case 'r': flags |= SXFLAG_NOCR; break;
+	    default:
+		fprintf(stderr,"unknown -t flag: %c",(char)c);
+	    }
+	}
+    }
     if(optionset('d'))
 	dap4debug = 1;
 
@@ -55,23 +62,10 @@ main(int argc, char** argv)
 	
     input = getinput(file);
 
-    parser = (DAP4parser*)calloc(1,sizeof(DAP4parser));
-    if(parser == NULL) {ok=0; goto done;}
-    yaxerr = yax_create(input,flags,&parser->yaxlexer);
-    if(yaxerr != YAX_OK) {
-	fprintf(stderr,"Could not create yax lexer: %s\n",
-		yax_errstring(yaxerr));
-	goto done;
-    }
-    if(dap4parse(parser) == 0) {
-	ok = 1;	
-    } else {
-	ok = 0;
-    }
+    deh = dap4_eventhandler(input);
+    ok = dap4_parse(deh);
+    dap4_eventhandlerfree(deh);
 
-done:
-    yax_free(parser->yaxlexer);
-    free(parser);
     if(ok == 0)
 	fprintf(stderr,"parse failed\n");
     exit(ok?0:1);

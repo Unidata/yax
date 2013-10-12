@@ -103,7 +103,6 @@ m4_define([b4_integral_python_parser_table_define],
   )dnl
 ])
 
-
 m4_define([b4_python_parser_tables_define],
 [b4_integral_parser_tables_map([b4_integral_python_parser_table_define])])
 
@@ -245,24 +244,28 @@ m4_define([b4_integral_parser_table_define],
 
 # b4_case(ID, CODE)
 # -----------------
-# This is complicated for python because
-# each line of the body of the action 
-# must be indented more than the 2 blanks
-# because it is now inside a try statement.
-# Before that, however, any braces must be
-# elided.
+# This is complicated for python for several reasons:
+# 1. Each line of the body of the action 
+#    must be indented more than the 4 blanks
+#    because it is now inside a try statement
+#    inside a class.
+# 2. Any braces must be elided.
+# 3. Since I cannot figure out how this macro is invoked,
+#    I have to invoke b4_user_actions twice, but each
+#    invocation has a different effect. I solve this
+#    by the hack of temporarily defining a macro name
+#    as a flag to indicate which effect to generate.
 
-m4_define([b4_case],
-[[def yycase_$1 (yyvalp, yyn, yystack, yylen, yyerror]b4_locations_if(
+m4_define([b4_case],[m4_ifdef([b4_effect_init],
+[[    self.yyswitch[$1] = self.yycase_$1]],
+[[  def yycase_$1 (self, yyvalp, yyn, yystack, yylen, yyerror]b4_locations_if(
 [, yyloc])[):
-  yyval = yyvalp.yyval
-  try :
-]b4_python_indent(b4_debrace($2),4)[
-  finally :
-    yyvalp.yyval = yyval
-#end yycase_$1
-
-yyswitch[$1] = yycase_$1]])
+    yyval = yyvalp.yyval
+    try :
+]b4_python_indent(b4_debrace($2),6)[
+    finally :
+      yyvalp.yyval = yyval
+  #end yycase_$1]])])
 
 ## ------------------------- ##
 ## Assigning token numbers.  ##
@@ -486,6 +489,9 @@ EOF = 0
 # %code requires
 ]b4_percent_code_get([[requires]])[
 
+# %code provides
+]b4_percent_code_get([[provides]])[
+
 ##################################################
 # Table data and methods
 ##################################################
@@ -704,10 +710,6 @@ class YYVAL:
   def __init__(self,yyval): self.yyval = yyval
 #end YYVAL
 
-yyswitch = {}
-
-]b4_user_actions[
-
 ##################################################
 # Primary Parser Class
 ##################################################
@@ -775,7 +777,19 @@ class ]b4_parser_class_name[]b4_percent_define_get3([extends], [(], [)])[ :
 ]b4_push_if([    self.push_parse_initialized = False])[
 ]b4_error_verbose_if([    # True if verbose error messages are enabled.
     self.yyErrorVerbose = True])[
+    self.yyswitch_init()
   # end __init__
+
+  # Define the user action procedures here
+]b4_user_actions[
+
+  # Build yyswitch
+  def yyswitch_init(self):
+    self.yyswitch = {}
+]m4_pushdef([b4_effect_init],[])[
+]b4_user_actions[
+]m4_popdef([b4_effect_init])[
+  # end yyswitch_init
 
 ]b4_push_if([b4_define_state])[
 
@@ -808,8 +822,8 @@ class ]b4_parser_class_name[]b4_percent_define_get3([extends], [(], [)])[ :
     # into a function allows the function to modify that object.
     # Note that the action body is indentation sensitive
 
-    if (yyn in yyswitch) :
-      action = yyswitch[yyn]
+    if (yyn in self.yyswitch) :
+      action = self.yyswitch[yyn]
       yyvalp = YYVAL(yyval)
       status = action(yyvalp, yyn, yystack, yylen, yyerror]b4_locations_if(
 [, yyloc])[)
@@ -1376,12 +1390,8 @@ b4_dollar_popdef[]dnl
     return "syntax error"
   # end yysyntax_error
 
-
-]# %code provides.
-b4_percent_code_get([[provides]])[
-]# User implementation code.
-b4_percent_code_get[]dnl
+# User implementation code; indented
+]b4_python_indent(b4_percent_code_get[],2)
 
 b4_epilogue[]dnl
 b4_output_end()
-

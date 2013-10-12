@@ -1,16 +1,12 @@
 <?xml version="1.0"?>
 <!DOCTYPE startpoint SYSTEM "hello.dtd">
-<!DOCTYPE startpoint [whatever] >
 <!--number value=5 -->
 <!--number value = 17 -->
-<element1 name="x&lt;yz" value=13>
-&
+<element1 name="x&lt;yz" value="13">
 &amp;
 &mon;
-&;
-</element1><!---->
-<e2 a = 5>
+<e2 a = "5">
 <!--cc-->
 </e2>
-
+</element1><!---->
 

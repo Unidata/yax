@@ -3,12 +3,13 @@
 
 class Lexeme:
 
-  def __init__(self, name=None, open=None, close=None, legal=None, attr=None) :
+  def __init__(self, name=None, open=None, close=None, legal=None, textok=False, attr=None) :
     self.name = name
     self.open = open
     self.close = close
     self.attr = attr
     self.setAttributes(legal)
+    self.textok = textok
   # end __init__
 
   def setAttributes(self,alist):
@@ -21,7 +22,7 @@ class Lexeme:
   #end attribute
 
   def __str__(self) :
-    text = "{0} open={1} close={2} a={3}".format(self.name,str(self.open),str(self.close),str(self.attr))
+    text = "{0} open={1} close={2} a={3} textok={4}".format(self.name,str(self.open),str(self.close),str(self.attr),str(self.textok))
     if(self.legalAttributes != None and len(self.legalAttributes) > 0) :
       text += " attributes="
       for s in self.legalAttributes :

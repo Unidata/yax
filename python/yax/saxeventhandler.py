@@ -5,6 +5,7 @@ import sys
 import io
 import xml.sax
 import xml.sax.saxutils
+from xml.sax import SAXException
 from xml.sax.handler import ContentHandler
 from xml.sax.handler import ErrorHandler
 from xml.sax.handler import EntityResolver
@@ -13,14 +14,20 @@ from xml.sax.xmlreader import XMLReader
 from xml.sax.xmlreader import InputSource
 from saxevent import SaxEvent
 import saxeventtype
+import util
 
 #########################
 # debug
 
-def TRACE(arg1, arg2):
-  if(False) :
-    sys.stderr.write("event.{0}: {1}\n".format(str(arg1),str(arg2)))
-#end TRACE
+def trace_event(event, flags):
+  sys.stderr.write("event.{0}: {1}\n".format(str(event.event),str(event)))
+#end trace_event
+
+#########################
+
+VERSION = "2.00"
+
+def getVersion(): return VERSION
 
 #########################
 
@@ -41,6 +48,9 @@ class SaxEventHandler(object,ContentHandler,
        or (isinstance(source,unicode) and len(source) == 0)) :
       raise SAXException("SaxEventHandler: Empty document")
     self.source = source
+    # Trace flags
+    self.flags = util.FLAG_NONE;
+    self.trace = False;
   # end __init__
 
   #########################
@@ -48,6 +58,21 @@ class SaxEventHandler(object,ContentHandler,
 
   # Send the lexeme to the the subclass to process
   def yyevent(self, token) : pass
+
+  #########################
+  # Get/Set
+
+  def getFlags(self): return self.flags
+  def setFlags(self,flags) : self.flags = flags
+
+  def setTrace(self,trace) : self.trace = trace
+
+  #########################
+  # debug
+  def TRACE(self,event):
+    if(self.trace):
+       trace_event(event,self.flags);
+  # end TRACE
 
   #########################
   # Public API
@@ -74,6 +99,11 @@ class SaxEventHandler(object,ContentHandler,
     parser.setContentHandler(self)
     #parser.setErrorHandler(self)
 
+    #parser.setFeature(xml.sax.handler.feature_namespaces,True)
+    # Shut off dtd validation
+    parser.setFeature(xml.sax.handler.feature_validation,False)
+    parser.setFeature(xml.sax.handler.feature_external_ges, False)
+
     # Parse the document
     parser.parse(input)
   # end parse()
@@ -93,19 +123,19 @@ class SaxEventHandler(object,ContentHandler,
 
   def startDocument(self) :
     event = SaxEvent(saxeventtype.STARTDOCUMENT,self.locator)
-    TRACE(event.event,event)
+    self.TRACE(event)
     self.yyevent(event)
   # end startDocument
 
   def endDocument(self) :
     event = SaxEvent(saxeventtype.ENDDOCUMENT,self.locator)
-    TRACE(event.event,event)
+    self.TRACE(event)
     self.yyevent(event)
   # end endDocument()
 
   def startElement(self, name, attributes) :
     event = SaxEvent(saxeventtype.STARTELEMENT,self.locator,name)
-    TRACE(event.event,event)
+    self.TRACE(event)
     self.yyevent(event)
     # Now pass the attributes as tokens
     nattr = attributes.getLength()
@@ -115,19 +145,19 @@ class SaxEventHandler(object,ContentHandler,
       value = attributes.getValue(aname)
 
       event = SaxEvent(saxeventtype.ATTRIBUTE,self.locator,aname,value=value)
-      TRACE(event.event,event)
+      self.TRACE(event)
       self.yyevent(event)
   # end startElement()
 
   def endElement(self, name) :
     event = SaxEvent(saxeventtype.ENDELEMENT,self.locator,name)
-    TRACE(event.event,event)
+    self.TRACE(event)
     self.yyevent(event)
   # end endElement()
 
   def characters(self, content) :
     event = SaxEvent(saxeventtype.CHARACTERS,self.locator,text=content)
-    TRACE(event.event,event)
+    self.TRACE(event)
     self.yyevent(event)
   # end characters()
 
@@ -166,7 +196,6 @@ class SaxEventHandler(object,ContentHandler,
   # Entity resolution
 
   def resolveEntity(self, publicId, systemId):
-    TRACE(publicId,systemId)
     return None
   # end resolveEntity()
 

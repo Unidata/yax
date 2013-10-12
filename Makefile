@@ -4,25 +4,30 @@ EXPORT=f:/git/export
 
 all::
 	cd c; ${MAKE} all
-	cd java; ant all
+	cd java; ${MAKE} all
 	cd python; ${MAKE} all
 
 check::
 	cd c; ${MAKE} check
-	cd java; ant check
+	cd java; ${MAKE} check
 	cd python; ${MAKE} check
 
 clean::
 	cd c; ${MAKE} clean	
-	cd java; ant clean
+	cd java; ${MAKE} clean
 	cd python; ${MAKE} clean
-	rm -fr ./git
+	rm -fr ./export
 
-git::
-	${SH} ./git.sh
+generate::
+	cd c; ${MAKE} generate
+	cd java; ${MAKE} generate
+	cd python; ${MAKE} generate
+
+export::
+	${SH} ./export.sh
 
 install::
 	rm -fr ${EXPORT}/yax/*
-	cp -fr ./git/yax ${EXPORT}
+	cp -fr ./export/yax ${EXPORT}
 
 

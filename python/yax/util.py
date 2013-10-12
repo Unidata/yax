@@ -50,52 +50,52 @@ def namecharn(c) :
 # @param node token node 
 # @param (optional) flags to control trace output
     
-def domtrace(type, node, flags=DEFAULTFLAGS) :
-  result = ""
-  name = "UNDEFINED"
-  value = ""
-  nodetype = 0
+#def domtrace(type, node, flags=DEFAULTFLAGS) :
+#  result = ""
+#  name = "UNDEFINED"
+#  value = ""
+#  nodetype = 0
+#
+#  if(node != None) :
+#    name = node.getNodeName()
+#    value = node.getNodeValue()
+#    nodetype = node.getNodeType()
+#  result += ('['+nodetypeName(nodetype)+']')
+#  result += (type.name())
+#
+#  # switch: probably could use lambda dictionary/list
+#  if(type == OPEN or type == CLOSE) :
+#    result += (": element=|")
+#    result += (name)
+#    result += ("|")
+#  elif(type == COMMENT or type == TEXT) :
+#    result += (" text=")
+#    result = addtext(result,value,flags)
+#    trans = unescape(value)
+#    result += (" translation=")
+#    result = addtext(result,trans,flags)
+#  elif(type == ATTRIBUTE) :
+#    result += (": name=")
+#    result = addtext(result,name,flags)
+#    result += (" value=")
+#    result = addtext(result,value,flags)
+#  elif(type == CDATA) :
+#    result += (": text=")
+#    result = addtext(result,value,flags)
+#  elif(type == DOCTYPE or type == PROLOG) :
+#    result += (": name=")
+#    result = addtext(result,name,flags)
+#    result += (" value=")
+#    result = addtext(result,value,flags)
+#  elif(type == EOF) :
+#    pass
+#  elif(type == UNDEFINED) :
+#    pass
+#  else:
+#    assert False ,  "Unexpected tokentype"
+#  return result
+##end trace()
 
-  if(node != None) :
-    name = node.getNodeName()
-    value = node.getNodeValue()
-    nodetype = node.getNodeType()
-  result += ('['+nodetypeName(nodetype)+']')
-  result += (type.name())
-
-  # switch: probably could use lambda dictionary/list
-  if(type == OPEN or type == CLOSE) :
-    result += (": element=|")
-    result += (name)
-    result += ("|")
-  elif(type == COMMENT or type == TEXT) :
-    result += (" text=")
-    result = addtext(result,value,flags)
-    trans = unescape(value)
-    result += (" translation=")
-    result = addtext(result,trans,flags)
-  elif(type == ATTRIBUTE) :
-    result += (": name=")
-    result = addtext(result,name,flags)
-    result += (" value=")
-    result = addtext(result,value,flags)
-  elif(type == CDATA) :
-    result += (": text=")
-    result = addtext(result,value,flags)
-  elif(type == DOCTYPE or type == PROLOG) :
-    result += (": name=")
-    result = addtext(result,name,flags)
-    result += (" value=")
-    result = addtext(result,value,flags)
-  elif(type == EOF) :
-    pass
-  elif(type == UNDEFINED) :
-    pass
-  else:
-    assert False ,  "Unexpected tokentype"
-  return result
-#end trace()
-    
 # Unescape entities in a string.
 # The translations argument is in envv form
 # with position n being the entity name and
@@ -218,7 +218,7 @@ def nodetypeName(nodetype) :
     return "UNDEFINED"
 #end nodetypeName()
 
-# Trace a SAX Token 
+# Trace a SAX event token
 def saxtrace(token, flags=DEFAULTFLAGS) :
   result = ""
   name = token.name

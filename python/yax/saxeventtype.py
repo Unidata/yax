@@ -10,7 +10,7 @@ CHARACTERS = 6
 
 # Define printable output
 
-MAP = {
+_MAP = {
 STARTDOCUMENT: "STARTDOCUMENT",
 ENDDOCUMENT: "ENDDOCUMENT",
 STARTELEMENT: "STARTELEMENT",
@@ -20,4 +20,4 @@ CHARACTERS: "CHARACTERS"
 }
 
 def tostring(t) :
-  return MAP[t]
+  return _MAP[t]
